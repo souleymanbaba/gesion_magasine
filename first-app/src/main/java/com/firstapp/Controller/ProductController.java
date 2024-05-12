@@ -5,20 +5,16 @@ import com.firstapp.Model.Product;
 import com.firstapp.Service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
-
     @Autowired
     private ProductService productService;
 
-
     @GetMapping
-    public String hello() {
-        return "hello";
+    public List<Product> getAllProduct() {
+        return productService.getAllProducts();
     }
 
     @GetMapping("/{id}")
@@ -31,6 +27,7 @@ public class ProductController {
         return productService.saveProduct(product);
     }
 
+
     @PutMapping("/{id}")
     public Product updateProduct(@PathVariable Long id, @RequestBody Product productDetails) throws ResourceNotFoundException {
         Product product = productService.getProductById(id).orElseThrow(() -> new ResourceNotFoundException("Product not found with id " + id));
@@ -41,6 +38,7 @@ public class ProductController {
         product.setImageUrl(productDetails.getImageUrl());
         return productService.saveProduct(product);
     }
+
 
     @DeleteMapping("/{id}")
     public void deleteProduct(@PathVariable Long id) {
