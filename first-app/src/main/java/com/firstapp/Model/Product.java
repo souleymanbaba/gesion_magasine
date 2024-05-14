@@ -27,15 +27,13 @@ public class Product {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    public Product(Long id, String name, String description, double price, int stockQuantity, String imageUrl, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.id = id;
+    public Product( String name, String description, double price, int stockQuantity, String imageUrl) {
+
         this.name = name;
         this.description = description;
         this.price = price;
         this.stockQuantity = stockQuantity;
         this.imageUrl = imageUrl;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
     }
 
     public Long getId() {
