@@ -1,7 +1,9 @@
 package com.example.stage.stage.controller.admin;
 
+import com.example.stage.stage.dto.FAQDto;
 import com.example.stage.stage.dto.ProductDto;
 import com.example.stage.stage.entity.Product;
+import com.example.stage.stage.services.admin.FAQ.FAQService;
 import com.example.stage.stage.services.admin.adminProduct.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,6 +19,8 @@ import java.util.List;
 public class AdminProductController {
 
     private final ProductService adminProductService;
+
+    private final FAQService faqService;
     @PostMapping("/product")
     public ResponseEntity<ProductDto> addProduct(@ModelAttribute ProductDto productDto) throws IOException {
         ProductDto productDto1 = adminProductService.addProduct(productDto);
@@ -47,6 +51,32 @@ public class AdminProductController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @PostMapping("/faq/{productId}")
+    public ResponseEntity<FAQDto> postFAQ(@PathVariable Long productId, @RequestBody FAQDto faqDto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(faqService.postFAQ(productId, faqDto));
+    }
+
+    @GetMapping("/product/{productId}")
+    public ResponseEntity<ProductDto> getProductById(@PathVariable Long productId) {
+        ProductDto productDto =adminProductService.getProductById(productId);
+        if(productDto != null){
+            return ResponseEntity.ok(productDto);
+        }else{
+            return ResponseEntity.notFound().build();
+        }
+
+    }
+
+    @PutMapping("/product/{productId}")
+    public ResponseEntity<ProductDto> updateProduct(@PathVariable Long productId, @ModelAttribute ProductDto productDto) throws IOException{
+    ProductDto updatedProduct= adminProductService.updateProduct (productId, productDto);
+if (updatedProduct != null){
+        return ResponseEntity.ok(updatedProduct);
+    }else{
+        return ResponseEntity.notFound().build();
+    }
+}
 
 
 }

@@ -2,6 +2,7 @@ package com.example.stage.stage.services.jwt;
 
 import com.example.stage.stage.entity.User;
 import com.example.stage.stage.repostory.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -11,9 +12,9 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
-
+@RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 

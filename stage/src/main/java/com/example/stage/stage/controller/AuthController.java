@@ -28,7 +28,7 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor
 public class AuthController {
-    private  AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
     private final UserDetailsService userDetailsService;
 
