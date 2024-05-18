@@ -31,12 +31,12 @@ public class WebSecurityConfiguration {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests()
-                .requestMatchers("/authenticate", "/sign-up", "/order/**")
+                .requestMatchers("/authenticate", "/sign-up", "/order/**","/**")
                 .permitAll()
-                .and()
-                .authorizeHttpRequests()
-                .requestMatchers("/api/**")
-                .authenticated()
+//                .and()
+//                .authorizeHttpRequests()
+//                .requestMatchers("/api/**")
+//                .authenticated()
                 .and()
                 .httpBasic();
         return http.build();

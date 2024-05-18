@@ -1,5 +1,6 @@
 package com.example.stage.stage.controller.admin;
 
+import com.example.stage.stage.dto.AnalyticsResponse;
 import com.example.stage.stage.dto.OrderDto;
 import com.example.stage.stage.services.admin.order.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -24,10 +25,15 @@ public class OrderController {
     }
 
     @GetMapping("/order/{orderId}/{status}")
-    public ResponseEntity<?> changeürderStatus (@PathVariable Long orderId, @PathVariable String status) {
+    public ResponseEntity<?> changeOrderStatus (@PathVariable Long orderId, @PathVariable String status) {
         OrderDto orderDto =adminOrderService.changeOrderStatus (orderId, status);
         if (orderDto == null)
             return new ResponseEntity<>( "Something went wrong!", HttpStatus.BAD_REQUEST);
         return ResponseEntity.status(HttpStatus.OK).body(orderDto);
+    }
+
+    @GetMapping("/order/analytics")
+    public ResponseEntity<AnalyticsResponse>getAnalytics(){
+        return ResponseEntity.ok(adminOrderService.calculateAnalytics());
     }
 }

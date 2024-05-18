@@ -1,5 +1,6 @@
 package com.example.stage.stage.entity;
 
+import com.example.stage.stage.dto.ReviewDto;
 import jakarta.persistence.*;
 import jdk.jfr.Label;
 import lombok.Data;
@@ -23,4 +24,18 @@ public class Review {
     private User user;
 
     @ManyToOne (fetch= FetchType.LAZY, optional = false) @JoinColumn(name = "product_id", nullable = false) @OnDelete(action= OnDeleteAction.CASCADE) private Product product;
+
+    public ReviewDto getDto(){
+        ReviewDto reviewDto=
+        new ReviewDto();
+        reviewDto.setId(id);
+        reviewDto.setRating(rating);
+        reviewDto.setDescription (description);
+        reviewDto.setReturnedImg(img);
+        reviewDto.setProductId(product.getId());
+        reviewDto.setUserId(user.getId());
+        reviewDto.setUsername(user.getName());
+        return reviewDto;
+    }
+
 }
