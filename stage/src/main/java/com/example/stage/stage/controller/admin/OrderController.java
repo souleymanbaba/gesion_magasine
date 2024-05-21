@@ -33,7 +33,7 @@ public class OrderController {
     }
 
     @GetMapping("/order/analytics")
-    public ResponseEntity<AnalyticsResponse>getAnalytics(){
+    public ResponseEntity<AnalyticsResponse> getAnalytics(){
         return ResponseEntity.ok(adminOrderService.calculateAnalytics());
     }
 }
