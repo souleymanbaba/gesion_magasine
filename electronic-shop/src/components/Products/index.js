@@ -3,12 +3,11 @@ import axios from 'axios';
 import ProductCard from './ProductCard'; // Make sure to adjust the path according to your file structure
 import '../../style.css'
 
-
 function Products() {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    axios.get(' http://localhost:8080/api/admin/products')
+    axios.get('http://localhost:8080/api/admin/products')
       .then(response => {
         setProducts(response.data);
       })
@@ -17,9 +16,9 @@ function Products() {
       });
   }, []);
 
-  const updateCart = (productId) => {
+  const updateCart = (product) => {
     // Handle adding product to cart
-    console.log(`Adding product ${productId} to cart`);
+    console.log(`Adding product ${product.id} to cart`);
   };
 
   return (
@@ -28,7 +27,7 @@ function Products() {
       <div className="row" style={{ marginTop: '30px' }}>
         {products.map(product => (
           <div className="col-md-3 py-3 py-md-0" key={product.id}>
-            <ProductCard deal={product} updateCart={() => updateCart(product.id)} />
+            <ProductCard deal={product} updateCart={() => updateCart(product)} />
           </div>
         ))}
       </div>
