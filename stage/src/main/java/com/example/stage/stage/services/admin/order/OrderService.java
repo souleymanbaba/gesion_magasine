@@ -9,4 +9,5 @@ public interface OrderService {
     public List<OrderDto> getAllPlacedOrders();
     OrderDto changeOrderStatus (Long orderId, String status);
     AnalyticsResponse calculateAnalytics();
+    void updateOrderAndDeleteCartItems(Long userId);
 }

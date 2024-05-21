@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Modal, Button, Form } from 'react-bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [newStatus, setNewStatus] = useState('');
 
   useEffect(() => {
     fetchOrders();
@@ -23,28 +28,32 @@ const Orders = () => {
     }
   };
 
-  const handleChangeStatus = async (orderId, newStatus) => {
+  const handleChangeStatus = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/api/admin/order/${orderId}/${newStatus}`);
+      const response = await axios.get(`http://localhost:8080/api/admin/order/${selectedOrder.id}/${newStatus}`);
       
       if (response.status === 200) {
         console.log('Statut de la commande mis à jour avec succès !');
-        // Mettre à jour l'état local ou effectuer d'autres actions nécessaires
         const updatedOrders = orders.map(order => {
-          if (order.id === orderId) {
-            return { ...order, order_status: newStatus };
+          if (order.id === selectedOrder.id) {
+            return { ...order, orderStatus: newStatus };
           }
           return order;
         });
         setOrders(updatedOrders);
+        setShowModal(false);
       } else {
         console.error('Échec de la mise à jour du statut de la commande');
-        // Afficher un message d'erreur à l'utilisateur ou effectuer d'autres actions nécessaires
       }
     } catch (error) {
       console.error('Une erreur s\'est produite :', error);
-      // Gérer les erreurs de requête, par exemple afficher un message d'erreur à l'utilisateur
     }
+  };
+
+  const handleShowModal = (order) => {
+    setSelectedOrder(order);
+    setNewStatus('');
+    setShowModal(true);
   };
 
   if (loading) return <div>Loading...</div>;
@@ -60,35 +69,58 @@ const Orders = () => {
             <th>Date</th>
             <th>Status</th>
             <th>Total Amount</th>
-            <th>Payment</th>
+            <th>Address</th>
+            <th>Description</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           {orders.map(order => (
             <tr key={order.id}>
-              <td>{order.id}</td>
-              <td>{order.user_id}</td>
+              <td>{order.trackingId}</td>
+              <td>{order.userName}</td>
               <td>{order.date}</td>
-              <td>{order.order_status}</td>
-              <td>{order.total_amount}</td>
-              <td>{order.payment}</td>
+              <td>{order.orderStatus}</td>
+              <td>{order.totalAmount}</td>
+              <td>{order.address}</td>
+              <td>{order.orderDescription}</td>
               <td>
-                <div>
-                  <input 
-                    type="text" 
-                    placeholder="New Status" 
-                    value={order.newStatus} 
-                    onChange={(e) => handleChangeStatus(order.id, e.target.value)} 
-                  />
-                  <button onClick={() => handleChangeStatus(order.id, order.newStatus)}>Change Status</button>
-                </div>
-                <button className="btn btn-danger">Delete</button>
+                <Button onClick={() => handleShowModal(order)}>Change Status</Button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+
+      <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Change Order Status</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group>
+              <Form.Label>Status</Form.Label>
+              <Form.Control 
+                as="select" 
+                value={newStatus} 
+                onChange={(e) => setNewStatus(e.target.value)}
+              >
+                <option value="">Select Status</option>
+                <option value="Shipped">Shipped</option>
+                <option value="Delivered">Delivered</option>
+              </Form.Control>
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={handleChangeStatus}>
+            Change
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };

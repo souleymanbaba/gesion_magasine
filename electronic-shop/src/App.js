@@ -12,6 +12,10 @@ import UpdateProduct from './components/pages/Admin/Updateproducts';
 import Addproduct from './components/pages/Admin/Addproducts' ;
 import Orders from './components/pages/Admin/Orders';
 import Categorie from './components/pages/Admin/Categorie';
+import ProductList from './Cart';
+
+import Orderss from "./test";
+
 
 function App() {
   return (
@@ -22,6 +26,8 @@ function App() {
           <Route path="SigIn" element={<SigIn />} />
           <Route path="SignUp" element={<SignUp />} />
           <Route path="products" element={<Products />} />
+          <Route path="cart" element={<ProductList />} /> 
+      <Route path="/test" element={<Orderss />}></Route> 
         </Route>
         
         {/* Routes for the admin layout */}
@@ -32,7 +38,9 @@ function App() {
           <Route path="products/:productId/edit" element={<UpdateProduct />} />
           <Route path="/admin/products/new" element={<Addproduct />} /> 
           <Route path="/admin/orders" element={<Orders  />} /> 
-          <Route path="/admin/Categorie" element={<Categorie />} /> 
+          
+
+          <Route path="/admin/Categorie" element={<Categorie />} />
         </Route>
       </Routes>
     </Router>

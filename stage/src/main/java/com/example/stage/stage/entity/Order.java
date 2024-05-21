@@ -53,9 +53,11 @@ public class Order {
         orderDto.setAddress(address);
         orderDto.setTrackingId(trackingId);
         orderDto.setAmount(amount);
+        orderDto.setTotalAmount(totalAmount);
         orderDto.setDate(date);
         orderDto.setOrderStatus(orderStatus);
         orderDto.setUserName(user.getName());
+        orderDto.setUser_id(user.getId());
         if(coupon != null){
             orderDto.setCouponName (coupon.getName());
         }

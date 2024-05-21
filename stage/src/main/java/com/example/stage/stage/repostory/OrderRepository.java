@@ -18,4 +18,5 @@ List<Order> findByUserIdAndOrderStatusIn(Long Id, List<OrderStatus> orderStatus)
     Optional<Order> findByTrackingId(UUID trackingId);
     List<Order> findByDateBetweenAndOrderStatus(Date startDate, Date endDate, OrderStatus orderStatus);
     Long countByOrderStatus(OrderStatus orderStatus);
+    List<Order> findByUserId(Long userId);
 }

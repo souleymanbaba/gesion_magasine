@@ -1,21 +1,51 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getUser } from '../pages/Account/userStorageService'; // Ensure the function is imported correctly
+import { getUser } from '../pages/Account/userStorageService'; // Assurez-vous que la fonction est correctement importée
 import '../../style.css';
+import { addToCart } from '../../cartService';
+import Swal from 'sweetalert2';
 
 const ProductCard = ({ deal, updateCart }) => {
   const navigate = useNavigate();
   const user = getUser();
 
-  const handleAddToCart = () => {
+
+  const handleAddToCart = async () => {
+
+
+    
     if (user) {
+
+
+      try {
+        const response = await addToCart(deal.id);// Assuming addToCart is defined elsewhere
+        if (response.ok) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Produit ajouté',
+            text: 'Le produit a été ajouté à votre panier avec succès!',
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Erreur',
+            text: 'Il y a eu un problème lors de l\'ajout du produit à votre panier.',
+          });
+        }
+      } catch (error) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Erreur',
+          text: 'il est deja dans votre panier : ' ,
+        });
+      }
       console.log("User is logged in. Adding to cart:", deal);
-      // If the user is logged in, add the item to the cart
+      // Si l'utilisateur est connecté, ajoutez l'article au panier
       updateCart(deal);
     } else {
       console.log("User is not logged in. Redirecting to login page.");
-      // If the user is not logged in, redirect to the login page with a message
-      navigate('/login', { state: { message: 'Please log in to add items to your cart' } });
+      // Si l'utilisateur n'est pas connecté, redirigez-le vers la page de connexion avec un message
+      navigate('/SigIn', { state: { message: 'Please log in to add items to your cart' } });
     }
   };
 

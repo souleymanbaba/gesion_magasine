@@ -4,10 +4,16 @@ import com.example.stage.stage.dto.AnalyticsResponse;
 import com.example.stage.stage.dto.OrderDto;
 import com.example.stage.stage.entity.Order;
 import com.example.stage.stage.enums.OrderStatus;
+import com.example.stage.stage.repostory.CartItemsRepository;
 import com.example.stage.stage.repostory.OrderRepository;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -16,6 +22,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository ;
+    @Autowired
+    private CartItemsRepository cartItemsRepository;
+
+    @Autowired
+    private OrderRepository orderRepositoryy;
 
     public List<OrderDto> getAllPlacedOrders(){
             List<Order> orderList =orderRepository.findAllByOrderStatusIn(List.of (OrderStatus.Placed, OrderStatus. Shipped, OrderStatus.Delivered));
@@ -93,6 +104,24 @@ return null;
             sum += order.getAmount();
         }
         return sum;
+    }
+
+    @Transactional
+    public void updateOrderAndDeleteCartItems(Long userId) {
+        cartItemsRepository.deleteByUserId(userId);
+        List<Order> orders = orderRepository.findByUserId(userId);
+        for (Order order : orders) {
+            order.setOrderDescription(null);
+            order.setDate(null);
+            order.setAmount(0L);
+            order.setAddress(null);
+            order.setPayment(null);
+            order.setOrderStatus(OrderStatus.Pending);
+            order.setTotalAmount(0L);
+            order.setDiscount(0L);
+            order.setTrackingId(null);
+            orderRepository.save(order);
+        }
     }
 
 

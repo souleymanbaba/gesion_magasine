@@ -6,10 +6,7 @@ import com.example.stage.stage.services.admin.order.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,16 +16,26 @@ import java.util.List;
 public class OrderController {
     private final OrderService adminOrderService;
 
+    @DeleteMapping("/reset/{userId}")
+    public void resetOrderAndCartItems(@PathVariable Long userId) {
+        adminOrderService.updateOrderAndDeleteCartItems(userId);
+    }
+
     @GetMapping("/placedOrders")
     public ResponseEntity<List<OrderDto>> getAllPlacedOrders(){
         return ResponseEntity.ok(adminOrderService.getAllPlacedOrders());
     }
 
     @GetMapping("/order/{orderId}/{status}")
-    public ResponseEntity<?> changeOrderStatus (@PathVariable Long orderId, @PathVariable String status) {
-        OrderDto orderDto =adminOrderService.changeOrderStatus (orderId, status);
-        if (orderDto == null)
-            return new ResponseEntity<>( "Something went wrong!", HttpStatus.BAD_REQUEST);
+    public ResponseEntity<?> changeOrderStatus(@PathVariable Long orderId, @PathVariable String status) {
+        OrderDto orderDto = adminOrderService.changeOrderStatus(orderId, status);
+        if (orderDto == null) {
+            return new ResponseEntity<>("Something went wrong!", HttpStatus.BAD_REQUEST);
+        }
+        if ("Delivered".equalsIgnoreCase(status)) {
+            Long userId = orderDto.getUser_id(); // Assurez-vous que OrderDto a un champ userId ou récupérez-le autrement
+            adminOrderService.updateOrderAndDeleteCartItems(userId);
+        }
         return ResponseEntity.status(HttpStatus.OK).body(orderDto);
     }
 
