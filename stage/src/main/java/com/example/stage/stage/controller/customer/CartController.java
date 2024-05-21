@@ -4,6 +4,7 @@ import com.example.stage.stage.dto.AddProductInCartDto;
 import com.example.stage.stage.dto.OrderDto;
 import com.example.stage.stage.dto.PlaceOrderDto;
 import com.example.stage.stage.exceptions.ValidationException;
+import com.example.stage.stage.services.cartItems.CartItemsService;
 import com.example.stage.stage.services.customer.cart.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,12 +18,25 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CartController {
     private final CartService cartService;
+    private final CartItemsService cartItemsService;
 
     @GetMapping("/cart/{userId}")
     public ResponseEntity<?> getCartByUserId(@PathVariable Long userId) {
         OrderDto orderDto= cartService.getCartByUserId(userId);
         return ResponseEntity.status(HttpStatus.OK).body (orderDto);
     }
+    @GetMapping("/cartI/{userId}")
+    public ResponseEntity<?> getCartByUserIdI(@PathVariable Long userId) {
+        OrderDto orderDto= cartService.getCartByUserIdI(userId);
+        return ResponseEntity.status(HttpStatus.OK).body (orderDto);
+    }
+
+    @DeleteMapping("/test/{id}")
+    public ResponseEntity<Void> deleteCartItem(@PathVariable Long id) {
+        cartItemsService.deleteCartItem(id);
+        return ResponseEntity.noContent().build();
+    }
+
 
     @PostMapping("/cart")
     public ResponseEntity<?> addProductToCart(@RequestBody AddProductInCartDto addProductInCartDto) {

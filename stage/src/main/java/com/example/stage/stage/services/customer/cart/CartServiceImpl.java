@@ -73,8 +73,28 @@ public class CartServiceImpl implements CartService {
         orderDto.setCartItems(cartItemsDtoList);
         if (activeOrder.getCoupon() != null) {
             orderDto.setCouponName(activeOrder.getCoupon().getName());
-        }
-        ;
+        };
+
+
+
+        return orderDto;
+    }
+
+    public OrderDto getCartByUserIdI(Long userId) {
+        Order activeOrder = orderRepository.findByUserIdAndOrderStatus(userId, OrderStatus.Placed);
+        List<CartItemsDto> cartItemsDtoList = activeOrder.getCartItems().stream().map(CartItems::getCartto).collect(Collectors.toList());
+        OrderDto orderDto = new OrderDto();
+        orderDto.setAmount(activeOrder.getAmount());
+        orderDto.setId(activeOrder.getId());
+        orderDto.setOrderStatus(activeOrder.getOrderStatus());
+        orderDto.setDiscount(activeOrder.getDiscount());
+        orderDto.setTotalAmount(activeOrder.getTotalAmount());
+        orderDto.setCartItems(cartItemsDtoList);
+        if (activeOrder.getCoupon() != null) {
+            orderDto.setCouponName(activeOrder.getCoupon().getName());
+        };
+
+
 
         return orderDto;
     }
