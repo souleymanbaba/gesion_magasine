@@ -25,8 +25,16 @@ import java.util.List;
             return ResponseEntity.status(HttpStatus.CREATED).body(category);
 
         }
+
+    @GetMapping("/{categoryId}/subcategories")
+    public ResponseEntity<List<CategoryDto>> getCategoryAndSubcategories(@PathVariable Long categoryId) {
+        List<CategoryDto> categories = categoryService.getCategoryAndSubcategories(categoryId);
+        return ResponseEntity.ok(categories);
+    }
     @GetMapping("")
             public ResponseEntity<List<Category>> getAllCategories(){
             return ResponseEntity.ok(categoryService.getAllCategories());
             }
+
+
     }

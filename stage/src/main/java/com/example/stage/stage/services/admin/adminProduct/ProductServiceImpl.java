@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,6 +27,8 @@ public class ProductServiceImpl implements ProductService{
         product.setDescription(productDto.getDescription());
         product.setPrice(productDto.getPrice());
         product.setImg(productDto.getImg().getBytes());
+        product.setMarque(productDto.getMarque());
+        product.setTaille(productDto.getTaille());
         Category category=categoryRepository.findById(productDto.getCategoryId()).orElseThrow();
         product.setCategory (category);
         return productRepository.save(product).getDto();
@@ -40,6 +43,31 @@ public class ProductServiceImpl implements ProductService{
         List<Product> products = productRepository.findAllByNameContaining(name);
         return products.stream().map(Product::getDto).collect(Collectors.toList());
 
+    }
+
+
+    public List<ProductDto> getProductsByCategoryAndSubcategories(Long categoryId) {
+        List<Product> products = productRepository.findByCategoryAndSubcategories(categoryId);
+        return convertToDtoList(products);
+    }
+
+    public List<ProductDto> convertToDtoList(List<Product> products) {
+        List<ProductDto> productDtos = new ArrayList<>();
+        for (Product product : products) {
+            ProductDto productDto = new ProductDto();
+            // Map product properties to productDto
+            productDto.setId(product.getId());
+            productDto.setName(product.getName());
+            productDto.setPrice(product.getPrice());
+            productDto.setDescription(product.getDescription());
+            productDto.setByteimg(product.getImg());
+            productDto.setCategoryId(product.getCategory().getId());
+            productDto.setCategoryName(product.getCategory().getName());
+            productDto.setMarque(product.getMarque());
+            productDto.setTaille(product.getTaille());
+            productDtos.add(productDto);
+        }
+        return productDtos;
     }
     public boolean deleteProduct(Long id) {
 

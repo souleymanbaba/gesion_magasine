@@ -34,6 +34,12 @@ public class AdminProductController {
         return ResponseEntity.ok(productDto);
     }
 
+    @GetMapping("/category/{categoryId}")
+    public ResponseEntity<List<ProductDto>> getProductsByCategoryAndSubcategories(@PathVariable Long categoryId) {
+        List<ProductDto> products = adminProductService.getProductsByCategoryAndSubcategories(categoryId);
+        return ResponseEntity.ok(products);
+    }
+
     @GetMapping("/search/{name}")
     public ResponseEntity<List<ProductDto>> getAllProductByName(@PathVariable String name) {
         List<ProductDto> productDtos = adminProductService.getAllProductByName(name);

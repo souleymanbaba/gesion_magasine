@@ -12,6 +12,9 @@ public class Category {
     private String name;
     @Lob
     private String description;
+    @ManyToOne
+    @JoinColumn(name = "parent_category_id")
+    private Category parentCategory;
 
 
 

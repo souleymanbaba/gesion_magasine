@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Modal, Button, Form } from 'react-bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import { Modal, Button, Form, Table } from 'react-bootstrap';
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showModal, setShowModal] = useState(false);
+  const [showStatusModal, setShowStatusModal] = useState(false);
+  const [showCartModal, setShowCartModal] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [newStatus, setNewStatus] = useState('');
+  const [cartItems, setCartItems] = useState([]);
 
   useEffect(() => {
     fetchOrders();
@@ -28,6 +29,20 @@ const Orders = () => {
     }
   };
 
+  const fetchCartItems = async (userId) => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/customer/cartI/${userId}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch cart items');
+      }
+      const data = await response.json();
+      setCartItems(data.cartItems);
+      setShowCartModal(true);
+    } catch (error) {
+      console.error('Error fetching cart items:', error.message);
+    }
+  };
+
   const handleChangeStatus = async () => {
     try {
       const response = await axios.get(`http://localhost:8080/api/admin/order/${selectedOrder.id}/${newStatus}`);
@@ -41,7 +56,7 @@ const Orders = () => {
           return order;
         });
         setOrders(updatedOrders);
-        setShowModal(false);
+        setShowStatusModal(false);
       } else {
         console.error('Échec de la mise à jour du statut de la commande');
       }
@@ -50,10 +65,14 @@ const Orders = () => {
     }
   };
 
-  const handleShowModal = (order) => {
+  const handleShowStatusModal = (order) => {
     setSelectedOrder(order);
     setNewStatus('');
-    setShowModal(true);
+    setShowStatusModal(true);
+  };
+
+  const handleShowCartModal = (order) => {
+    fetchCartItems(order.user_id);
   };
 
   if (loading) return <div>Loading...</div>;
@@ -61,7 +80,7 @@ const Orders = () => {
   return (
     <div className="container">
       <h1 className="my-4">Orders</h1>
-      <table className="table">
+      <Table className="table">
         <thead>
           <tr>
             <th>ID</th>
@@ -85,14 +104,15 @@ const Orders = () => {
               <td>{order.address}</td>
               <td>{order.orderDescription}</td>
               <td>
-                <Button onClick={() => handleShowModal(order)}>Change Status</Button>
+                <Button variant="info" onClick={() => handleShowCartModal(order)}>View Cart</Button>{' '}
+                <Button onClick={() => handleShowStatusModal(order)}>Change Status</Button>
               </td>
             </tr>
           ))}
         </tbody>
-      </table>
+      </Table>
 
-      <Modal show={showModal} onHide={() => setShowModal(false)}>
+      <Modal show={showStatusModal} onHide={() => setShowStatusModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Change Order Status</Modal.Title>
         </Modal.Header>
@@ -113,11 +133,48 @@ const Orders = () => {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowModal(false)}>
+          <Button variant="secondary" onClick={() => setShowStatusModal(false)}>
             Close
           </Button>
           <Button variant="primary" onClick={handleChangeStatus}>
             Change
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={showCartModal} onHide={() => setShowCartModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Cart Items</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {cartItems.length > 0 ? (
+            <Table striped bordered hover>
+              <thead>
+                <tr>
+                  <th>Image</th>
+                  <th>Product Name</th>
+                  <th>Quantity</th>
+                  <th>Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                {cartItems.map(item => (
+                  <tr key={item.id}>
+                    <td><img src={`data:image/jpeg;base64,${item.returnedImg}`} alt={item.productNane} style={{ width: '50px' }} /></td>
+                    <td>{item.productNane}</td>
+                    <td>{item.quantity}</td>
+                    <td>{item.price}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          ) : (
+            <p>No items in the cart</p>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowCartModal(false)}>
+            Close
           </Button>
         </Modal.Footer>
       </Modal>

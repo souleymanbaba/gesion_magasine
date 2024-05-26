@@ -17,4 +17,6 @@ public class ProductDto {
     private  String categoryName;
      private MultipartFile img;
      private Long quantity;
+    private String marque;
+    private Long Taille;
 }
