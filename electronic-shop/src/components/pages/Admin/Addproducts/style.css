@@ -1,35 +1,9 @@
-/* AddProduct.css */
+.content {
+  padding: 20px;
+  width: calc(100% - 220px); /* Assurez-vous que la largeur est ajustée selon la largeur de la barre latérale */
+  margin-left: 220px; /* La même largeur que votre barre latérale pour aligner correctement */
+}
 
-body {
-    background-color: #f8f9fa;
-  }
-  
-  .card-title {
-    color: #6f42c1;
-  }
-  
-  .card {
-    border: none;
-    border-radius: 0.5rem;
-  }
-  
-  .form-control {
-    border-radius: 0.25rem;
-  }
-  
-  .btn-primary {
-    background-color: #6f42c1;
-    border: none;
-    border-radius: 0.25rem;
-  }
-  
-  .btn-primary:hover {
-    background-color: #5a33a3;
-  }
-  
-  .image-preview img {
-    max-height: 200px;
-    border-radius: 0.5rem;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
-  
+.table-responsive-sm {
+  overflow-x: auto;
+}

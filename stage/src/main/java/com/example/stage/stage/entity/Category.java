@@ -2,6 +2,8 @@ package com.example.stage.stage.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 @Entity
 @Table(name = "category")
 @Data
@@ -13,6 +15,7 @@ public class Category {
     @Lob
     private String description;
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "parent_category_id")
     private Category parentCategory;
 

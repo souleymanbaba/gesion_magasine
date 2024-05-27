@@ -3,10 +3,11 @@ import { Navbar, Nav, Container, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import './Style.css';
 
 const AdminNavbar = () => {
   return (
-    <Navbar bg="dark" variant="dark" expand="lg">
+    <Navbar bg="info" variant="dark" expand="lg" className="position-fixed top-0 w-100 z-index-1">
       <Container>
         <Navbar.Brand>Admin Panel</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -16,7 +17,7 @@ const AdminNavbar = () => {
           </Nav>
           <Nav>
             {/* Add Button with link for Logout */}
-            <Button variant="outline-light" as={Link} to="/logout">
+            <Button className="custom-logout-btn" as={Link} to="/logout">
               <FontAwesomeIcon icon={faSignOutAlt} className="me-2" />
               Logout
             </Button>

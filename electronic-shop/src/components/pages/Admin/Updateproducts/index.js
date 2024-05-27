@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Form, Button, Alert } from 'react-bootstrap';
+import { Form, Button, Row, Col } from 'react-bootstrap';
 
 const UpdateProduct = () => {
   const { productId } = useParams();
@@ -9,15 +9,19 @@ const UpdateProduct = () => {
     name: '',
     description: '',
     price: '',
-    category_id: '',
+    categoryName: '',
+    marque: '',
+    taille: '',
+    image: null
   });
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [successMessage, setSuccessMessage] = useState('');
-  const [showMessage, setShowMessage] = useState(false); // état pour gérer l'affichage du message
 
-  // Fonction pour récupérer les informations du produit
-  const fetchProduct = async () => {
+  useEffect(() => {
+    if (productId) {
+      fetchProduct(productId);
+    }
+  }, [productId]);
+
+  const fetchProduct = async (productId) => {
     try {
       const response = await fetch(`http://localhost:8080/api/admin/product/${productId}`);
       if (!response.ok) {
@@ -25,93 +29,140 @@ const UpdateProduct = () => {
       }
       const data = await response.json();
       setProduct(data);
-      setLoading(false);
     } catch (error) {
-      setError(error.message);
-      setLoading(false);
+      console.error('Error fetching product:', error.message);
     }
   };
 
-  useEffect(() => {
-    fetchProduct();
-  }, [productId]);
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setProduct({
+      ...product,
+      [name]: value
+    });
+  };
 
-  // Fonction pour mettre à jour le produit
-  const handleUpdateProduct = async (e) => {
+  const handleImageChange = (e) => {
+    const imageFile = e.target.files[0];
+    setProduct({
+      ...product,
+      image: imageFile
+    });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!productId) {
+      console.error('Product ID is null');
+      return;
+    }
+    const formData = new FormData();
+    formData.append('name', product.name);
+    formData.append('description', product.description);
+    formData.append('price', product.price);
+    formData.append('categoryName', product.categoryName);
+    formData.append('marque', product.marque);
+    formData.append('taille', product.taille);
+    if (product.image) {
+      formData.append('image', product.image);
+    }
+
     try {
       const response = await fetch(`http://localhost:8080/api/admin/product/${productId}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(product),
+        body: formData
       });
       if (!response.ok) {
         throw new Error('Failed to update product');
       }
-      // Affichage d'un message de succès
-      setSuccessMessage('Product updated successfully');
-      setShowMessage(true); // afficher le message
+      navigate('/admin/products');
     } catch (error) {
-      // En cas d'erreur, affichage du message d'erreur
-      setError(error.message);
-      setShowMessage(true); // afficher le message
+      console.error('Error updating product:', error.message);
     }
   };
 
-  const handleCloseMessage = () => {
-    navigate('/admin/ProductsA'); // redirection vers la page des produits
-  };
-
-  if (loading) return <div>Loading...</div>;
-
   return (
-    <div className="container">
-      <h1 className="my-4">Update Product</h1>
-      <Alert variant={error ? 'danger' : 'success'} show={showMessage} onClose={() => setShowMessage(false)} dismissible>
-        {error ? error : successMessage}
-        <Button variant="primary" onClick={handleCloseMessage} className="ms-2">
-          Close
-        </Button>
-      </Alert>
-      <Form onSubmit={handleUpdateProduct}>
-        <Form.Group controlId="productName">
-          <Form.Label>Name</Form.Label>
-          <Form.Control
-            type="text"
-            value={product.name}
-            onChange={(e) => setProduct({ ...product, name: e.target.value })}
-          />
-        </Form.Group>
-        <Form.Group controlId="productDescription">
-          <Form.Label>Description</Form.Label>
-          <Form.Control
-            type="text"
-            value={product.description}
-            onChange={(e) => setProduct({ ...product, description: e.target.value })}
-          />
-        </Form.Group>
-        <Form.Group controlId="productPrice">
-          <Form.Label>Price</Form.Label>
-          <Form.Control
-            type="number"
-            value={product.price}
-            onChange={(e) => setProduct({ ...product, price: e.target.value })}
-          />
-        </Form.Group>
-        <Form.Group controlId="productCategoryId">
-          <Form.Label>Category ID</Form.Label>
-          <Form.Control
-            type="number"
-            value={product.category_id}
-            onChange={(e) => setProduct({ ...product, category_id: e.target.value })}
-          />
-        </Form.Group>
-        <Button variant="primary" type="submit" className="mt-3">
-          Update
-        </Button>
-      </Form>
+    <div className="update-product">
+      <h1 className="text-center">Update Product</h1>
+      <Row className="justify-content-md-center">
+        <Col md={6}>
+          <Form onSubmit={handleSubmit}>
+            <Form.Group controlId="formName">
+              <Form.Label>Name</Form.Label>
+              <Form.Control
+                type="text"
+                name="name"
+                value={product.name}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+            <Form.Group controlId="formDescription">
+              <Form.Label>Description</Form.Label>
+              <Form.Control
+                type="text"
+                name="description"
+                value={product.description}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+            <Form.Group controlId="formPrice">
+              <Form.Label>Price</Form.Label>
+              <Form.Control
+                type="number"
+                name="price"
+                value={product.price}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+            <Form.Group controlId="formCategory">
+              <Form.Label>Category</Form.Label>
+              <Form.Control
+                type="text"
+                name="categoryName"
+                value={product.categoryName}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+            <Form.Group controlId="formMarque">
+              <Form.Label>Marque</Form.Label>
+              <Form.Control
+                type="text"
+                name="marque"
+                value={product.marque}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+            <Form.Group controlId="formTaille">
+              <Form.Label>Taille</Form.Label>
+              <Form.Control
+                type="text"
+                name="taille"
+                value={product.taille}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+            <Form.Group controlId="formImage">
+              <Form.Label>Image</Form.Label>
+              <Form.Control
+                type="file"
+                name="image"
+                onChange={handleImageChange}
+              />
+            </Form.Group>
+            <div className="text-center">
+              <Button variant="primary" type="submit">
+                Update
+              </Button>
+            </div>
+          </Form>
+        </Col>
+      </Row>
     </div>
   );
 };

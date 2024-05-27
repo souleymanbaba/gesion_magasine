@@ -1,0 +1,37 @@
+.admin-products {
+    padding: 20px;
+    width: calc(100% - 220px);
+    margin-left: 220px;
+  }
+  
+  .admin-products__add-button {
+    margin-bottom: 20px;
+  }
+  
+  .admin-products__add-button .add-button__icon {
+    margin-right: 5px;
+  }
+  
+  .admin-products__table {
+    overflow-x: auto;
+  }
+  
+  .admin-products__table-header {
+    background-color: #343a40;
+    color: white;
+  }
+  
+  .admin-products__table-row {
+    background-color: #f8f9fa;
+  }
+  
+  .admin-products__table-actions {
+    display: flex;
+  }
+  
+  .admin-products__modal-image {
+    max-width: 100%;
+    max-height: 300px;
+    object-fit: cover;
+  }
+  

@@ -1,44 +1,44 @@
-import React, { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { saveToken, saveUser } from './userStorageService';
-import './style.css';
+import React, { useState } from "react";
+import { useLocation, useNavigate, Link } from "react-router-dom";
+import { saveToken, saveUser } from "./userStorageService";
+import "./style.css";
 
 const Login = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
-  const message = location.state?.message || '';
+  const message = location.state?.message || "";
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:8080/authenticate', {
-        method: 'POST',
+      const response = await fetch("http://localhost:8080/authenticate", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username, password })
+        body: JSON.stringify({ username, password }),
       });
 
       if (response.ok) {
-        const token = response.headers.get('authorization')?.substring(7);
+        const token = response.headers.get("authorization")?.substring(7);
         const user = await response.json();
         if (token && user) {
           saveToken(token);
           saveUser(user);
-          if (user.role === 'ADMIN') {
+          if (user.role === "ADMIN") {
             navigate("/admin");
           } else {
             navigate("/");
           }
         }
       } else {
-        throw new Error('Authentication failed');
+        throw new Error("Authentication failed");
       }
     } catch (error) {
-      console.error('Error:', error.message);
+      console.error("Error:", error.message);
     }
   };
 
@@ -67,7 +67,13 @@ const Login = () => {
             className="form-control"
           />
         </div>
-        <button type="submit" className="btn btn-primary">Login</button>
+        <button type="submit" className="btn btn-primary">
+          Login
+        </button>
+        <div className="mt-3">
+          <span>Don't have an account? </span>
+          <Link to="/SignUp" className="btn btn-link">Register here</Link>
+        </div>
       </form>
     </div>
   );

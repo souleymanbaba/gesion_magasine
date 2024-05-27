@@ -11,6 +11,8 @@ const AddProduct = () => {
   const [previewImage, setPreviewImage] = useState(null);
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [marque, setMarque] = useState(''); // Nouvelle ligne pour marque
+  const [taille, setTaille] = useState(''); // Nouvelle ligne pour taille
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [showErrorToast, setShowErrorToast] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -19,6 +21,8 @@ const AddProduct = () => {
   const handleProductPriceChange = (e) => setProductPrice(e.target.value);
   const handleProductDescriptionChange = (e) => setProductDescription(e.target.value);
   const handleCategoryChange = (e) => setSelectedCategory(e.target.value);
+  const handleMarqueChange = (e) => setMarque(e.target.value); // Nouvelle ligne pour handleMarqueChange
+  const handleTailleChange = (e) => setTaille(e.target.value); // Nouvelle ligne pour handleTailleChange
 
   const handleProductImageChange = (e) => {
     const image = e.target.files[0];
@@ -34,6 +38,8 @@ const AddProduct = () => {
     formData.append('price', productPrice);
     formData.append('description', productDescription);
     formData.append('categoryId', selectedCategory);
+    formData.append('marque', marque); // Nouvelle ligne pour ajouter marque à formData
+    formData.append('taille', taille); // Nouvelle ligne pour ajouter taille à formData
     if (productImage) {
       formData.append('img', productImage);
     }
@@ -48,6 +54,9 @@ const AddProduct = () => {
         setProductDescription('');
         setProductImage(null);
         setPreviewImage(null);
+        setSelectedCategory('');
+        setMarque(''); // Réinitialisation du champ marque
+        setTaille(''); // Réinitialisation du champ taille
         setErrorMessage('');
       } else {
         throw new Error('Failed to add product');
@@ -100,6 +109,14 @@ const AddProduct = () => {
                       <option key={category.id} value={category.id}>{category.name}</option>
                     ))}
                   </Form.Select>
+                </Form.Group>
+                <Form.Group className="mb-3">
+                  <Form.Label>Marque:</Form.Label>
+                  <Form.Control type="text" value={marque} onChange={handleMarqueChange} required />
+                </Form.Group>
+                <Form.Group className="mb-3">
+                  <Form.Label>Taille:</Form.Label>
+                  <Form.Control type="number" value={taille} onChange={handleTailleChange} required />
                 </Form.Group>
                 <Form.Group className="mb-3">
                   <Form.Label>Product Image:</Form.Label>
