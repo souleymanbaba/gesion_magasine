@@ -1,0 +1,71 @@
+/* Styles pour la gestion des commandes */
+
+.container-fluid {
+  padding: 20px;
+  width: 100%;
+}
+
+.row {
+  margin-right: 0;
+}
+
+.col-md-9 {
+  padding: 20px;
+  margin-left: 220px; /* Garder l'espace pour la barre latérale */
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+/* Styles pour la barre latérale */
+
+.sidebar-container {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 220px;
+  background-color: #343a40;
+  transition: transform 0.3s ease;
+  transform: translateX(0);
+}
+
+.sidebar-container--collapsed {
+  transform: translateX(-100%);
+}
+
+.sidebar-title {
+  color: white;
+  margin-bottom: 20px;
+}
+
+.toggle-sidebar {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 1000;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .admin-products {
+    margin-left: 220px; /* Pour garder l'espace pour la barre latérale */
+  }
+
+  .sidebar-container {
+    width: 100%; /* Occupera toute la largeur de l'écran */
+    max-width: 220px; /* Limite la largeur maximale à la taille de la barre latérale */
+    left: unset; /* Supprime la position fixe */
+    transform: translateX(0); /* Réinitialise la transformation */
+  }
+
+  .sidebar-container--collapsed {
+    transform: translateX(-100%);
+  }
+}

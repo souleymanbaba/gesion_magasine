@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Alert, Container, Row, Col, Form, Button, Card, Toast, ToastContainer } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button, Card, Toast, ToastContainer } from 'react-bootstrap';
 import './style.css';
 
 const AddProduct = () => {
@@ -9,10 +9,10 @@ const AddProduct = () => {
   const [productDescription, setProductDescription] = useState('');
   const [productImage, setProductImage] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
+  const [productSize, setProductSize] = useState('');
+  const [productBrand, setProductBrand] = useState('');
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
-  const [marque, setMarque] = useState(''); // Nouvelle ligne pour marque
-  const [taille, setTaille] = useState(''); // Nouvelle ligne pour taille
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [showErrorToast, setShowErrorToast] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -21,8 +21,8 @@ const AddProduct = () => {
   const handleProductPriceChange = (e) => setProductPrice(e.target.value);
   const handleProductDescriptionChange = (e) => setProductDescription(e.target.value);
   const handleCategoryChange = (e) => setSelectedCategory(e.target.value);
-  const handleMarqueChange = (e) => setMarque(e.target.value); // Nouvelle ligne pour handleMarqueChange
-  const handleTailleChange = (e) => setTaille(e.target.value); // Nouvelle ligne pour handleTailleChange
+  const handleProductSizeChange = (e) => setProductSize(e.target.value);
+  const handleProductBrandChange = (e) => setProductBrand(e.target.value);
 
   const handleProductImageChange = (e) => {
     const image = e.target.files[0];
@@ -38,8 +38,8 @@ const AddProduct = () => {
     formData.append('price', productPrice);
     formData.append('description', productDescription);
     formData.append('categoryId', selectedCategory);
-    formData.append('marque', marque); // Nouvelle ligne pour ajouter marque à formData
-    formData.append('taille', taille); // Nouvelle ligne pour ajouter taille à formData
+    formData.append('taille', productSize);
+    formData.append('marque', productBrand);
     if (productImage) {
       formData.append('img', productImage);
     }
@@ -49,14 +49,15 @@ const AddProduct = () => {
 
       if (response.status >= 200 && response.status < 300) {
         setShowSuccessToast(true);
+        // Réinitialiser les états après la soumission réussie
         setProductName('');
         setProductPrice('');
         setProductDescription('');
         setProductImage(null);
         setPreviewImage(null);
+        setProductSize('');
+        setProductBrand('');
         setSelectedCategory('');
-        setMarque(''); // Réinitialisation du champ marque
-        setTaille(''); // Réinitialisation du champ taille
         setErrorMessage('');
       } else {
         throw new Error('Failed to add product');
@@ -103,7 +104,7 @@ const AddProduct = () => {
                 </Form.Group>
                 <Form.Group className="mb-3">
                   <Form.Label>Category:</Form.Label>
-                  <Form.Select value={selectedCategory} onChange={handleCategoryChange}>
+                  <Form.Select value={selectedCategory} onChange={handleCategoryChange} required>
                     <option value="">Select Category</option>
                     {categories.map((category) => (
                       <option key={category.id} value={category.id}>{category.name}</option>
@@ -111,12 +112,12 @@ const AddProduct = () => {
                   </Form.Select>
                 </Form.Group>
                 <Form.Group className="mb-3">
-                  <Form.Label>Marque:</Form.Label>
-                  <Form.Control type="text" value={marque} onChange={handleMarqueChange} required />
+                  <Form.Label>Size:</Form.Label>
+                  <Form.Control type="text" value={productSize} onChange={handleProductSizeChange} required />
                 </Form.Group>
                 <Form.Group className="mb-3">
-                  <Form.Label>Taille:</Form.Label>
-                  <Form.Control type="number" value={taille} onChange={handleTailleChange} required />
+                  <Form.Label>Brand:</Form.Label>
+                  <Form.Control type="text" value={productBrand} onChange={handleProductBrandChange} required />
                 </Form.Group>
                 <Form.Group className="mb-3">
                   <Form.Label>Product Image:</Form.Label>

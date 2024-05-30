@@ -1,37 +1,121 @@
+/* Styles pour la gestion des commandes */
+
+.container-fluid {
+  padding: 20px;
+  width: 100%;
+}
+
+.row {
+  margin-right: 0;
+}
+
+.col-md-9 {
+  padding: 20px;
+  margin-left: 220px; /* Garder l'espace pour la barre latérale */
+}
+
+.table-responsive {
+  overflow-x: auto;
+  width: 100%; /* Pour que le tableau occupe toute la largeur de son conteneur */
+  max-width: 1000px; /* Limite la largeur maximale du tableau */
+  margin: 0 auto; /* Centre le tableau horizontalement */
+}
+
+/* Styles pour la barre latérale */
+
+.sidebar-container {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 220px;
+  background-color: #343a40;
+  transition: transform 0.3s ease;
+  transform: translateX(0);
+}
+
+.sidebar-container--collapsed {
+  transform: translateX(-100%);
+}
+
+.sidebar-title {
+  color: white;
+  margin-bottom: 20px;
+}
+
+.toggle-sidebar {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 1000;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+}
+
+/* Styles pour les produits d'administration */
+
 .admin-products {
-    padding: 20px;
-    width: calc(100% - 220px);
+  padding: 20px;
+  width: 100%; /* Définissez la largeur sur 100% pour qu'elle occupe toute la largeur de la page */
+  margin-left: 0; /* Supprimez la marge à gauche pour que le tableau soit aligné à droite */
+}
+
+@media (min-width: 768px) {
+  .admin-products {
+    width: calc(100% - 220px); /* Restaurez la largeur originale avec une marge à gauche pour le sidebar */
     margin-left: 220px;
   }
-  
-  .admin-products__add-button {
-    margin-bottom: 20px;
+}
+
+.admin-products__add-button {
+  margin-bottom: 20px;
+}
+
+.admin-products__add-button .add-button__icon {
+  margin-right: 5px;
+}
+
+.admin-products__table {
+  overflow-x: auto;
+}
+
+.admin-products__table-header {
+  background-color: #343a40;
+  color: white;
+}
+
+.admin-products__table-row {
+  background-color: #f8f9fa;
+}
+
+.admin-products__table-actions {
+  display: flex;
+}
+
+.admin-products__modal-image {
+  max-width: 100%;
+  max-height: 300px;
+  object-fit: cover;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .col-md-9 {
+    margin-left: 0; /* Pour que le tableau prenne toute la largeur de l'écran */
+    padding: 15px;
   }
-  
-  .admin-products__add-button .add-button__icon {
-    margin-right: 5px;
+
+  .sidebar-container {
+    width: 100%; /* Occupera toute la largeur de l'écran */
+    max-width: 220px; /* Limite la largeur maximale à la taille de la barre latérale */
+    left: unset; /* Supprime la position fixe */
+    transform: translateX(0); /* Réinitialise la transformation */
   }
-  
-  .admin-products__table {
-    overflow-x: auto;
+
+  .sidebar-container--collapsed {
+    transform: translateX(-100%);
   }
-  
-  .admin-products__table-header {
-    background-color: #343a40;
-    color: white;
-  }
-  
-  .admin-products__table-row {
-    background-color: #f8f9fa;
-  }
-  
-  .admin-products__table-actions {
-    display: flex;
-  }
-  
-  .admin-products__modal-image {
-    max-width: 100%;
-    max-height: 300px;
-    object-fit: cover;
-  }
-  
+}

@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import ProductCard from './ProductCard'; // Adjust the path according to your file structure
-import 'bootstrap/dist/css/bootstrap.min.css';
-import '../../style.css';
+// import 'bootstrap/dist/css/bootstrap.min.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFilter, faRulerCombined, faTag, faList } from '@fortawesome/free-solid-svg-icons';
+// import '../../style.css';
 
 function Products() {
   const [products, setProducts] = useState([]);
@@ -15,16 +17,14 @@ function Products() {
   const [selectedBrand, setSelectedBrand] = useState('');
 
   useEffect(() => {
-    // Fetch initial list of products
     fetchProducts();
-    // Fetch initial categories
     fetchCategories();
   }, []);
 
   useEffect(() => {
-    // Update size and brand lists whenever products change
-    if(!selectedSize && !selectedBrand)
-     updateSizeAndBrandLists(products);
+    if (!selectedSize && !selectedBrand) {
+      updateSizeAndBrandLists(products);
+    }
   }, [products]);
 
   const fetchProducts = (categoryId, size, brand) => {
@@ -53,7 +53,7 @@ function Products() {
   };
 
   const fetchCategories = (categoryId) => {
-    const url = categoryId 
+    const url = categoryId
       ? `http://localhost:8080/api/admin/${categoryId}/subcategories`
       : 'http://localhost:8080/api/admin';
 
@@ -86,7 +86,10 @@ function Products() {
 
   const handleSizeSelect = (event) => {
     const size = event.target.value;
-    if(!size) {setFilteredProducts(products); return}
+    if (!size) {
+      setFilteredProducts(products);
+      return;
+    }
     setSelectedSize(size);
     const filtered = products.filter(product => product.taille === +size);
     setFilteredProducts(filtered);
@@ -94,44 +97,58 @@ function Products() {
 
   const handleBrandSelect = (event) => {
     const brand = event.target.value;
-    if(!brand) {setFilteredProducts(products); return}
-
+    if (!brand) {
+      setFilteredProducts(products);
+      return;
+    }
     setSelectedBrand(brand);
-    const filered = products.filter(product => product.marque === brand)
-    setFilteredProducts(filered);
-
-  
+    const filtered = products.filter(product => product.marque === brand);
+    setFilteredProducts(filtered);
   };
 
   return (
-    <div className="container" id="product-cards">
+    <div className="container my-4">
       <div className="row">
         <div className="col-md-3">
-          <h2>Filters</h2>
-          <select className="form-select mb-3" value={selectedSize} onChange={handleSizeSelect}>
-            <option value="">Select Size</option>
-            {sizes.map(size => (
-              <option key={size} value={size}>{size}</option>
-            ))}
-          </select>
-          <select className="form-select mb-3" value={selectedBrand} onChange={handleBrandSelect}>
-            <option value="">Select Brand</option>
-            {brands.map(brand => (
-              <option key={brand} value={brand}>{brand}</option>
-            ))}
-          </select>
-          <select className="form-select scrolling-list" value={selectedCategory} onChange={handleCategorySelect}>
-            <option value="">Select Category</option>
-            {categories.map(category => (
-              <option key={category.id} value={category.id}>{category.name}</option>
-            ))}
-          </select>
+          <div className="filter-section p-3 bg-light rounded shadow-sm">
+            <h4><FontAwesomeIcon icon={faFilter} /> Filtres</h4>
+            <div className="mb-3">
+              <label className="form-label"><FontAwesomeIcon icon={faList} /> Catégorie</label>
+              <select className="form-select scrolling-list" value={selectedCategory} onChange={handleCategorySelect}>
+                <option value="">Sélectionner une catégorie</option>
+                {categories.map(category => (
+                  <option key={category.id} value={category.id}>{category.name}</option>
+                ))}
+              </select>
+            </div>
+            <div className="mb-3">
+              <label className="form-label"><FontAwesomeIcon icon={faTag} /> Marque</label>
+              <select className="form-select" value={selectedBrand} onChange={handleBrandSelect}>
+                <option value="">Sélectionner la marque</option>
+                {brands.map(brand => (
+                  <option key={brand} value={brand}>{brand}</option>
+                ))}
+              </select>
+            </div>
+            <div className="mb-3">
+              <label className="form-label"><FontAwesomeIcon icon={faRulerCombined} /> Taille</label>
+              <select className="form-select" value={selectedSize} onChange={handleSizeSelect}>
+                <option value="">Sélectionner la taille</option>
+                {sizes.map(size => (
+                  <option key={size} value={size}>{size}</option>
+                ))}
+              </select>
+            </div>
+          </div>
         </div>
         <div className="col-md-9">
-          <h1 className="text-center">PRODUCTS</h1>
-          <div className="row" style={{ marginTop: '30px' }}>
+          <div className="text-center">
+            <h1 className="products-title">PRODUITS</h1>
+            <div className="underline"></div>
+          </div>
+          <div className="row mt-4">
             {filteredProducts.map(product => (
-              <div className="col-md-3 py-3 py-md-0" key={product.id}>
+              <div className="col-md-4 col-sm-6 mb-4" key={product.id}>
                 <ProductCard deal={product} updateCart={() => updateCart(product)} />
               </div>
             ))}

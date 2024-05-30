@@ -1,170 +1,188 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Form, Button, Row, Col } from 'react-bootstrap';
+import { Button, Alert } from 'react-bootstrap';
+import axios from 'axios';
+import './Style.css';
 
-const UpdateProduct = () => {
+function ProductUpdateForm() {
   const { productId } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState({
     name: '',
-    description: '',
     price: '',
+    description: '',
+    categoryId: '',
     categoryName: '',
-    marque: '',
     taille: '',
-    image: null
+    marque: '',
   });
+  const [image, setImage] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [showMessage, setShowMessage] = useState(false);
 
   useEffect(() => {
-    if (productId) {
-      fetchProduct(productId);
-    }
+    const fetchProduct = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/api/admin/product/${productId}`);
+        if (response.status !== 200) {
+          throw new Error('Failed to fetch product');
+        }
+        setProduct(response.data);
+        setLoading(false);
+      } catch (error) {
+        setError(error.message);
+        setLoading(false);
+      }
+    };
+    fetchProduct();
   }, [productId]);
 
-  const fetchProduct = async (productId) => {
-    try {
-      const response = await fetch(`http://localhost:8080/api/admin/product/${productId}`);
-      if (!response.ok) {
-        throw new Error('Failed to fetch product');
-      }
-      const data = await response.json();
-      setProduct(data);
-    } catch (error) {
-      console.error('Error fetching product:', error.message);
-    }
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setProduct({
-      ...product,
-      [name]: value
-    });
-  };
-
   const handleImageChange = (e) => {
-    const imageFile = e.target.files[0];
-    setProduct({
-      ...product,
-      image: imageFile
-    });
+    setImage(e.target.files[0]);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!productId) {
-      console.error('Product ID is null');
-      return;
-    }
-    const formData = new FormData();
-    formData.append('name', product.name);
-    formData.append('description', product.description);
-    formData.append('price', product.price);
-    formData.append('categoryName', product.categoryName);
-    formData.append('marque', product.marque);
-    formData.append('taille', product.taille);
-    if (product.image) {
-      formData.append('image', product.image);
-    }
-
     try {
-      const response = await fetch(`http://localhost:8080/api/admin/product/${productId}`, {
-        method: 'PUT',
-        body: formData
-      });
-      if (!response.ok) {
-        throw new Error('Failed to update product');
+      const formData = new FormData();
+      formData.append('name', product.name);
+      formData.append('price', product.price);
+      formData.append('description', product.description);
+      formData.append('categoryId', product.categoryId);
+      formData.append('categoryName', product.categoryName);
+      formData.append('taille', product.taille);
+      formData.append('marque', product.marque);
+      if (image) {
+        formData.append('img', image);
       }
-      navigate('/admin/products');
+
+      const response = await axios.put(`http://localhost:8080/api/admin/product/${productId}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      console.log('Updated product:', response.data);
+      setSuccessMessage('Product updated successfully');
+      setShowMessage(true);
     } catch (error) {
-      console.error('Error updating product:', error.message);
+      setError(error.message);
+      setShowMessage(true);
     }
   };
 
+  const handleCloseMessage = () => {
+    navigate('/admin/ProductsA'); // redirection vers la page des produits
+  };
+
+  if (loading) return <div>Loading...</div>;
+
   return (
-    <div className="update-product">
-      <h1 className="text-center">Update Product</h1>
-      <Row className="justify-content-md-center">
-        <Col md={6}>
-          <Form onSubmit={handleSubmit}>
-            <Form.Group controlId="formName">
-              <Form.Label>Name</Form.Label>
-              <Form.Control
+    <div className="container my-5">
+      <div className="row justify-content-center">
+        <div className="col-12 col-md-10 col-lg-8">
+          <h1 className="mb-4">Mettre à jour le produit</h1>
+          <Alert
+            variant={error ? 'danger' : 'success'}
+            show={showMessage}
+            onClose={handleCloseMessage}
+            dismissible
+          >
+            {error ? error : successMessage}
+            <Button variant="primary" onClick={handleCloseMessage} className="ms-2">
+              Fermer
+            </Button>
+          </Alert>
+          <form onSubmit={handleSubmit}>
+            <div className="mb-3">
+              <label className="form-label">Nom</label>
+              <input
                 type="text"
-                name="name"
+                className="form-control"
+                placeholder="Nom"
                 value={product.name}
-                onChange={handleChange}
+                onChange={(e) => setProduct({ ...product, name: e.target.value })}
                 required
               />
-            </Form.Group>
-            <Form.Group controlId="formDescription">
-              <Form.Label>Description</Form.Label>
-              <Form.Control
-                type="text"
-                name="description"
-                value={product.description}
-                onChange={handleChange}
-                required
-              />
-            </Form.Group>
-            <Form.Group controlId="formPrice">
-              <Form.Label>Price</Form.Label>
-              <Form.Control
-                type="number"
-                name="price"
-                value={product.price}
-                onChange={handleChange}
-                required
-              />
-            </Form.Group>
-            <Form.Group controlId="formCategory">
-              <Form.Label>Category</Form.Label>
-              <Form.Control
-                type="text"
-                name="categoryName"
-                value={product.categoryName}
-                onChange={handleChange}
-                required
-              />
-            </Form.Group>
-            <Form.Group controlId="formMarque">
-              <Form.Label>Marque</Form.Label>
-              <Form.Control
-                type="text"
-                name="marque"
-                value={product.marque}
-                onChange={handleChange}
-                required
-              />
-            </Form.Group>
-            <Form.Group controlId="formTaille">
-              <Form.Label>Taille</Form.Label>
-              <Form.Control
-                type="text"
-                name="taille"
-                value={product.taille}
-                onChange={handleChange}
-                required
-              />
-            </Form.Group>
-            <Form.Group controlId="formImage">
-              <Form.Label>Image</Form.Label>
-              <Form.Control
-                type="file"
-                name="image"
-                onChange={handleImageChange}
-              />
-            </Form.Group>
-            <div className="text-center">
-              <Button variant="primary" type="submit">
-                Update
-              </Button>
             </div>
-          </Form>
-        </Col>
-      </Row>
+            <div className="mb-3">
+              <label className="form-label">Prix</label>
+              <input
+                type="number"
+                className="form-control"
+                placeholder="Prix"
+                value={product.price}
+                onChange={(e) => setProduct({ ...product, price: e.target.value })}
+                required
+              />
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Description</label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Description"
+                value={product.description}
+                onChange={(e) => setProduct({ ...product, description: e.target.value })}
+                required
+              />
+            </div>
+            <div className="mb-3">
+              <label className="form-label">ID de catégorie</label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="ID de catégorie"
+                value={product.categoryId}
+                onChange={(e) => setProduct({ ...product, categoryId: e.target.value })}
+                required
+              />
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Nom de la catégorie</label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Nom de la catégorie"
+                value={product.categoryName}
+                onChange={(e) => setProduct({ ...product, categoryName: e.target.value })}
+                required
+              />
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Taille</label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Taille"
+                value={product.taille}
+                onChange={(e) => setProduct({ ...product, taille: e.target.value })}
+                required
+              />
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Marque</label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Marque"
+                value={product.marque}
+                onChange={(e) => setProduct({ ...product, marque: e.target.value })}
+                required
+              />
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Image</label>
+              <input type="file" className="form-control" onChange={handleImageChange} />
+            </div>
+            <Button variant="primary" type="submit">Mettre à jour le produit</Button>
+          </form>
+        </div>
+      </div>
     </div>
   );
-};
+}
 
-export default UpdateProduct;
+export default ProductUpdateForm;

@@ -30,8 +30,10 @@ const Login = () => {
           saveUser(user);
           if (user.role === "ADMIN") {
             navigate("/admin");
+            window.location.reload();
           } else {
-            navigate("/");
+            navigate("/products");
+            window.location.reload();
           }
         }
       } else {

@@ -13,8 +13,8 @@ import Addproduct from './components/pages/Admin/Addproducts' ;
 import Orders from './components/pages/Admin/Orders';
 import Categorie from './components/pages/Admin/Categorie';
 import ProductList from './Cart';
-
 import Orderss from "./test";
+import Logout from './components/pages/Account/logOut';
 
 
 function App() {
@@ -28,6 +28,7 @@ function App() {
           <Route path="products" element={<Products />} />
           <Route path="cart" element={<ProductList />} /> 
       <Route path="/test" element={<Orderss />}></Route> 
+      <Route path="Logout" element={<Logout />}></Route> 
         </Route>
         
         {/* Routes for the admin layout */}
