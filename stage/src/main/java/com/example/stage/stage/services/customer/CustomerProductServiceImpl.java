@@ -23,30 +23,29 @@ public class CustomerProductServiceImpl implements CustomerProductService {
     private  final ReviewRepository reviewRepository;
 
 
-    public List<ProductDto> getAllProducts(){
-        List<Product> products =productRepository.findAll();
-        return products.stream().map(Product::getDto).collect(Collectors.toList());
+    public List<ProductDto> getAllProducts(String lang) {
+        List<Product> products = productRepository.findAll();
+        return products.stream().map(product -> product.getDto(lang)).collect(Collectors.toList());
     }
 
-    public List<ProductDto> getAllProductByName(String name){
-
+    public List<ProductDto> getAllProductByName(String name, String lang) {
         List<Product> products = productRepository.findAllByNameContaining(name);
-        return products.stream().map(Product::getDto).collect(Collectors.toList());
-
+        return products.stream().map(product -> product.getDto(lang)).collect(Collectors.toList());
     }
 
-    public ProductDetailDto getProductDetailById(Long productId) {
-        Optional<Product> optionalProduct= productRepository.findById(productId);
-        if (optionalProduct.isPresent()){
-            List<FAQ> faqList =faqRepository.findAllByProductId(productId);
+    public ProductDetailDto getProductDetailById(Long productId, String lang) {
+        Optional<Product> optionalProduct = productRepository.findById(productId);
+        if (optionalProduct.isPresent()) {
+            List<FAQ> faqList = faqRepository.findAllByProductId(productId);
             List<Review> reviewsList = reviewRepository.findAllByProductId(productId);
-            ProductDetailDto productDetailDto= new ProductDetailDto();
-            productDetailDto.setProductDto (optionalProduct.get().getDto());
+            ProductDetailDto productDetailDto = new ProductDetailDto();
+            productDetailDto.setProductDto(optionalProduct.get().getDto(lang));
             productDetailDto.setFaqDtoList(faqList.stream().map(FAQ::getFAQDto).collect(Collectors.toList()));
             productDetailDto.setRevieWtoList(reviewsList.stream().map(Review::getDto).collect(Collectors.toList()));
             return productDetailDto;
         }
         return null;
     }
+
 
 }

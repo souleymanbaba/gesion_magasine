@@ -1,9 +1,10 @@
 package com.example.stage.stage.entity;
 
+import com.example.stage.stage.dto.CategoryDto;
 import jakarta.persistence.*;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+
 @Entity
 @Table(name = "category")
 @Data
@@ -12,14 +13,12 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    @Lob
-    private String description;
+    private String nom_ar;  // Ajout du champ nom_ar
+
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "parent_category_id")
     private Category parentCategory;
-
-
 
     public Long getId() {
         return id;
@@ -37,12 +36,17 @@ public class Category {
         this.name = name;
     }
 
-    public String getDescription() {
-        return description;
+    public String getNomAr() {
+        return nom_ar;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setNomAr(String nom_ar) {
+        this.nom_ar = nom_ar;
     }
-
+    public CategoryDto getCategoryDto() {
+        CategoryDto categoryDto = new CategoryDto();
+        categoryDto.setId(id);
+        categoryDto.setNom_ar(nom_ar);
+        return categoryDto;
+    }
 }

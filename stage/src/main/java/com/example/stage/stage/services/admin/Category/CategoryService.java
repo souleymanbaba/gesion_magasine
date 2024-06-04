@@ -7,7 +7,8 @@ import java.util.List;
 
 public interface CategoryService {
      Category createcategory(CategoryDto categoryDto) ;
-    List<Category> getAllCategories();
-    List<CategoryDto> getCategoryAndSubcategories(Long categoryId);
-    List<CategoryDto> convertToDtoList(List<Category> categories);
+    List<CategoryDto> getAllCategories(String lang);
+    List<CategoryDto> getCategoryAndSubcategories(Long categoryId, String lang);
+    List<CategoryDto> convertToCategoryDtoList(List<Category> categories, String lang);
+    Category updateCategoryTranslation(Long categoryId, CategoryDto categoryDto);
 }

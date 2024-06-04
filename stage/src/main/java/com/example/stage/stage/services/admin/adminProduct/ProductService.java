@@ -8,11 +8,13 @@ import java.util.List;
 
 public interface ProductService {
     ProductDto addProduct (ProductDto productDto) throws IOException;
-    List<ProductDto> getAllProducts();
-    List<ProductDto> getAllProductByName(String name);
+
+    ProductDto updateProductTranslation(Long productId, ProductDto productDto);
+    List<ProductDto> getAllProductByName(String name, String lang);
     boolean deleteProduct(Long id);
-    ProductDto getProductById(Long productId);
+    ProductDto getProductById(Long productId, String lang);
     ProductDto updateProduct(Long productId, ProductDto productDto) throws IOException;
-    List<ProductDto> getProductsByCategoryAndSubcategories(Long categoryId);
-    List<ProductDto> convertToDtoList(List<Product> products);
+    List<ProductDto> getProductsByCategoryAndSubcategories(Long categoryId, String lang);
+    List<ProductDto> convertToDtoList(List<Product> products, String lang);
+    List<ProductDto> getAllProducts(String lang);
 }
