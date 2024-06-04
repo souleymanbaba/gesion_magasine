@@ -30,3 +30,8 @@ export const signOut = () => {
   window.localStorage.removeItem(TOKEN);
   window.localStorage.removeItem(USER);
 };
+
+export const isLoggedIn = () => {
+  const token = getToken();
+  return token ? true : false;
+};

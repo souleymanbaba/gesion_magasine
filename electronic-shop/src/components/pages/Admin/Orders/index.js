@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Modal, Button, Form, Table } from 'react-bootstrap';
+import { Modal, Button, Form, Table, Container, Row, Col, Spinner } from 'react-bootstrap';
+import 'bootstrap-icons/font/bootstrap-icons.css';
+import './Style.css'
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
@@ -26,6 +28,7 @@ const Orders = () => {
       setLoading(false);
     } catch (error) {
       console.error('Error fetching orders:', error.message);
+      setLoading(false);
     }
   };
 
@@ -48,7 +51,7 @@ const Orders = () => {
       const response = await axios.get(`http://localhost:8080/api/admin/order/${selectedOrder.id}/${newStatus}`);
       
       if (response.status === 200) {
-        console.log('Statut de la commande mis à jour avec succès !');
+        console.log('Order status updated successfully!');
         const updatedOrders = orders.map(order => {
           if (order.id === selectedOrder.id) {
             return { ...order, orderStatus: newStatus };
@@ -58,10 +61,10 @@ const Orders = () => {
         setOrders(updatedOrders);
         setShowStatusModal(false);
       } else {
-        console.error('Échec de la mise à jour du statut de la commande');
+        console.error('Failed to update order status');
       }
     } catch (error) {
-      console.error('Une erreur s\'est produite :', error);
+      console.error('Error:', error);
     }
   };
 
@@ -75,42 +78,64 @@ const Orders = () => {
     fetchCartItems(order.user_id);
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return (
+    <Container className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
+      <Spinner animation="border" />
+    </Container>
+  );
 
   return (
-    <div className="container">
-      <h1 className="my-4">Orders</h1>
-      <Table className="table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>User ID</th>
-            <th>Date</th>
-            <th>Status</th>
-            <th>Total Amount</th>
-            <th>Address</th>
-            <th>Description</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {orders.map(order => (
-            <tr key={order.id}>
-              <td>{order.trackingId}</td>
-              <td>{order.userName}</td>
-              <td>{order.date}</td>
-              <td>{order.orderStatus}</td>
-              <td>{order.totalAmount}</td>
-              <td>{order.address}</td>
-              <td>{order.orderDescription}</td>
-              <td>
-                <Button variant="info" onClick={() => handleShowCartModal(order)}>View Cart</Button>{' '}
-                <Button onClick={() => handleShowStatusModal(order)}>Change Status</Button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+    <Container fluid>
+      <br>
+      </br>
+      <Row>
+        {/* <Col md={3} className="sidebar bg-light p-4"> */}
+          {/* <h4 className="sidebar-title">Sidebar</h4> */}
+          {/* Ajouter votre contenu de la barre latérale ici */}
+        {/* </Col> */}
+        <Col md={9}>
+          <h1 >Orders</h1>
+          <div className="table-responsive">
+            <Table striped bordered hover>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>User ID</th>
+                  <th>Date</th>
+                  <th>Status</th>
+                  <th>Total Amount</th>
+                  <th>Address</th>
+                  <th>Description</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {orders.map(order => (
+                  <tr key={order.id}>
+                    <td>{order.trackingId}</td>
+                    <td>{order.userName}</td>
+                    <td>{order.date}</td>
+                    <td>{order.orderStatus}</td>
+                    <td>{order.totalAmount}</td>
+                    <td>{order.address}</td>
+                    <td>{order.orderDescription}</td>
+                    <td>
+                      <div className="d-flex">
+                        <Button variant="info" size="sm" onClick={() => handleShowCartModal(order)}>
+                          <i className="bi bi-cart3"></i> View Cart
+                        </Button>
+                        <Button variant="secondary" size="sm" onClick={() => handleShowStatusModal(order)}>
+                          <i className="bi bi-pencil-square"></i> Change Status
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </div>
+        </Col>
+      </Row>
 
       <Modal show={showStatusModal} onHide={() => setShowStatusModal(false)}>
         <Modal.Header closeButton>
@@ -178,7 +203,7 @@ const Orders = () => {
           </Button>
         </Modal.Footer>
       </Modal>
-    </div>
+    </Container>
   );
 };
 

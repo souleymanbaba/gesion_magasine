@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { BsCheckCircleFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
 // import { logoLight } from "../../assets/images";
+import './style.css';
 
 const SignUp = () => {
   const [clientName, setClientName] = useState("");

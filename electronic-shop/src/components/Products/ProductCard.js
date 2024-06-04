@@ -2,7 +2,9 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getUser } from '../pages/Account/userStorageService'; // Ensure the function is correctly imported
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../../style.css';
+import './style.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faShoppingCart, faDollarSign } from '@fortawesome/free-solid-svg-icons';
 import { addToCart } from '../../cartService';
 import Swal from 'sweetalert2';
 
@@ -20,6 +22,7 @@ const ProductCard = ({ deal, updateCart }) => {
             title: 'Produit ajouté',
             text: 'Le produit a été ajouté à votre panier avec succès!',
           });
+          updateCart(deal);
         } else {
           Swal.fire({
             icon: 'error',
@@ -35,7 +38,6 @@ const ProductCard = ({ deal, updateCart }) => {
         });
       }
       console.log("User is logged in. Adding to cart:", deal);
-      updateCart(deal);
     } else {
       console.log("User is not logged in. Redirecting to login page.");
       navigate('/SigIn', { state: { message: 'Please log in to add items to your cart' } });
@@ -43,22 +45,26 @@ const ProductCard = ({ deal, updateCart }) => {
   };
 
   return (
-    <article className="card mb-4">
-      <h3 className="card-header">{deal.name}</h3>
-      <div className="card-body">
-        <img src={`data:image/png;base64,${deal.byteimg}`} height="200" width="100%" alt={deal.name} className="card-img-top" />
-        <h4 className="card-title">
-          Original Price: <span style={{ color: "#820001", fontWeight: "bolder" }}>{deal.price.toFixed(2)}/-</span>
-        </h4>
+    <div className="card product-card mb-4 shadow-sm">
+      <h5 className="card-header text-center">{deal.name}</h5>
+      <div className="card-body text-center">
+        <img 
+          src={`data:image/png;base64,${deal.byteimg}`} 
+          alt={deal.name} 
+          className="card-img-top img-fluid product-image" 
+        />
+        <h5 className="card-title mt-3">
+          <FontAwesomeIcon icon={faDollarSign} /> {deal.price.toFixed(2)} /-
+        </h5>
         <button
-          className="btn btn-primary"
-          style={{ fontFamily: "'Open Sans Condensed', sans-serif", fontSize: 20, height: 50 }}
+          className="btn btn-primary mt-3"
+          style={{ fontFamily: "'Open Sans Condensed', sans-serif", fontSize: '1.2rem', height: '50px' }}
           onClick={handleAddToCart}
         >
-          Add to Cart
+          <FontAwesomeIcon icon={faShoppingCart} /> Add to Cart
         </button>
       </div>
-    </article>
+    </div>
   );
 };
 

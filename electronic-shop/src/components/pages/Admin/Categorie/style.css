@@ -1,24 +1,51 @@
-/* style.css */
+/* Styles pour CategoryManagement */
 
-body {
-  margin: 0;
-  padding: 0;
-}
-
-.main-container {
-  padding-top: 100px; /* Ajustez cette valeur pour compenser la hauteur de la navbar */
-}
-
-.navbar {
-  position: fixed;
-  width: 100%;
-  z-index: 1000;
-}
-
-.container-fluid {
-  padding: 0;
-}
-
-.pt-5 {
-  padding-top: 5rem !important;
-}
+.admin-products {
+    padding: 20px;
+    width: 100%;
+  }
+  
+  .sidebar-container {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 220px;
+    background-color: #343a40;
+    transition: transform 0.3s ease;
+    transform: translateX(0);
+  }
+  
+  .sidebar-container--collapsed {
+    transform: translateX(-100%);
+  }
+  
+  .toggle-sidebar {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 1000;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+  }
+  
+  @media (max-width: 768px) {
+    .admin-products {
+      margin-left: 220px; /* Pour garder l'espace pour la barre latérale */
+    }
+  
+    .sidebar-container {
+      width: 100%; /* Occupera toute la largeur de l'écran */
+      max-width: 220px; /* Limite la largeur maximale à la taille de la barre latérale */
+      left: unset; /* Supprime la position fixe */
+      transform: translateX(0); /* Réinitialise la transformation */
+    }
+  
+    .sidebar-container--collapsed {
+      transform: translateX(-100%);
+    }
+  }
+  
