@@ -13,6 +13,7 @@ import Addproduct from './components/pages/Admin/Addproducts' ;
 import Orders from './components/pages/Admin/Orders';
 import Categorie from './components/pages/Admin/Categorie';
 import ProductList from './Cart';
+import Wishlist from './Wishlist';
 import Orderss from "./test";
 import Logout from './components/pages/Account/logOut';
 
@@ -26,6 +27,7 @@ function App() {
           <Route path="SigIn" element={<SigIn />} />
           <Route path="SignUp" element={<SignUp />} />
           <Route path="products" element={<Products />} />
+          <Route path="wishlist" element={<Wishlist/>} /> 
           <Route path="cart" element={<ProductList />} /> 
       <Route path="/test" element={<Orderss />}></Route> 
       <Route path="Logout" element={<Logout />}></Route> 

@@ -1,0 +1,91 @@
+{
+    "title": "م",
+    "subtitle": "تجر",
+    "suubtitle":"إلكتروني",
+    "home": "الصفحة الرئيسية",
+    "products": "المنتجات",
+    "about": "معلومات عنا",
+    "contact": "اتصل بنا",
+    "language": "اللغة",
+    "filters": "مرشحات",
+  "categories": "الفئات",
+  "select_category": "اختر فئة",
+  "select_brand": "اختر ماركة",
+  "select_size": "اختر الحجم",
+  "product_card": "بطاقة المنتج",
+  "added_to_cart": "تمت إضافة المنتج",
+  "added_successfully": "تمت إضافة المنتج إلى عربة التسوق بنجاح!",
+  "success_title":"نجاح",
+  "error_title": "خطأ",
+  "error_message": "حدثت مشكلة أثناء إضافة المنتج إلى عربة التسوق.",
+  "added_to_wishlist_message":"تمت الإضافة إلى قائمة الأمنيات",
+  "already_in_cart": "هو بالفعل في سلة التسوق الخاصة بك",
+  "login_redirect_message": "الرجاء تسجيل الدخول لإضافة العناصر إلى عربة التسوق",
+  "add_to_cart": "أضف إلى السلة",
+  "login": {
+    "title": "تسجيل الدخول",
+    "email": "البريد الإلكتروني",
+    "enter_email": "أدخل بريدك الإلكتروني",
+    "password": "كلمة المرور",
+    "enter_password": "أدخل كلمة المرور الخاصة بك",
+    "login_button": "تسجيل الدخول",
+    "no_account": "ليس لديك حساب؟",
+    "register_here": "سجل هنا",
+    "alert_warning": "تحذير"
+  },
+  "signup": {
+    "title": "إنشاء حسابك",
+    "fullName": "الاسم الكامل",
+    "email": "البريد الإلكتروني",
+    "password": "إنشاء كلمة مرور",
+    "placeholderName": "مثال: جون دو",
+    "placeholderEmail": "john@workemail.com",
+    "placeholderPassword": "مثال: JohnDoe@123",
+    "termsAndConditions": "موافق على شروطنا وأحكامنا",
+    "createAccount": "إنشاء حساب",
+    "signInLink": "تسجيل الدخول",
+    "successMessage": "سجلت بنجاح!"
+  },
+  "errors": {
+    "enterName": "أدخل اسمك",
+    "enterEmail": "أدخل بريدك الإلكتروني",
+    "invalidEmail": "أدخل بريدًا إلكترونيًا صالحًا",
+    "createPassword": "إنشاء كلمة مرور",
+    "shortPassword": "يجب أن تتكون كلمة المرور من 6 أحرف على الأقل"
+  },
+  "buttons": {
+    "signIn": "تسجيل الدخول",
+    "createAccount": "إنشاء حساب"
+  },
+  "footer": {
+    "aboutUs": "معلومات عنا",
+    "aboutUsText": "نحن فريق من المطورين المتحمسين نجعل الويب مكانًا أفضل.",
+    "quickLinks": "روابط سريعة",
+    "home": "الرئيسية",
+    "about": "حول",
+    "services": "خدمات",
+    "contact": "اتصل",
+    "followUs": "تابعنا",
+    "copyRight": "© {{year}} شركتي. كل الحقوق محفوظة."
+  },
+  "en": {
+    "Cart": "سلة التسوق",
+    "Product Name": "اسم المنتج",
+    "Quantity": "الكمية",
+    "Price": "السعر",
+    "Image": "الصورة",
+    "Remove": "إزالة",
+    "Total Amount": "المبلغ الإجمالي",
+    "Order Status": "حالة الطلب",
+    "Place Order": "إرسال الطلب",
+    "Address": "العنوان",
+    "Order Description": "وصف الطلب",
+    "Close": "إغلاق",
+    "Place Order": "إرسال الطلب",
+     "Actions": "الإجراءات",
+     "Wishlist": "قائمة الرغبات"
+  }, "added_to_cart_success":"تمت إضافة العنصر إلى السلة بنجاح"
+ 
+ 
+
+}

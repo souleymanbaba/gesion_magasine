@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Container, Row, Col, Form, Button, Card, Toast, ToastContainer } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button, Toast } from 'react-bootstrap';
 import './style.css';
 
 const AddProduct = () => {
@@ -83,76 +83,66 @@ const AddProduct = () => {
   }, []);
 
   return (
-    <Container className="mt-5">
+    <Container fluid className="mt-5">
       <Row className="justify-content-center">
-        <Col md={8}>
-          <Card className="shadow-sm p-4">
-            <Card.Body>
-              <Card.Title className="mb-4 text-center text-primary">Add Product</Card.Title>
-              <Form onSubmit={handleSubmit}>
-                <Form.Group className="mb-3">
-                  <Form.Label>Product Name:</Form.Label>
-                  <Form.Control type="text" value={productName} onChange={handleProductNameChange} required />
-                </Form.Group>
-                <Form.Group className="mb-3">
-                  <Form.Label>Product Price:</Form.Label>
-                  <Form.Control type="number" value={productPrice} onChange={handleProductPriceChange} required />
-                </Form.Group>
-                <Form.Group className="mb-3">
-                  <Form.Label>Product Description:</Form.Label>
-                  <Form.Control as="textarea" rows={3} value={productDescription} onChange={handleProductDescriptionChange} required />
-                </Form.Group>
-                <Form.Group className="mb-3">
-                  <Form.Label>Category:</Form.Label>
-                  <Form.Select value={selectedCategory} onChange={handleCategoryChange} required>
-                    <option value="">Select Category</option>
-                    {categories.map((category) => (
-                      <option key={category.id} value={category.id}>{category.name}</option>
-                    ))}
-                  </Form.Select>
-                </Form.Group>
-                <Form.Group className="mb-3">
-                  <Form.Label>Size:</Form.Label>
-                  <Form.Control type="text" value={productSize} onChange={handleProductSizeChange} required />
-                </Form.Group>
-                <Form.Group className="mb-3">
-                  <Form.Label>Brand:</Form.Label>
-                  <Form.Control type="text" value={productBrand} onChange={handleProductBrandChange} required />
-                </Form.Group>
-                <Form.Group className="mb-3">
-                  <Form.Label>Product Image:</Form.Label>
-                  <Form.Control type="file" accept="image/*" onChange={handleProductImageChange} required />
-                </Form.Group>
-                {previewImage && (
-                  <Form.Group className="mb-3 text-center">
-                    <Form.Label>Image Preview:</Form.Label>
-                    <div className="image-preview">
-                      <img src={previewImage} alt="Product Preview" className="img-fluid" />
-                    </div>
-                  </Form.Group>
-                )}
-                <Button variant="primary" type="submit" className="w-100">Add Product</Button>
-              </Form>
-            </Card.Body>
-          </Card>
+        <Col xs={12} sm={8} md={6} lg={4}>
+          <div className="shadow p-4">
+            <h2 className="text-center mb-4">Add Product</h2>
+            <Form onSubmit={handleSubmit}>
+              <Form.Group className="mb-3">
+                <Form.Label>Product Name:</Form.Label>
+                <Form.Control type="text" value={productName} onChange={handleProductNameChange} required />
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>Product Price:</Form.Label>
+                <Form.Control type="number" value={productPrice} onChange={handleProductPriceChange} required />
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>Product Description:</Form.Label>
+                <Form.Control as="textarea" rows={3} value={productDescription} onChange={handleProductDescriptionChange} required />
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>Category:</Form.Label>
+                <Form.Select value={selectedCategory} onChange={handleCategoryChange} required>
+                  <option value="">Select Category</option>
+                  {categories.map((category) => (
+                    <option key={category.id} value={category.id}>{category.name}</option>
+                  ))}
+                </Form.Select>
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>Size:</Form.Label>
+                <Form.Control type="text" value={productSize} onChange={handleProductSizeChange} required />
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>Brand:</Form.Label>
+                <Form.Control type="text" value={productBrand} onChange={handleProductBrandChange} required />
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>Product Image:</Form.Label>
+                <Form.Control type="file" accept="image/*" onChange={handleProductImageChange} required />
+              </Form.Group>
+              {previewImage && (
+                <div className="mb-3 text-center">
+                  <Form.Label>Image Preview:</Form.Label>
+                  <img src={previewImage} alt="Product Preview" className="img-fluid" />
+                </div>
+              )}
+              <Button variant="primary" type="submit" className="w-100">Add Product</Button>
+            </Form>
+          </div>
         </Col>
       </Row>
 
-      <ToastContainer position="top-end" className="p-3">
-        <Toast onClose={() => setShowSuccessToast(false)} show={showSuccessToast} delay={3000} autohide bg="success">
-          <Toast.Header>
-            <strong className="me-auto">Success</strong>
-          </Toast.Header>
+      <div className="position-fixed bottom-0 end-0 p-3" style={{ zIndex: 2000 }}>
+        <Toast show={showSuccessToast} onClose={() => setShowSuccessToast(false)} delay={3000} autohide>
           <Toast.Body>Product added successfully!</Toast.Body>
         </Toast>
 
-        <Toast onClose={() => setShowErrorToast(false)} show={showErrorToast} delay={3000} autohide bg="danger">
-          <Toast.Header>
-            <strong className="me-auto">Error</strong>
-          </Toast.Header>
+        <Toast show={showErrorToast} onClose={() => setShowErrorToast(false)} delay={3000} autohide bg="danger" text="white">
           <Toast.Body>{errorMessage}</Toast.Body>
         </Toast>
-      </ToastContainer>
+      </div>
     </Container>
   );
 };

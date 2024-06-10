@@ -1,9 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
+import './i18n';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 // index.js or App.js
+
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 

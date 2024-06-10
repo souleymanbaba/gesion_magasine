@@ -7,10 +7,11 @@ import Dashboard from '../pages/Admin/Dashboard';
 const AdminLayout = () => (
   <>
     <header>
-      <Navbar />
+      <Navbar/>
+
     </header>
     <div style={{ display: 'flex' }}>
-      <Sidebar />
+     
       <main style={{ flex: 1, padding: '20px' }}>
         {/* <Dashboard /> */}
         <Outlet />
@@ -18,6 +19,7 @@ const AdminLayout = () => (
     </div>
     <footer>
       {/* Admin Footer here if needed */}
+      {/* <Sidebar /> */}
     </footer>
   </>
 );

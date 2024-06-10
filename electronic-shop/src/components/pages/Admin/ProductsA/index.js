@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Button, Table, Modal } from 'react-bootstrap';
-import { FaPlus } from 'react-icons/fa';
-import './style.css';
+import { Button, Table, Modal, Form, Container } from 'react-bootstrap';
+import { FaPlus, FaEye, FaEdit, FaTrash, FaLanguage } from 'react-icons/fa';
 
 const AdminProducts = () => {
   const [products, setProducts] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [showTranslationForm, setShowTranslationForm] = useState(false);
+  const [translations, setTranslations] = useState({});
 
   const fetchProducts = async () => {
     try {
@@ -50,50 +51,91 @@ const AdminProducts = () => {
     setSelectedProduct(null);
   };
 
+  const handleTranslationClick = (product) => {
+    setSelectedProduct(product);
+    setShowTranslationForm(true);
+  };
+
+  const handleTranslationChange = (field, value) => {
+    setTranslations({
+      ...translations,
+      [field]: value
+    });
+  };
+
+  const handleTranslationSubmit = async () => {
+    if (!selectedProduct) return;
+
+    const productId = selectedProduct.id;
+    const translationData = translations;
+
+    try {
+      const response = await fetch(`http://localhost:8080/api/admin/products/${productId}/translate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(translationData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit translation');
+      }
+
+      console.log('Translation submitted successfully');
+      setShowTranslationForm(false);
+      setSelectedProduct(null);
+      setTranslations({});
+    } catch (error) {
+      console.error('Error submitting translation:', error.message);
+    }
+  };
+
   return (
-    <div className="admin-products mt-4"> {/* Ajout de la classe mt-4 pour une marge supérieure */}
-      <h1 className="admin-products__title">Products</h1>
-      <div className="admin-products__add-button mb-3">
-        <Link to="/admin/products/new">
-          <Button variant="success">
-            <FaPlus className="add-button__icon" /> Add
-          </Button>
-        </Link>
-      </div>
-      <div className="admin-products__table mb-5">
-        <Table striped bordered hover>
-          <thead className="admin-products__table-header">
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Description</th>
-              <th>Price</th>
-              <th>Category</th>
-              <th>Marque</th>
-              <th>Taille</th>
-              <th>Actions</th>
+    <Container className="mt-4 d-flex flex-column align-items-center">
+      <h1 className="mb-4">Products</h1>
+      <Link to="/admin/products/new" className="mb-3">
+        <Button variant="success">
+          <FaPlus className="mr-2" /> Add
+        </Button>
+      </Link>
+      <Table striped bordered hover className="mb-5">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Category</th>
+            <th>Marque</th>
+            <th>Taille</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {products.map(product => (
+            <tr key={product.id}>
+              <td>{product.name}</td>
+              <td>{product.price}</td>
+              <td>{product.categoryName}</td>
+              <td>{product.marque}</td>
+              <td>{product.taille}</td>
+              <td>
+                <Button variant="primary" onClick={() => handleViewImage(product)}>
+                  <FaEye />
+                </Button>
+                <Link to={`/admin/products/${product.id}/edit`} className="btn btn-warning ml-1">
+                  <FaEdit />
+                </Link>
+                <Button variant="danger" onClick={() => handleDeleteProduct(product.id)} className="ml-1">
+                  <FaTrash />
+                </Button>
+                <Button variant="secondary" onClick={() => handleTranslationClick(product)} className="ml-1">
+                  <FaLanguage />
+                </Button>
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            {products.map(product => (
-              <tr key={product.id} className="admin-products__table-row">
-                <td>{product.id}</td>
-                <td>{product.name}</td>
-                <td>{product.description}</td>
-                <td>{product.price}</td>
-                <td>{product.categoryName}</td>
-                <td>{product.marque}</td>
-                <td>{product.taille}</td>
-                <td className="admin-products__table-actions">
-                  <Button variant="primary" onClick={() => handleViewImage(product)}>View</Button>
-                  <Link to={`/admin/products/${product.id}/edit`} className="btn btn-warning">Update</Link>
-                  <Button variant="danger" onClick={() => handleDeleteProduct(product.id)}>Delete</Button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
-      </div>
+          ))}
+        </tbody>
+      </Table>
 
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
@@ -104,7 +146,7 @@ const AdminProducts = () => {
             <img 
               src={`data:image/png;base64,${selectedProduct.byteimg}`} 
               alt={selectedProduct.name} 
-              className="admin-products__modal-image" 
+              className="img-fluid" 
             />
           )}
         </Modal.Body>
@@ -114,7 +156,39 @@ const AdminProducts = () => {
           </Button>
         </Modal.Footer>
       </Modal>
-    </div>
+
+      <Modal show={showTranslationForm} onHide={() => setShowTranslationForm(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Translate Product</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group controlId="formProductName">
+              <Form.Label>Product Name</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter translated name"
+                value={translations.name || ''}
+                onChange={(e) => handleTranslationChange('name', e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group controlId="formProductDescription" className="mt-3">
+              <Form.Label>Product Description</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                placeholder="Enter translated description"
+                value={translations.description || ''}
+                onChange={(e) => handleTranslationChange('description', e.target.value)}
+              />
+            </Form.Group>
+            <Button variant="primary" className="mt-3" onClick={handleTranslationSubmit}>
+              Submit Translation
+            </Button>
+          </Form>
+        </Modal.Body>
+      </Modal>
+    </Container>
   );
 };
 
