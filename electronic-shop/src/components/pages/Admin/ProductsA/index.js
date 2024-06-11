@@ -67,11 +67,16 @@ const AdminProducts = () => {
     if (!selectedProduct) return;
 
     const productId = selectedProduct.id;
-    const translationData = translations;
+    const translationData = {
+      name_ar: translations.name,
+      marque_ar: translations.marque,
+      description_ar: translations.description,
+      taille_ar: translations.taille,
+    };
 
     try {
-      const response = await fetch(`http://localhost:8080/api/admin/products/${productId}/translate`, {
-        method: 'POST',
+      const response = await fetch(`http://localhost:8080/api/admin/product/${productId}/translation`, {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -86,6 +91,7 @@ const AdminProducts = () => {
       setShowTranslationForm(false);
       setSelectedProduct(null);
       setTranslations({});
+      fetchProducts(); // Rafraîchir la liste des produits après la traduction
     } catch (error) {
       console.error('Error submitting translation:', error.message);
     }
@@ -180,6 +186,24 @@ const AdminProducts = () => {
                 placeholder="Enter translated description"
                 value={translations.description || ''}
                 onChange={(e) => handleTranslationChange('description', e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group controlId="formProductMarque" className="mt-3">
+              <Form.Label>Product Marque</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter translated marque"
+                value={translations.marque || ''}
+                onChange={(e) => handleTranslationChange('marque', e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group controlId="formProductTaille" className="mt-3">
+              <Form.Label>Product Taille</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter translated taille"
+                value={translations.taille || ''}
+                onChange={(e) => handleTranslationChange('taille', e.target.value)}
               />
             </Form.Group>
             <Button variant="primary" className="mt-3" onClick={handleTranslationSubmit}>

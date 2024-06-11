@@ -182,10 +182,11 @@
 
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import ProductCard from './ProductCard'; // Ajustez le chemin selon votre structure de fichiers
+import ProductCard from './ProductCard'; // Adjust the path as per your file structure
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter, faRulerCombined, faTag, faList } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
+import { getlang } from '../pages/Account/userStorageService';
 
 function Products() {
   const [products, setProducts] = useState([]);
@@ -196,9 +197,9 @@ function Products() {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedBrand, setSelectedBrand] = useState('');
-  const [direction, setDirection] = useState('ltr'); // Ajout de la variable direction
+  const [direction, setDirection] = useState('ltr'); // Added direction variable
 
-  const { t, i18n } = useTranslation(); // Utilisez useTranslation pour obtenir la fonction de traduction t
+  const { t, i18n } = useTranslation(); // Use useTranslation to get the translation function t
 
   useEffect(() => {
     if (i18n.language === 'ar') {
@@ -222,7 +223,9 @@ function Products() {
       url = `http://localhost:8080/api/admin/category/${categoryId}`;
     }
 
-    axios.get(url)
+
+    let lang = getlang();
+    axios.get(url,{params:{lang}})
       .then(response => {
         let filteredProducts = response.data;
 
@@ -244,9 +247,9 @@ function Products() {
   const fetchCategories = (categoryId) => {
     const url = categoryId
       ? `http://localhost:8080/api/admin/${categoryId}/subcategories`
-      : 'http://localhost:8080/api/admin';
-
-    axios.get(url)
+      : 'http://localhost:8080/api/admin/categories';
+      const lang =getlang();
+    axios.get(url,{params:{lang}})
       .then(response => {
         setCategories(response.data);
       })
@@ -290,7 +293,7 @@ function Products() {
     if (!brand) {
       setFilteredProducts(products);
       setSizes([]);
-      return; // Placer le retour ici pour sortir de la fonction
+      return; // Place the return here to exit the function
     }
     const filteredByBrand = products.filter(product => product.marque === brand);
     setFilteredProducts(filteredByBrand);
@@ -299,52 +302,50 @@ function Products() {
   };
 
   return (
-    <div className="container my-4" style={{ direction: direction }}>
-      <div className="row">
-        <div className="col-md-3">
-          <div className="filter-section p-3 bg-light rounded shadow-sm">
-            <h4><FontAwesomeIcon icon={faFilter} /> {t('filters')}</h4>
-            <div className="mb-3">
-              <label className="form-label"><FontAwesomeIcon icon={faList} /> {t('categories')}</label>
-              <select className="form-select scrolling-list" value={selectedCategory} onChange={handleCategorySelect}>
-                <option value="">{t('select_category')}</option>
-                {categories.map(category => (
-                  <option key={category.id} value={category.id}>{category.name}</option>
-                ))}
-              </select>
-            </div>
-            <div className="mb-3">
-              <label className="form-label"><FontAwesomeIcon icon={faTag} /> {t('select_brand')}</label>
-              <select className="form-select" value={selectedBrand} onChange={handleBrandSelect}>
-                <option value="">{t('select_brand')}</option>
-                {brands.map(brand => (
-                  <option key={brand} value={brand}>{brand}</option>
-                ))}
-              </select>
-            </div>
-            <div className="mb-3">
-              <label className="form-label"><FontAwesomeIcon icon={faRulerCombined} /> {t('select_size')}</label>
-              <select className="form-select" value={selectedSize} onChange={handleSizeSelect}>
-                <option value="">{t('select_size')}</option>
-                {sizes.map(size => (
-                  <option key={size} value={size}>{size}</option>
-                ))}
-              </select>
-            </div>
+    <div className="products-container" style={{ direction: direction }}>
+      <div className="filters-section">
+        <div className="filter-section p-3 bg-light rounded shadow-sm">
+          <h4><FontAwesomeIcon icon={faFilter} /> {t('filters')}</h4>
+          <div className="mb-3">
+            <label className="form-label"><FontAwesomeIcon icon={faList} /> {t('categories')}</label>
+            <select className="form-select scrolling-list" value={selectedCategory} onChange={handleCategorySelect}>
+              <option value="">{t('select_category')}</option>
+              {categories.map(category => (
+                <option key={category.id} value={category.id}>{category.name}</option>
+              ))}
+            </select>
+          </div>
+          <div className="mb-3">
+            <label className="form-label"><FontAwesomeIcon icon={faTag} /> {t('select_brand')}</label>
+            <select className="form-select" value={selectedBrand} onChange={handleBrandSelect}>
+              <option value="">{t('select_brand')}</option>
+              {brands.map(brand => (
+                <option key={brand} value={brand}>{brand}</option>
+              ))}
+            </select>
+          </div>
+          <div className="mb-3">
+            <label className="form-label"><FontAwesomeIcon icon={faRulerCombined} /> {t('select_size')}</label>
+            <select className="form-select" value={selectedSize} onChange={handleSizeSelect}>
+              <option value="">{t('select_size')}</option>
+              {sizes.map(size => (
+                <option key={size} value={size}>{size}</option>
+              ))}
+            </select>
           </div>
         </div>
-        <div className="col-md-9">
-          <div className="text-center">
-            <h1 className="products-title">{t('products')}</h1>
-            <div className="underline"></div>
-          </div>
-          <div className="row mt-4">
-            {filteredProducts.map(product => (
-              <div className="  col-md-4 col-sm-6 mb-4" key={product.id}>
-                <ProductCard deal={product} updateCart={() => updateCart(product)} />
-              </div>
-            ))}
-          </div>
+      </div>
+      <div className="products-section">
+        <div className="text-center">
+          <h1 className="products-title">{t('products')}</h1>
+          <div className="underline"></div>
+        </div>
+        <div className="row mt-4">
+          {filteredProducts.map(product => (
+            <div className="col-md-4 col-sm-6 mb-4" key={product.id}>
+              <ProductCard deal={product} updateCart={() => updateCart(product)} />
+            </div>
+          ))}
         </div>
       </div>
     </div>

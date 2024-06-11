@@ -5,6 +5,9 @@ import { faSignInAlt, faSignOutAlt, faShoppingCart, faUser, faHeart } from '@for
 import '../../style.css';
 import { isLoggedIn, savelang } from '../pages/Account/userStorageService';
 import { useTranslation } from 'react-i18next';
+import { faGlobe } from '@fortawesome/free-solid-svg-icons';
+import { faUserLock } from '@fortawesome/free-solid-svg-icons';
+
 
 function Navbar() {
   const [t, i18n] = useTranslation();
@@ -79,9 +82,10 @@ function Navbar() {
             <div className="container-fluid p-2">
               <div className="d-flex justify-content-end align-items-center">
                 <div className="dropdown">
-                  <button className="btn btn-secondary dropdown-toggle" type="button" onClick={toggleLanguageMenu}>
-                     {(t('language'))}
-                  </button>
+                <button className="btn btn-secondary dropdown-toggle" type="button" onClick={toggleLanguageMenu}>
+      <FontAwesomeIcon icon={faGlobe} className="me-2" />
+      {/* {t('language')} */}
+    </button>
                   {isLanguageMenuOpen && (
                     <ul className="dropdown-menu show" style={{ display: 'block' }}>
                       <li>{i18n.language==='ar' && <button className="dropdown-item" onClick={() =>{i18n.changeLanguage('fr');testt()} }>Français</button>}</li>
@@ -97,16 +101,7 @@ function Navbar() {
                   )}
                 </div>
 
-                {isLoggedInState ? (
-                  <Link to="/logout" className="btn btn-primary d-flex align-items-center ms-3" onClick={closeMenu}>
-                    <FontAwesomeIcon icon={faSignOutAlt} className="me-1" />
-                    <FontAwesomeIcon icon={faUser} />
-                  </Link>
-                ) : (
-                  <Link to="/SigIn" className="btn btn-primary ms-3" onClick={closeMenu}>
-                    <FontAwesomeIcon icon={faSignInAlt} /> {(t('login.title'))}
-                  </Link>
-                )}
+             
                 <Link to="/cart" className="btn btn-primary position-relative ms-3" onClick={closeMenu}>
                   <FontAwesomeIcon icon={faShoppingCart} />
                   {cartCount > 0 && (
@@ -119,6 +114,18 @@ function Navbar() {
                 <Link to="/wishlist" className="btn btn-primary position-relative ms-3" onClick={closeMenu}>
                   <FontAwesomeIcon icon={faHeart} /> {/* Ajout de l'icône de wishlist */}
                 </Link>
+
+                {isLoggedInState ? (
+                  <Link to="/logout" className="btn btn-primary d-flex align-items-center ms-3" onClick={closeMenu}>
+                    <FontAwesomeIcon icon={faSignOutAlt} className="me-1" />
+                    <FontAwesomeIcon icon={faUser} />
+                  </Link>
+                ) : (
+                  <Link to="/SigIn" className="btn btn-primary ms-3" onClick={closeMenu}>
+                  <FontAwesomeIcon icon={faUserLock} className="me-2" />
+                
+                </Link>
+                )}
               </div>
             </div>
           </div>
@@ -126,9 +133,9 @@ function Navbar() {
       </nav>
       <br />
       <br />
+      {/* <br />
       <br />
-      <br />
-      <br />
+      <br /> */}
     </>
   );
 }

@@ -4,7 +4,7 @@ import { getUser } from '../pages/Account/userStorageService';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './productStyle.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faShoppingCart, faDollarSign, faCheckCircle, faHeart } from '@fortawesome/free-solid-svg-icons'; // Importez l'icône faHeart pour la liste de souhaits
+import { faShoppingCart, faDollarSign, faCheckCircle, faHeart } from '@fortawesome/free-solid-svg-icons';
 import { addToCart } from '../../cartService';
 import { addToWishlist } from '../../wishlistService'; // Importer la fonction pour ajouter au witchlist
 import Swal from 'sweetalert2';
@@ -67,14 +67,12 @@ const ProductCard = ({ deal, updateCart }) => {
         if (response.ok) {
           Swal.fire({
             icon: 'success',
-           
             text: t('added_to_wishlist_message'),
           });
           setAddedToWishlist(true); // Mettre à jour l'état pour indiquer que le produit a été ajouté à la liste de souhaits
         } else {
           Swal.fire({
             icon: 'success',
-           
             text: t('added_to_wishlist_message'),
           });
         }
@@ -95,7 +93,7 @@ const ProductCard = ({ deal, updateCart }) => {
           src={`data:image/png;base64,${deal.byteimg}`} 
           alt={deal.name} 
           className="card-img-top img-fluid product-image"
-          style={{ direction: direction === 'rtl' ? 'rtl' : 'ltr' }} 
+          style={{ direction: direction === 'rtl' ? 'rtl' : 'ltr', width: '70%', height: 'auto', maxHeight: '150px' }} 
         />
         <h5 className="card-title mt-3">
           <FontAwesomeIcon icon={faDollarSign} /> {deal.price.toFixed(2)} /-

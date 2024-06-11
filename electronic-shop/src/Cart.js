@@ -130,7 +130,11 @@ const Cart = ({ updateCartCount }) => {
             <tbody>
               {cart.cartItems.map((item) => (
                 <tr key={item.id}>
-                  <td>{item.productName}</td>
+                  <td>                <Image
+  src={`data:image/jpeg;base64,${item.returnedImg}`}
+  thumbnail
+  style={{ width: '100px', height: '100px' }} 
+/></td>
                   <td>
                     <Button
                       variant="outline-secondary"
@@ -150,13 +154,7 @@ const Cart = ({ updateCartCount }) => {
                     </Button>
                   </td>
                   <td>{item.price}</td>
-                  <td>
-                  <Image
-  src={`data:image/jpeg;base64,${item.returnedImg}`}
-  thumbnail
-  style={{ width: '100px', height: '100px' }} // Modifier la taille ici
-/>
-                  </td>
+                 
                 </tr>
               ))}
             </tbody>

@@ -13,16 +13,18 @@ export const saveUser = (user) => {
 
 
 
-export const getlang = () => {
- const Lang = localStorage.getItem(Lang);
- return Lang ? JSON.parse(Lang) : null;
-};
+const LANG_KEY = "lang";
 
+export const getlang = () => {
+    const lang = localStorage.getItem(LANG_KEY);
+    return lang ? JSON.parse(lang) : "fr";
+};
 
 export const savelang = (lang) => {
- window.localStorage.removeItem(Lang);
- window.localStorage.setItem("lang", JSON.stringify(lang));
+    window.localStorage.removeItem(LANG_KEY);
+    window.localStorage.setItem(LANG_KEY, JSON.stringify(lang));
 };
+
 
 
 export const getToken = () => {
