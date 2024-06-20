@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import { Modal, Button, Form, Table, Container, Spinner } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 import axios from 'axios';
-import { Modal, Button, Form, Table, Container, Row, Col, Spinner } from 'react-bootstrap';
-import 'bootstrap-icons/font/bootstrap-icons.css';
-import './Style.css'
+import ReactPaginate from 'react-paginate';
+import './Style.css'; // Assurez-vous d'ajuster le chemin si nécessaire
+import { getlang } from '../../Account/userStorageService';
 
 const Orders = () => {
+  const { t, i18n } = useTranslation();
+  const direction = i18n.language === 'ar' ? 'rtl' : 'ltr';
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showStatusModal, setShowStatusModal] = useState(false);
@@ -12,6 +16,8 @@ const Orders = () => {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [newStatus, setNewStatus] = useState('');
   const [cartItems, setCartItems] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
+  const ordersPerPage = 5; // Nombre de commandes par page
 
   useEffect(() => {
     fetchOrders();
@@ -21,37 +27,41 @@ const Orders = () => {
     try {
       const response = await fetch('http://localhost:8080/api/admin/placedOrders');
       if (!response.ok) {
-        throw new Error('Failed to fetch orders');
+        throw new Error('Échec de la récupération des commandes');
       }
       const data = await response.json();
       setOrders(data);
       setLoading(false);
     } catch (error) {
-      console.error('Error fetching orders:', error.message);
+      console.error('Erreur lors de la récupération des commandes :', error.message);
       setLoading(false);
     }
   };
 
   const fetchCartItems = async (userId) => {
     try {
-      const response = await fetch(`http://localhost:8080/api/customer/cartI/${userId}`);
-      if (!response.ok) {
-        throw new Error('Failed to fetch cart items');
+      const lang = getlang(); // Assurez-vous que getlang() renvoie correctement la langue attendue
+      const response = await axios.get(`http://localhost:8080/api/customer/cartI/${userId}`, {
+        params: { lang }
+      });
+      if (response.status === 200) { 
+        setCartItems(response.data.cartItems);
+        setShowCartModal(true);
+      } else {
+        throw new Error('Échec de la récupération des articles du panier');
       }
-      const data = await response.json();
-      setCartItems(data.cartItems);
-      setShowCartModal(true);
     } catch (error) {
-      console.error('Error fetching cart items:', error.message);
+      console.error('Erreur lors de la récupération des articles du panier :', error.message);
     }
   };
 
   const handleChangeStatus = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/api/admin/order/${selectedOrder.id}/${newStatus}`);
-      
+      const response = await axios.get(`http://localhost:8080/api/admin/order/${selectedOrder.id}/${newStatus}`, {
+        params: { lang: i18n.language }
+      });
       if (response.status === 200) {
-        console.log('Order status updated successfully!');
+        console.log('Statut de la commande mis à jour avec succès !');
         const updatedOrders = orders.map(order => {
           if (order.id === selectedOrder.id) {
             return { ...order, orderStatus: newStatus };
@@ -61,10 +71,10 @@ const Orders = () => {
         setOrders(updatedOrders);
         setShowStatusModal(false);
       } else {
-        console.error('Failed to update order status');
+        console.error('Échec de la mise à jour du statut de la commande');
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Erreur :', error);
     }
   };
 
@@ -78,54 +88,57 @@ const Orders = () => {
     fetchCartItems(order.user_id);
   };
 
+  const handlePageClick = ({ selected }) => {
+    setCurrentPage(selected);
+  };
+
   if (loading) return (
     <Container className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
       <Spinner animation="border" />
     </Container>
   );
 
+  // Logique pour afficher les commandes sur la page actuelle
+  const offset = currentPage * ordersPerPage;
+  const currentOrders = orders.slice(offset, offset + ordersPerPage);
+
   return (
     <Container fluid>
-      <br>
-      </br>
-      <Row>
-        {/* <Col md={3} className="sidebar bg-light p-4"> */}
-          {/* <h4 className="sidebar-title">Sidebar</h4> */}
-          {/* Ajouter votre contenu de la barre latérale ici */}
-        {/* </Col> */}
-        <Col md={9}>
-          <h1 >Orders</h1>
+      <br />
+      <h1 dir={direction}>{t('orders.title')}</h1>
+      
+      <div className="row">
+        <div className="col-lg-2">
+          {/* Contenu de la barre latérale ici */}
+        </div>
+        <div className="col-lg-9">
           <div className="table-responsive">
-            <Table striped bordered hover>
+            <Table className="table-wrapper" dir={direction} striped bordered hover>
               <thead>
                 <tr>
-                  <th>ID</th>
-                  <th>User ID</th>
-                  <th>Date</th>
-                  <th>Status</th>
-                  <th>Total Amount</th>
-                  <th>Address</th>
-                  <th>Description</th>
-                  <th>Actions</th>
+                  <th>{t('orders.userId')}</th>
+                  <th>{t('orders.date')}</th>
+                  <th>{t('orders.status')}</th>
+                  <th>{t('orders.totalAmount')}</th>
+                  <th>{t('orders.address')}</th>
+                  <th>{t('orders.actions')}</th>
                 </tr>
               </thead>
               <tbody>
-                {orders.map(order => (
+                {currentOrders.map(order => (
                   <tr key={order.id}>
-                    <td>{order.trackingId}</td>
                     <td>{order.userName}</td>
                     <td>{order.date}</td>
                     <td>{order.orderStatus}</td>
                     <td>{order.totalAmount}</td>
                     <td>{order.address}</td>
-                    <td>{order.orderDescription}</td>
                     <td>
                       <div className="d-flex">
                         <Button variant="info" size="sm" onClick={() => handleShowCartModal(order)}>
-                          <i className="bi bi-cart3"></i> View Cart
+                          {t('orders.viewCart')}
                         </Button>
                         <Button variant="secondary" size="sm" onClick={() => handleShowStatusModal(order)}>
-                          <i className="bi bi-pencil-square"></i> Change Status
+                          {t('orders.changeStatus')}
                         </Button>
                       </div>
                     </td>
@@ -134,59 +147,61 @@ const Orders = () => {
               </tbody>
             </Table>
           </div>
-        </Col>
-      </Row>
+        </div>
+      </div>
 
       <Modal show={showStatusModal} onHide={() => setShowStatusModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Change Order Status</Modal.Title>
+          <Modal.Title>{t('orders.changeStatus')}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
             <Form.Group>
-              <Form.Label>Status</Form.Label>
+              <Form.Label>{t('orders.status')}</Form.Label>
               <Form.Control 
                 as="select" 
                 value={newStatus} 
                 onChange={(e) => setNewStatus(e.target.value)}
               >
-                <option value="">Select Status</option>
-                <option value="Shipped">Shipped</option>
-                <option value="Delivered">Delivered</option>
+                <option value="">{t('orders.selectStatus')}</option>
+                <option value="Shipped">{t('orders.shipped')}</option>
+                <option value="Delivered">{t('orders.delivered')}</option>
               </Form.Control>
             </Form.Group>
           </Form>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowStatusModal(false)}>
-            Close
+            {t('common.close')}
           </Button>
           <Button variant="primary" onClick={handleChangeStatus}>
-            Change
+            {t('orders.change')}
           </Button>
         </Modal.Footer>
       </Modal>
 
       <Modal show={showCartModal} onHide={() => setShowCartModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Cart Items</Modal.Title>
+          <Modal.Title>{t('orders.cartItems')}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {cartItems.length > 0 ? (
-            <Table striped bordered hover>
+            <Table striped bordered hover dir={direction}>
               <thead>
                 <tr>
-                  <th>Image</th>
-                  <th>Product Name</th>
-                  <th>Quantity</th>
-                  <th>Price</th>
+                  <th>{t('orders.image')}</th>
+                  <th>{t('orders.size')}</th>
+                  <th>{t('orders.marque')}</th>
+                  <th>{t('orders.quantity')}</th>
+                  <th>{t('orders.price')}</th>
                 </tr>
               </thead>
               <tbody>
                 {cartItems.map(item => (
-                  <tr key={item.id}>
-                    <td><img src={`data:image/jpeg;base64,${item.returnedImg}`} alt={item.productNane} style={{ width: '50px' }} /></td>
-                    <td>{item.productNane}</td>
+                  <tr key={item.id} dir={direction}>
+                    <td><img src={`data:image/jpeg;base64,${item.returnedImg}`} alt={item.productName} style={{ width: '50px' }} /></td>
+                    <td>{item.taille}</td>
+                    <td>{item.marque}</td>
                     <td>{item.quantity}</td>
                     <td>{item.price}</td>
                   </tr>
@@ -194,15 +209,24 @@ const Orders = () => {
               </tbody>
             </Table>
           ) : (
-            <p>No items in the cart</p>
+            <p>{t('orders.noItems')}</p>
           )}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowCartModal(false)}>
-            Close
+            {t('common.close')}
           </Button>
         </Modal.Footer>
       </Modal>
+
+      <ReactPaginate
+        previousLabel={t('pagination.previous')}
+        nextLabel={t('pagination.next')}
+        pageCount={Math.ceil(orders.length / ordersPerPage)}
+        onPageChange={handlePageClick}
+        containerClassName={'pagination justify-content-center'}
+        activeClassName={'active'}
+      />
     </Container>
   );
 };

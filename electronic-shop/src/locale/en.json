@@ -3,7 +3,7 @@
   "subtitle":"Lectronic",
   "suubtitle":"Boutique",
   "home": "Accueil",
-  "products": "Produits",
+  "produ": "Produits",
   "about": "À propos",
   "contact": "Contact",
   "language": "Langue",
@@ -12,6 +12,11 @@
   "select_category": "Catégorie",
   "select_brand": "Marque",
   "select_size": "Taille",
+  "admin": "Admin",
+  "category": "Catégorie",
+  "products": "Produits",
+  "ord": "Commandes",
+  "logout": "Déconnexion",
   "product_card": "Fiche Produit",
   "added_to_cart": "Produit ajouté",
   "added_successfully": "Produit ajouté à votre panier avec succès !",
@@ -87,5 +92,95 @@
     "Actions": "Actions",
     "Remove": "Retirer"
   },
-  "added_to_cart_success": "Article ajouté au panier avec succès"
+  "added_to_cart_success": "Article ajouté au panier avec succès",
+  "header": {
+    "title": "Gestion des catégories"
+  },
+  "buttons": {
+    "add_category": "Ajouter une catégorie",
+    "update_category": "Mettre à jour la catégorie",
+    "delete_category": "Supprimer",
+    "translate_category": "Traduire",
+    "create_category": "Créer une catégorie",
+    "save": "Enregistrer",
+    "previous": "← Précédent",
+    "next": "Suivant →"
+  },
+  "labels": {
+    "id": "ID",
+    "name": "Nom",
+    "description": "Description",
+    "actions": "Action",
+    "arabic_name": "Nom en arabe"
+  },
+  "messages": {
+    "new_category_created": "Nouvelle catégorie créée :",
+    "category_updated": "Catégorie mise à jour avec succès",
+    "category_deleted": "Catégorie supprimée avec succès",
+    "arabic_name_saved": "Nom arabe enregistré avec succès",
+    "error_creating_category": "Erreur lors de la création de la catégorie :",
+    "error_updating_category": "Erreur lors de la mise à jour de la catégorie :",
+    "error_deleting_category": "Erreur lors de la suppression de la catégorie :",
+    "error_saving_arabic_name": "Erreur lors de l'enregistrement du nom arabe :",
+    "fetch_categories": "Catégories récupérées :"
+  },
+  "placeholders": {
+    "category_name": "Entrez le nom de la catégorie",
+    "category_description": "Entrez la description de la catégorie"
+  },
+  "products": {
+    "title": "Produits",
+    "add": "Ajouter un produit",
+    "name": "Nom",
+    "price": "Prix",
+    "category": "Catégorie",
+    "marque": "Marque",
+    "taille": "Taille",
+    "actions": "Actions",
+    "view": "Voir",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "translate": "Traduire",
+    "submit_translation": "Soumettre la traduction",
+    "enter_translation": "Entrez la traduction ici",
+    "product_image": "Image du produit",
+    "stock_quantity": "Quantité en stock"
+  },
+  "pagination": {
+    "previous": "Précédent",
+    "next": "Suivant"
+  },
+  "messages": {
+    "translation_submitted": "Traduction soumise avec succès",
+    "error_submitting_translation": "Erreur lors de la soumission de la traduction"
+  },
+  "orders": {
+    "title": "Commandes",
+    "id": "ID",
+    "userId": "ID Utilisateur",
+    "date": "Date",
+    "status": "Statut",
+    "totalAmount": "Montant Total",
+    "address": "Adresse",
+    "description": "Description",
+    "actions": "Actions",
+    "changeStatus": "Changer le statut",
+    "viewCart": "Voir le panier",
+    "selectStatus": "Sélectionner le statut",
+    "shipped": "Expédié",
+    "delivered": "Livré",
+    "change": "Changer",
+    "cartItems": "Articles du Panier",
+    "noItems": "Aucun article dans le panier",
+    "image": "Image",
+    "productName": "Nom du produit",
+    "quantity": "Quantité",
+    "price": "Prix",
+    "size": "Taille",
+    "marque": "Marque"
+  },
+  "common": {
+    "close": "Fermer"
+  }
+
 }

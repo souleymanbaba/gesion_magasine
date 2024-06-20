@@ -16,10 +16,12 @@ import ProductList from './Cart';
 import Wishlist from './Wishlist';
 import Orderss from "./test";
 import Logout from './components/pages/Account/logOut';
+import ProductTransactions from './components/pages/Admin/ProductsA/ProductTransactions';
 
 
 function App() {
   return (
+    
     <Router>
       <Routes>
         {/* Routes for the user layout */}
@@ -38,6 +40,7 @@ function App() {
           <Route path="Dashboard" element={<Dashboard />} />
           <Route path="StatCard" element={<StatCard />} />
           <Route path="ProductsA" element={<ProductsA />} />
+          <Route path="/admin/products/:productId/transactions" element={<ProductTransactions />} />
           <Route path="products/:productId/edit" element={<UpdateProduct />} />
           <Route path="/admin/products/new" element={<Addproduct />} /> 
           <Route path="/admin/orders" element={<Orders  />} /> 

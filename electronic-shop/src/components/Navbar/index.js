@@ -1,24 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSignInAlt, faSignOutAlt, faShoppingCart, faUser, faHeart } from '@fortawesome/free-solid-svg-icons'; // Importer faHeart
+import { faSignInAlt, faSignOutAlt, faShoppingCart, faUser, faHeart, faGlobe, faUserLock } from '@fortawesome/free-solid-svg-icons';
 import '../../style.css';
-import { isLoggedIn, savelang } from '../pages/Account/userStorageService';
+import { isLoggedIn, savelang, getlang, getUserId } from '../pages/Account/userStorageService';
 import { useTranslation } from 'react-i18next';
-import { faGlobe } from '@fortawesome/free-solid-svg-icons';
-import { faUserLock } from '@fortawesome/free-solid-svg-icons';
-
+import axios from 'axios';
 
 function Navbar() {
-  const [t, i18n] = useTranslation();
+  const { t, i18n } = useTranslation();
   const [cartCount, setCartCount] = useState(0);
   const [isLoggedInState, setIsLoggedInState] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState(false);
+  const userId = getUserId();
 
   useEffect(() => {
     setIsLoggedInState(isLoggedIn());
+    fetchCartData();
   }, []);
+
+  const fetchCartData = async () => {
+    try {
+      const lang = getlang();
+      const response = await axios.get(
+        `http://localhost:8080/api/customer/cart/${userId}`, { params: { lang } }
+      );
+      if (response.data && response.data.cartItems) {
+        setCartCount(response.data.cartItems.length);
+      }
+    } catch (error) {
+      console.error('Error fetching cart data:', error);
+    }
+  };
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -32,13 +46,15 @@ function Navbar() {
     setIsLanguageMenuOpen(!isLanguageMenuOpen);
   };
 
-  const test = () => {
-    savelang("ar");
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+    savelang(lng);
+    setIsLanguageMenuOpen(false); 
   };
 
-  const testt = () => {
-    savelang("fr");
-  };
+  useEffect(() => {
+    document.documentElement.setAttribute('lang', i18n.language);
+  }, [i18n.language]);
 
   return (
     <>
@@ -59,22 +75,22 @@ function Navbar() {
             <ul className="navbar-nav mb-2 mb-lg-0">
               <li className="nav-item">
                 <Link className="nav-link active" aria-current="page" to="/" onClick={closeMenu}>
-                  {(t('home'))}
+                  {t('home')}
                 </Link>
               </li>
               <li className="nav-item">
                 <Link className="nav-link" to="/products" onClick={closeMenu}>
-                  {(t('products'))}
+                  {t('produ')}
                 </Link>
               </li>
               <li className="nav-item">
                 <Link className="nav-link" to="/about" onClick={closeMenu}>
-                 {(t('about'))}
+                  {t('about')}
                 </Link>
               </li>
               <li className="nav-item">
                 <Link className="nav-link" to="/contact" onClick={closeMenu}>
-                {(t('contact'))}
+                  {t('contact')}
                 </Link>
               </li>
             </ul>
@@ -82,26 +98,25 @@ function Navbar() {
             <div className="container-fluid p-2">
               <div className="d-flex justify-content-end align-items-center">
                 <div className="dropdown">
-                <button className="btn btn-secondary dropdown-toggle" type="button" onClick={toggleLanguageMenu}>
-      <FontAwesomeIcon icon={faGlobe} className="me-2" />
-      {/* {t('language')} */}
-    </button>
+                  <button className="btn btn-secondary dropdown-toggle" type="button" onClick={toggleLanguageMenu}>
+                    <FontAwesomeIcon icon={faGlobe} className="me-2" />
+                  </button>
                   {isLanguageMenuOpen && (
                     <ul className="dropdown-menu show" style={{ display: 'block' }}>
-                      <li>{i18n.language==='ar' && <button className="dropdown-item" onClick={() =>{i18n.changeLanguage('fr');testt()} }>Français</button>}</li>
                       <li>
-                        {i18n.language === 'fr' && (
-                          <button className="dropdown-item" onClick={() => { 
-                            i18n.changeLanguage('ar');
-                            test();
-                          }}>العربية</button>
-                        )}
+                        <button className="dropdown-item" onClick={() => changeLanguage('fr')}>
+                          Français
+                        </button>
+                      </li>
+                      <li>
+                        <button className="dropdown-item" onClick={() => changeLanguage('ar')}>
+                          العربية
+                        </button>
                       </li>
                     </ul>
                   )}
                 </div>
 
-             
                 <Link to="/cart" className="btn btn-primary position-relative ms-3" onClick={closeMenu}>
                   <FontAwesomeIcon icon={faShoppingCart} />
                   {cartCount > 0 && (
@@ -112,7 +127,7 @@ function Navbar() {
                   )}
                 </Link>
                 <Link to="/wishlist" className="btn btn-primary position-relative ms-3" onClick={closeMenu}>
-                  <FontAwesomeIcon icon={faHeart} /> {/* Ajout de l'icône de wishlist */}
+                  <FontAwesomeIcon icon={faHeart} />
                 </Link>
 
                 {isLoggedInState ? (
@@ -122,9 +137,8 @@ function Navbar() {
                   </Link>
                 ) : (
                   <Link to="/SigIn" className="btn btn-primary ms-3" onClick={closeMenu}>
-                  <FontAwesomeIcon icon={faUserLock} className="me-2" />
-                
-                </Link>
+                    <FontAwesomeIcon icon={faUserLock} className="me-2" />
+                  </Link>
                 )}
               </div>
             </div>
@@ -133,9 +147,6 @@ function Navbar() {
       </nav>
       <br />
       <br />
-      {/* <br />
-      <br />
-      <br /> */}
     </>
   );
 }

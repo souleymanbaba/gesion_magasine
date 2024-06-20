@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Row, Col, Table, Button } from 'react-bootstrap';
 import { getUserId } from './components/pages/Account/userStorageService';
 

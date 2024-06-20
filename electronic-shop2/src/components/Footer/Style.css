@@ -1,0 +1,15 @@
+/* Footer.css */
+.footer-custom {
+    background-color: #6a0dad; /* Violet */
+    color: white;
+  }
+  
+  .footer-link {
+    color: white;
+    text-decoration: none;
+  }
+  
+  .footer-link:hover {
+    text-decoration: underline;
+  }
+  
