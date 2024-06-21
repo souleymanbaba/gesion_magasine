@@ -32,11 +32,22 @@ public class CartController {
         return ResponseEntity.status(HttpStatus.OK).body (orderDto);
     }
 
+    @GetMapping("/cartIi/{userId}")
+    public ResponseEntity<?> getCartByUserIdIi(@PathVariable Long userId,@RequestParam(defaultValue = "fr") String lang) {
+        OrderDto orderDto= cartService.getCartByUserIdIi(userId,lang);
+        return ResponseEntity.status(HttpStatus.OK).body (orderDto);
+    }
+
 
     @DeleteMapping("/test/{id}")
     public ResponseEntity<Void> deleteCartItem(@PathVariable Long id) {
         cartItemsService.deleteCartItem(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/items/{cartItemId}")
+    public ResponseEntity<?> removeProductFromCart(@PathVariable Long cartItemId) {
+        return cartService.removeProductFromCart(cartItemId);
     }
 
 

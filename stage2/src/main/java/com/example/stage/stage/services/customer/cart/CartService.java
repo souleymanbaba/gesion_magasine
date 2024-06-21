@@ -18,4 +18,6 @@ public interface CartService  {
     OrderDto placeOrder (PlaceOrderDto placeOrderDto) ;
     List<OrderDto> getMyPlacedOrders (Long userId);
     OrderDto searchOrderByTrackingId(UUID trackingId);
+    ResponseEntity<?> removeProductFromCart(Long cartItemId);
+    OrderDto getCartByUserIdIi(Long userId,String lang);
 }

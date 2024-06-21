@@ -17,6 +17,34 @@ public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
 
+    public Boolean deleteCategory(Long categoryId) {
+        Optional<Category> optionalCategory = categoryRepository.findById(categoryId);
+        if (optionalCategory.isPresent()) {
+            categoryRepository.deleteById(categoryId);
+            return true;
+        }
+        return false;
+    }
+
+    public Category updateCategory(Long categoryId, CategoryDto categoryDto) {
+        Optional<Category> optionalCategory = categoryRepository.findById(categoryId);
+        if (optionalCategory.isPresent()) {
+            Category category = optionalCategory.get();
+            category.setName(categoryDto.getName());
+            category.setNomAr(categoryDto.getNom_ar());
+            if (categoryDto.getParentCategoryId() != null) {
+                Category parentCategory = categoryRepository.findById(categoryDto.getParentCategoryId())
+                        .orElseThrow(() -> new EntityNotFoundException("Parent category not found"));
+                category.setParentCategory(parentCategory);
+            } else {
+                category.setParentCategory(null);
+            }
+            return categoryRepository.save(category);
+        } else {
+            throw new EntityNotFoundException("Category not found");
+        }
+    }
+
     public Category createcategory(CategoryDto categoryDto) {
         Category category = new Category();
         category.setName(categoryDto.getName());

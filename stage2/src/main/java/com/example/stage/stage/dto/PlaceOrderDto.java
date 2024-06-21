@@ -7,5 +7,7 @@ public class PlaceOrderDto {
     private  Long userId;
     private  String address;
     private  String orderDescription;
+    private Double latitude;
+    private Double longitude;
 
 }

@@ -18,30 +18,28 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     private String orderDescription;
-
-
     private Date date;
-
-
     private Long amount;
-
     private String address;
     private String payment;
     private OrderStatus orderStatus; // Remove if unused
     private Long totalAmount;
     private Long discount; // Remove if unused
-
     private UUID trackingId;
+
+    private Double latitude;
+    private Double longitude;
 
     @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "userId", referencedColumnName = "id")
     private User user;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
     private List<CartItems> cartItems;
-    public OrderDto getOrderDto(){
-        OrderDto orderDto= new OrderDto();
+
+    public OrderDto getOrderDto() {
+        OrderDto orderDto = new OrderDto();
         orderDto.setId(id);
         orderDto.setOrderDescription(orderDescription);
         orderDto.setAddress(address);
@@ -52,7 +50,8 @@ public class Order {
         orderDto.setOrderStatus(orderStatus);
         orderDto.setUserName(user.getName());
         orderDto.setUser_id(user.getId());
+        orderDto.setLatitude(latitude);
+        orderDto.setLongitude(longitude);
         return orderDto;
     }
 }
-

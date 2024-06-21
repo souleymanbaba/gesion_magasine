@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 
 const ProductTransactions = () => {
-  const { productId } = useParams();
+  const { productId,productnom } = useParams();
   const [movements, setMovements] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedDate, setSelectedDate] = useState('');
@@ -43,7 +43,7 @@ const ProductTransactions = () => {
 
   return (
     <Container fluid className="mt-4" dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}>
-      <h1 className="mb-4">{t('products.movements')}</h1>
+      <h1 className="mb-4">{t('products.movements')} : {productnom}</h1>
       <Form className="mb-4">
         <Row>
           <Col>

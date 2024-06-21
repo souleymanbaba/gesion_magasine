@@ -47,4 +47,20 @@ public class AdminCategoryController {
         List<CategoryDto> categories = categoryService.getAllCategories(lang);
         return ResponseEntity.ok(categories);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Category> updateCategory(@PathVariable Long id, @RequestBody CategoryDto categoryDto) {
+        Category category = categoryService.updateCategory(id, categoryDto);
+        return ResponseEntity.ok(category);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
+        boolean isDeleted = categoryService.deleteCategory(id);
+        if (isDeleted) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

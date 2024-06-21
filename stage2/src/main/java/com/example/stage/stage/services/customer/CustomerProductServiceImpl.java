@@ -22,6 +22,7 @@ public class CustomerProductServiceImpl implements CustomerProductService {
         return products.stream().map(product -> product.getDto(lang)).collect(Collectors.toList());
     }
 
+
     public List<ProductDto> getAllProductByName(String name, String lang) {
         List<Product> products = productRepository.findAllByNameContaining(name);
         return products.stream().map(product -> product.getDto(lang)).collect(Collectors.toList());

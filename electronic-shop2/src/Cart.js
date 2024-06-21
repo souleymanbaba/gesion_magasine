@@ -15,18 +15,22 @@ import {
   Spinner
 } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faMinus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { getUserId, getlang } from './components/pages/Account/userStorageService';
+import MapModal from './MapModal';
 
 const Cart = ({ updateCartCount }) => {
   const { t, i18n } = useTranslation();
   const [direction, setDirection] = useState('ltr');
   const [cart, setCart] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [showMapModal, setShowMapModal] = useState(false);
   const [orderData, setOrderData] = useState({
     address: '',
     orderDescription: ''
   });
+  const [latitude, setLatitude] = useState(null);
+  const [longitude, setLongitude] = useState(null);
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [loading, setLoading] = useState(true);
   const [placingOrder, setPlacingOrder] = useState(false);
@@ -85,6 +89,16 @@ const Cart = ({ updateCartCount }) => {
     }
   };
 
+  const handleRemoveItem = async (cartItemId) => {
+    try {
+      await axios.delete(`http://localhost:8080/api/customer/items/${cartItemId}`);
+      const lang = getlang();
+      fetchCartData(lang);
+    } catch (error) {
+      console.error('Error removing item:', error);
+    }
+  };
+
   const handlePlaceOrder = async () => {
     if (!orderData.address || !orderData.orderDescription) {
       setErrorMessage(t('en.Please fill in all fields.'));
@@ -101,7 +115,9 @@ const Cart = ({ updateCartCount }) => {
       const orderPayload = {
         userId,
         address: orderData.address,
-        orderDescription: orderData.orderDescription
+        orderDescription: orderData.orderDescription,
+        latitude: latitude || null,
+        longitude: longitude || null
       };
       const response = await axios.post('http://localhost:8080/api/customer/placeOrder', orderPayload, {
         headers: {
@@ -135,6 +151,16 @@ const Cart = ({ updateCartCount }) => {
     });
   };
 
+  const handleOpenMapModal = () => {
+    setShowMapModal(true);
+  };
+
+  const setCoordinates = (lat, lng) => {
+    setLatitude(lat);
+    setLongitude(lng);
+    setShowMapModal(false);
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -163,6 +189,7 @@ const Cart = ({ updateCartCount }) => {
                           <th>{t('en.Price')}</th>
                           <th>{t('products.marque')}</th>
                           <th>{t('products.taille')}</th>
+                          <th>{t('en.Action')}</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -196,6 +223,15 @@ const Cart = ({ updateCartCount }) => {
                             <td>{item.price}</td>
                             <td>{item.marque}</td>
                             <td>{item.taille}</td>
+                            <td>
+                              <Button
+                                variant="danger"
+                                size="sm"
+                                onClick={() => handleRemoveItem(item.id)}
+                              >
+                                <FontAwesomeIcon icon={faTrash} />
+                              </Button>
+                            </td>
                           </tr>
                         ))}
                       </tbody>
@@ -205,7 +241,7 @@ const Cart = ({ updateCartCount }) => {
                       {t('en.View Order Status')}
                     </Button>
                   )}
-                  {cart && (
+                  {cart && cart.totalAmount > 0 && (
                     <>
                       <h3>{t('en.Total Amount')}: {cart.totalAmount}</h3>
                       <h4>{t('en.Order Status')}: {cart.orderStatus}</h4>
@@ -233,7 +269,7 @@ const Cart = ({ updateCartCount }) => {
         <Modal.Body>
           <Form>
             <Form.Group controlId="formAddress">
-              <Form.Label>{t('en.Address')}</Form.Label>
+              <Form.Label>{t('en.Numero')}</Form.Label>
               <Form.Control
                 type="text"
                 placeholder={t('en.Enter Address')}
@@ -252,6 +288,9 @@ const Cart = ({ updateCartCount }) => {
                 onChange={handleInputChange}
               />
             </Form.Group>
+            <Button variant="secondary" onClick={handleOpenMapModal}>
+              {t('en.Select on Map')}
+            </Button>
           </Form>
         </Modal.Body>
         <Modal.Footer>
@@ -263,6 +302,8 @@ const Cart = ({ updateCartCount }) => {
           </Button>
         </Modal.Footer>
       </Modal>
+
+      <MapModal show={showMapModal} handleClose={() => setShowMapModal(false)} setCoordinates={setCoordinates} />
     </Container>
   );
 };

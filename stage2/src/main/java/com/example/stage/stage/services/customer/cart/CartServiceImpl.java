@@ -30,6 +30,27 @@ public class CartServiceImpl implements CartService {
     @Autowired
     private ProcuctRepository productRepository;
 
+    public ResponseEntity<?> removeProductFromCart(Long cartItemId) {
+        Optional<CartItems> optionalCartItem = cartItemsRepository.findById(cartItemId);
+        if (optionalCartItem.isPresent()) {
+            CartItems cartItem = optionalCartItem.get();
+            Order activeOrder = cartItem.getOrder();
+
+            if (activeOrder != null) {
+                activeOrder.setAmount(activeOrder.getAmount() - cartItem.getPrice() * cartItem.getQuantity());
+                activeOrder.setTotalAmount(activeOrder.getTotalAmount() - cartItem.getPrice() * cartItem.getQuantity());
+                activeOrder.getCartItems().remove(cartItem);
+                cartItemsRepository.delete(cartItem);
+                orderRepository.save(activeOrder);
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            } else {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Cannot remove product from cart");
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cart item not found");
+        }
+    }
+
     public ResponseEntity<?> addProductToCart(AddProductInCartDto addProductInCartDto) {
         Order activeOrder = orderRepository.findByUserIdAndOrderStatus(addProductInCartDto.getUserId(), OrderStatus.Pending);
         Optional<CartItems> optionalCartItems = cartItemsRepository.findByProductIdAndOrderIdAndUserId(addProductInCartDto.getProductId(), activeOrder.getId(), addProductInCartDto.getUserId());
@@ -96,6 +117,22 @@ public class CartServiceImpl implements CartService {
         return orderDto;
     }
 
+    public OrderDto getCartByUserIdIi(Long userId,String lang) {
+
+        Order activeOrder = orderRepository.findByUserIdAndOrderStatus(userId, OrderStatus.Shipped);
+        List<CartItemsDto> cartItemsDtoList = activeOrder.getCartItems().stream().map(cartItem -> cartItem.getCartto(lang)).collect(Collectors.toList());
+        OrderDto orderDto = new OrderDto();
+        orderDto.setAmount(activeOrder.getAmount());
+        orderDto.setId(activeOrder.getId());
+        orderDto.setOrderStatus(activeOrder.getOrderStatus());
+        orderDto.setDiscount(activeOrder.getDiscount());
+        orderDto.setTotalAmount(activeOrder.getTotalAmount());
+        orderDto.setCartItems(cartItemsDtoList);
+
+
+
+        return orderDto;
+    }
 
 
     public OrderDto increaseProductQuantity(AddProductInCartDto addProductInCartDto) {
@@ -144,6 +181,8 @@ public class CartServiceImpl implements CartService {
         if (optionalUser.isPresent()) {
             activeOrder.setOrderDescription(placeOrderDto.getOrderDescription());
             activeOrder.setAddress(placeOrderDto.getAddress());
+            activeOrder.setLatitude(placeOrderDto.getLatitude());
+            activeOrder.setLongitude(placeOrderDto.getLongitude());
             activeOrder.setDate(new Date());
             activeOrder.setOrderStatus(OrderStatus.Placed);
             activeOrder.setTrackingId(UUID.randomUUID());
@@ -157,7 +196,6 @@ public class CartServiceImpl implements CartService {
             order.setOrderStatus(OrderStatus.Pending);
             orderRepository.save(order);
             return activeOrder.getOrderDto();
-
         }
         return null;
     }

@@ -13,25 +13,19 @@ import java.util.UUID;
 @Data
 public class OrderDto {
     private Long id;
-
-
     private String orderDescription;
-
-
     private Date date;
-
-
     private Long amount;
-
     private String address;
     private String payment;
     private OrderStatus orderStatus; // Remove if unused
     private Long totalAmount;
     private Long discount; // Remove if unused
-
     private UUID trackingId;
     private String userName;
     private Long user_id;
     private List<CartItemsDto> cartItems;
-    private  String couponName;
+    private String couponName;
+    private Double latitude;
+    private Double longitude;
 }

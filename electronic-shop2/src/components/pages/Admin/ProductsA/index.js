@@ -5,6 +5,7 @@ import { FaPlus, FaEye, FaEdit, FaTrash, FaLanguage, FaArrowCircleUp, FaExchange
 import ReactPaginate from 'react-paginate';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
+import { formatISO } from 'date-fns';
 
 const AdminProducts = () => {
   const [products, setProducts] = useState([]);
@@ -136,6 +137,17 @@ const AdminProducts = () => {
       [name]: value
     }));
   };
+  const handleInputChangeS = (e) => {
+    const { name, value } = e.target;
+    
+    // Formatage de la date en LocalDateTime
+    const formattedValue = name === 'dateMouvement' ? formatISO(new Date(value), { representation: 'date' }) : value;
+
+    setFormData(prevState => ({
+      ...prevState,
+      [name]: formattedValue
+    }));
+  };
 
   const handleAddMovement = (productId) => {
     setSelectedProduct(products.find(product => product.id === productId));
@@ -150,9 +162,8 @@ const AdminProducts = () => {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          productId: selectedProduct.id, // Utilize the ID of the selected product
-          ...formData,
-          dateMouvement: new Date().toISOString() // Add the movement date
+          productId: selectedProduct.id, 
+          ...formData 
         })
       });
 
@@ -170,16 +181,14 @@ const AdminProducts = () => {
 
       // Close the form after successful submission if necessary
       setShowMovementForm(false);
-
-      // Refresh the list of products after adding movement if necessary
       fetchProducts();
     } catch (error) {
       console.error('Error adding movement:', error.message);
     }
   };
 
-  const handleTransactionClick = (productId) => {
-    navigate(`/admin/products/${productId}/transactions`);
+  const handleTransactionClick = (productId,productnom) => {
+    navigate(`/admin/products/${productId}/${productnom}/transactions`);
   };
 
   const handleImportFileChange = (e) => {
@@ -205,7 +214,7 @@ const AdminProducts = () => {
 
       setShowImportModal(false);
       setAlertMessage('Products imported successfully!');
-      fetchProducts(); // Refresh product list after import
+      fetchProducts();
     } catch (error) {
       console.error('Error importing products:', error.message);
       setAlertMessage('Error importing products');
@@ -270,7 +279,7 @@ const AdminProducts = () => {
                 <Button variant="info" onClick={() => handleAddMovement(product.id)} className="ml-1">
                   <FaArrowCircleUp />
                 </Button>
-                <Button variant="info" onClick={() => handleTransactionClick(product.id)} className="ml-1">
+                <Button variant="info" onClick={() => handleTransactionClick(product.id,product.name)} className="ml-1">
                   <FaExchangeAlt />
                 </Button>
               </td>
@@ -393,7 +402,7 @@ const AdminProducts = () => {
                 type="date"
                 name="dateMouvement"
                 value={formData.dateMouvement}
-                onChange={handleInputChange}
+                onChange={handleInputChangeS}
               />
             </Form.Group>
           </Form>

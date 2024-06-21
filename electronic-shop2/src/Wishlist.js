@@ -37,7 +37,7 @@ const Wishlist = ({ updateWishlistCount }) => {
 
   const handleRemoveFromWishlist = async (itemId) => {
     try {
-      await axios.delete(`http://localhost:8080/api/customer/wishlist/${userId}/${itemId}`);
+      await axios.delete(`http://localhost:8080/api/customer/wishlist/${itemId}`);
       const response = await axios.get(`http://localhost:8080/api/customer/wishlist/${userId}`);
       setWishlist(response.data);
       updateWishlistCount(response.data.length);
@@ -80,7 +80,7 @@ const Wishlist = ({ updateWishlistCount }) => {
                     <Button
                       variant="outline-danger"
                       size="sm"
-                      onClick={() => handleRemoveFromWishlist(item.productId)}
+                      onClick={() => handleRemoveFromWishlist(item.id)}
                     >
                       <FontAwesomeIcon icon={faTrash} /> {t('en.Remove')}
                     </Button>

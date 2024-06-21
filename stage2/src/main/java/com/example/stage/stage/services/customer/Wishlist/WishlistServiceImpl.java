@@ -35,6 +35,11 @@ public class WishlistServiceImpl implements WishlistService{
         return null;
     }
 
+
+    public void deleteWishListItem(Long wishListId) {
+        wishlistRepository.deleteById(wishListId);
+    }
+
     public List<WishlistDto> getWishlistByUserId(Long userId) {
         return wishlistRepository.findAllByUserId(userId).stream().map(WishList::getWishlistDto).collect(Collectors.toList());
     }

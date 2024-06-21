@@ -4,6 +4,7 @@ import { FaPlus, FaTrash, FaEdit, FaLanguage } from 'react-icons/fa';
 import { Container, Row, Col, Button, Form, Modal, Table } from 'react-bootstrap';
 import ReactPaginate from 'react-paginate';
 import { useTranslation } from 'react-i18next';
+import Swal from 'sweetalert2';
 
 const CategoryManagement = () => {
   const { t, i18n } = useTranslation();
@@ -14,6 +15,7 @@ const CategoryManagement = () => {
   const [showForm, setShowForm] = useState(false);
   const [showUpdateForm, setShowUpdateForm] = useState(false);
   const [showTranslateForm, setShowTranslateForm] = useState(false);
+  const [showDeleteForm, setShowDeleteForm] = useState(false);
   const [currentCategory, setCurrentCategory] = useState(null);
   const [arabicName, setArabicName] = useState('');
   const [currentPage, setCurrentPage] = useState(0);
@@ -44,25 +46,40 @@ const CategoryManagement = () => {
     e.preventDefault();
     try {
       const response = await axios.post('http://localhost:8080/api/admin/category', newCategory);
-      console.log(t('messages.new_category_created'), response.data);
+      Swal.fire({
+        icon: 'success',
+        title: t('messages.new_category_created'),
+        text: response.data.name,
+      });
       fetchCategories();
       setNewCategory({ name: '', description: '', parentCategoryId: null });
       setShowForm(false);
     } catch (error) {
-      console.error(t('messages.error_creating_category'), error);
+      Swal.fire({
+        icon: 'error',
+        title: t('messages.error_creating_category'),
+        text: error.message,
+      });
     }
   };
 
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`http://localhost:8080/api/admin/category/${currentCategory.id}`, newCategory);
-      console.log(t('messages.category_updated'));
+      await axios.put(`http://localhost:8080/api/admin/${currentCategory.id}`, newCategory);
+      Swal.fire({
+        icon: 'success',
+        title: t('messages.category_updated'),
+      });
       fetchCategories();
       setShowUpdateForm(false);
       setNewCategory({ name: '', description: '', parentCategoryId: null });
     } catch (error) {
-      console.error(t('messages.error_updating_category'), error);
+      Swal.fire({
+        icon: 'error',
+        title: t('messages.error_updating_category'),
+        text: error.message,
+      });
     }
   };
 
@@ -78,40 +95,58 @@ const CategoryManagement = () => {
         `http://localhost:8080/api/admin/category/${currentCategory.id}/translate`,
         { nom_ar: arabicName }
       );
-      console.log(t('messages.arabic_name_saved'));
+      Swal.fire({
+        icon: 'success',
+        title: t('messages.arabic_name_saved'),
+      });
       fetchCategories();
       setShowTranslateForm(false);
       setArabicName('');
     } catch (error) {
-      console.error(t('messages.error_saving_arabic_name'), error);
+      Swal.fire({
+        icon: 'error',
+        title: t('messages.error_saving_arabic_name'),
+        text: error.message,
+      });
     }
   };
 
-  const handleDelete = async (categoryId) => {
+  const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:8080/api/admin/category/${categoryId}`);
-      console.log(t('messages.category_deleted'));
+      await axios.delete(`http://localhost:8080/api/admin/${currentCategory.id}`);
+      Swal.fire({
+        icon: 'success',
+        title: t('messages.category_deleted'),
+      });
       fetchCategories();
+      setShowDeleteForm(false);
     } catch (error) {
-      console.error(t('messages.error_deleting_category'), error);
+      Swal.fire({
+        icon: 'error',
+        title: t('messages.error_deleting_category'),
+        text: error.message,
+      });
     }
   };
 
   const fetchCategories = async () => {
     try {
-      const lang = i18n.language; // Utilisez la langue actuelle
+      const lang = i18n.language;
       const response = await axios.get('http://localhost:8080/api/admin/categories', { params: { lang } });
-      console.log(t('messages.fetch_categories'), response.data);
       setCategories(response.data);
       setCurrentCategories(response.data.slice(0, categoriesPerPage));
     } catch (error) {
-      console.error(t('messages.error_fetching_categories'), error);
+      Swal.fire({
+        icon: 'error',
+        title: t('messages.error_fetching_categories'),
+        text: error.message,
+      });
     }
   };
 
   useEffect(() => {
     fetchCategories();
-  }, [i18n.language]); // Ajoutez la langue comme dépendance pour relancer fetchCategories lorsque la langue change
+  }, [i18n.language]);
 
   const handlePageClick = (data) => {
     const selectedPage = data.selected;
@@ -121,13 +156,17 @@ const CategoryManagement = () => {
   };
 
   useEffect(() => {
-    // Charger les catégories parent lors du premier rendu
-    axios.get('http://localhost:8080/api/admin/categories')
+    const lang = i18n.language;
+    axios.get('http://localhost:8080/api/admin/categories', { params: { lang } })
       .then(response => {
         setParentCategories(response.data);
       })
       .catch(error => {
-        console.error('Error fetching parent categories:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error fetching parent categories',
+          text: error.message,
+        });
       });
   }, []);
 
@@ -135,7 +174,6 @@ const CategoryManagement = () => {
     <Container fluid style={{ direction }}>
       <Row className="justify-content-center">
         <Col xs={12} md={4}>
-          {/* Contenu de la barre latérale */}
           <div className="text-center mb-3">
             <Button variant="primary" onClick={() => setShowForm(true)}>
               <FaPlus className="mr-2" /> {t('buttons.add_category')}
@@ -179,7 +217,13 @@ const CategoryManagement = () => {
                       >
                         <FaLanguage />
                       </Button>
-                      <Button variant="danger" onClick={() => handleDelete(category.id)}>
+                      <Button
+                        variant="danger"
+                        onClick={() => {
+                          setCurrentCategory(category);
+                          setShowDeleteForm(true);
+                        }}
+                      >
                         <FaTrash />
                       </Button>
                     </td>
@@ -225,6 +269,7 @@ const CategoryManagement = () => {
                 required
               />
             </Form.Group>
+          
             <Form.Group className="mb-3" controlId="formParentCategory">
               <Form.Label>{t('labels.parent_category')}</Form.Label>
               <Form.Control
@@ -247,7 +292,7 @@ const CategoryManagement = () => {
       </Modal>
       <Modal show={showUpdateForm} onHide={() => setShowUpdateForm(false)} centered>
         <Modal.Header closeButton>
-        <Modal.Title>{t('buttons.update_category')}</Modal.Title>
+          <Modal.Title>{t('buttons.update_category')}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleUpdate}>
@@ -262,6 +307,7 @@ const CategoryManagement = () => {
                 required
               />
             </Form.Group>
+            
             <Form.Group className="mb-3" controlId="formUpdateParentCategory">
               <Form.Label>{t('labels.parent_category')}</Form.Label>
               <Form.Control
@@ -302,6 +348,20 @@ const CategoryManagement = () => {
               {t('buttons.save_arabic_name')}
             </Button>
           </Form>
+        </Modal.Body>
+      </Modal>
+      <Modal show={showDeleteForm} onHide={() => setShowDeleteForm(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>{t('buttons.delete_category')}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>{t('messages.confirm_delete_category', { categoryName: currentCategory?.name })}</p>
+          <Button variant="danger" onClick={handleDelete} className="mr-2">
+            {t('buttons.delete')}
+          </Button>
+          <Button variant="secondary" onClick={() => setShowDeleteForm(false)}>
+            {t('buttons.cancel')}
+          </Button>
         </Modal.Body>
       </Modal>
     </Container>

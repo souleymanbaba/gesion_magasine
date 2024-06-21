@@ -11,4 +11,6 @@ public interface CategoryService {
     List<CategoryDto> getCategoryAndSubcategories(Long categoryId, String lang);
     List<CategoryDto> convertToCategoryDtoList(List<Category> categories, String lang);
     Category updateCategoryTranslation(Long categoryId, CategoryDto categoryDto);
+    Boolean deleteCategory(Long categoryId);
+    Category updateCategory(Long categoryId, CategoryDto categoryDto);
 }
