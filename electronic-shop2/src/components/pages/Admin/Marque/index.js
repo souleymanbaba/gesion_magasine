@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Button, Table, Modal, Form, Container } from 'react-bootstrap';
+import { Button, Table, Modal, Form, Container, FormControl } from 'react-bootstrap';
 import { FaPlus, FaEye, FaEdit, FaTrash } from 'react-icons/fa';
 import ReactPaginate from 'react-paginate';
 import { useTranslation } from 'react-i18next';
@@ -12,6 +12,7 @@ const AdminMarques = () => {
   const [selectedMarque, setSelectedMarque] = useState(null);
   const [formData, setFormData] = useState({ nom: '', nom_ar: '' });
   const [currentPage, setCurrentPage] = useState(0);
+  const [searchTerm, setSearchTerm] = useState('');
   const marquesPerPage = 5;
   const { t, i18n } = useTranslation();
   const direction = i18n.language === 'ar' ? 'rtl' : 'ltr';
@@ -34,6 +35,15 @@ const AdminMarques = () => {
   useEffect(() => {
     fetchMarques();
   }, []);
+
+  useEffect(() => {
+    const offset = currentPage * marquesPerPage;
+    const filteredMarques = marques.filter(marque => 
+      marque.nom.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      marque.nom_ar.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setCurrentMarques(filteredMarques.slice(offset, offset + marquesPerPage));
+  }, [marques, currentPage, searchTerm]);
 
   const handleDeleteMarque = async (marqueId) => {
     try {
@@ -70,9 +80,7 @@ const AdminMarques = () => {
 
   const handlePageClick = (data) => {
     const selectedPage = data.selected;
-    const offset = selectedPage * marquesPerPage;
     setCurrentPage(selectedPage);
-    setCurrentMarques(marques.slice(offset, offset + marquesPerPage));
   };
 
   const handleInputChange = (e) => {
@@ -81,6 +89,11 @@ const AdminMarques = () => {
       ...prevState,
       [name]: value
     }));
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+    setCurrentPage(0); // Reset to the first page whenever search term changes
   };
 
   const handleSubmit = async () => {
@@ -108,24 +121,29 @@ const AdminMarques = () => {
       <h1 className="mb-4" dir={direction}>{t('marques.title')}</h1>
       <h5 dir={direction}>
         <Link to="#" onClick={() => setShowModal(true)} className="mb-3">
-          <Button variant="success" >
+          <Button variant="success">
             <FaPlus className="mr-2" /> {t('marques.add')}
           </Button>
         </Link>
       </h5>
-      <br />
+      <FormControl
+        type="text"
+        placeholder={t('products.recherche')}
+        className="mb-3"
+        value={searchTerm}
+        onChange={handleSearchChange}
+        dir={direction}
+      />
       <Table striped bordered hover className="table-wrapper" dir={direction}>
         <thead>
           <tr>
             <th>{t('marques.nom')}</th>
-          
             <th>{t('marques.actions')}</th>
           </tr>
         </thead>
         <tbody>
           {currentMarques.map(marque => (
             <tr key={marque.id}>
-           
               <td>{i18n.language === 'ar' ? marque.nom_ar : marque.nom}</td>
               <td>
                 <Button variant="primary" onClick={() => handleViewMarque(marque)}>
@@ -177,7 +195,10 @@ const AdminMarques = () => {
       <ReactPaginate
         previousLabel={t('pagination.previous')}
         nextLabel={t('pagination.next')}
-        pageCount={Math.ceil(marques.length / marquesPerPage)}
+        pageCount={Math.ceil(marques.filter(marque =>
+          marque.nom.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          marque.nom_ar.toLowerCase().includes(searchTerm.toLowerCase())
+        ).length / marquesPerPage)}
         marginPagesDisplayed={2}
         pageRangeDisplayed={5}
         onPageChange={handlePageClick}

@@ -22,9 +22,9 @@ const Wishlist = ({ updateWishlistCount }) => {
   }, [i18n.language]);
 
   useEffect(() => {
-    const fetchWishlistData = async () => {
+    const fetchWishlistData = async (lang) => {
       try {
-        const response = await axios.get(`http://localhost:8080/api/customer/wishlist/${userId}`);
+        const response = await axios.get(`http://localhost:8080/api/customer/wishlist/${userId}`, { params: { lang } });
         setWishlist(response.data);
         updateWishlistCount(response.data.length);
       } catch (error) {
@@ -32,13 +32,13 @@ const Wishlist = ({ updateWishlistCount }) => {
       }
     };
 
-    fetchWishlistData();
-  }, [userId, updateWishlistCount]);
+    fetchWishlistData(i18n.language);
+  }, [userId, updateWishlistCount, i18n.language]);
 
   const handleRemoveFromWishlist = async (itemId) => {
     try {
-      await axios.delete(`http://localhost:8080/api/customer/wishlist/${itemId}`);
-      const response = await axios.get(`http://localhost:8080/api/customer/wishlist/${userId}`);
+      await axios.delete(`http://localhost:8080/api/customer/wishlist/${itemId}`, { params: { lang: i18n.language } });
+      const response = await axios.get(`http://localhost:8080/api/customer/wishlist/${userId}`, { params: { lang: i18n.language } });
       setWishlist(response.data);
       updateWishlistCount(response.data.length);
     } catch (error) {

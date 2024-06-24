@@ -9,7 +9,13 @@
   "language": "Langue",
   "filters": "Filtres",
   "categories": "Catégories",
+  "PStatusPending":"En instance",
+  "PStatusOther":"Placé",
   "select_category": "Catégorie",
+  "Numero": "Numéro",
+  "Date": "Date",
+  "Status": "Statut",
+  "Amount": "Montant",
   "select_brand": "Marque",
   "select_size": "Taille",
   "admin": "Admin",
@@ -101,6 +107,9 @@
     "copyRight": "© {{year}} Mon entreprise. Tous droits réservés."
   },
   "en": {
+    "Numero": "Numéro",
+    "Enter Numero": "Entrez le numéro",
+    "Select on Map": "Sélectionnez sur la carte",
     "Cart": "Panier",
     "Product Name": "Nom du produit",
     "Quantity": "Quantité",
@@ -118,7 +127,8 @@
     "Wishlist": "Liste de souhaits",
     "Actions": "Actions",
     "Remove": "Retirer",
-    "View Order Status": "Voir le statut de la commande"
+    "View Order Status": "Voir le statut de la commande",
+    "type":"Type"
   },
   "added_to_cart_success": "Article ajouté au panier avec succès",
   "header": {
@@ -139,7 +149,9 @@
     "name": "Nom",
     "description": "Description",
     "actions": "Action",
-    "arabic_name": "Nom en arabe"
+    "arabic_name": "Nom en arabe",
+    "parent_category": "Catégorie parente",
+    "no_parent_category": "Aucune catégorie parente"
   },
   "messages": {
     "new_category_created": "Nouvelle catégorie créée :",
@@ -173,7 +185,12 @@
     "enter_translation": "Entrez la traduction ici",
     "product_image": "Image du produit",
     "stock_quantity": "Quantité en stock",
-    "import": "Importer des produits"
+    "import": "Importer des produits",
+     "cancel": "Annuler",
+      "select_file":" sélectionner le fichier",
+      "recherche":"Recherche"
+     
+  
   },
   "pagination": {
     "previous": "Précédent",
@@ -206,7 +223,8 @@
     "quantity": "Quantité",
     "price": "Prix",
     "size": "Taille",
-    "marque": "Marque"
+    "marque": "Marque",
+    "viewLocation": "Voir l'emplacement"
   },
   "common": {
     "close": "Fermer"

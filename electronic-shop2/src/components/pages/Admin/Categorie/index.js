@@ -5,10 +5,12 @@ import { Container, Row, Col, Button, Form, Modal, Table } from 'react-bootstrap
 import ReactPaginate from 'react-paginate';
 import { useTranslation } from 'react-i18next';
 import Swal from 'sweetalert2';
+import './Categorie.css';
 
 const CategoryManagement = () => {
   const { t, i18n } = useTranslation();
   const [categories, setCategories] = useState([]);
+  const [filteredCategories, setFilteredCategories] = useState([]);
   const [currentCategories, setCurrentCategories] = useState([]);
   const [newCategory, setNewCategory] = useState({ name: '', description: '', parentCategoryId: null });
   const [parentCategories, setParentCategories] = useState([]);
@@ -19,6 +21,7 @@ const CategoryManagement = () => {
   const [currentCategory, setCurrentCategory] = useState(null);
   const [arabicName, setArabicName] = useState('');
   const [currentPage, setCurrentPage] = useState(0);
+  const [searchTerm, setSearchTerm] = useState('');
   const categoriesPerPage = 5;
 
   const handleChange = (e) => {
@@ -134,6 +137,7 @@ const CategoryManagement = () => {
       const lang = i18n.language;
       const response = await axios.get('http://localhost:8080/api/admin/categories', { params: { lang } });
       setCategories(response.data);
+      setFilteredCategories(response.data); // Ajoutez cette ligne
       setCurrentCategories(response.data.slice(0, categoriesPerPage));
     } catch (error) {
       Swal.fire({
@@ -152,7 +156,7 @@ const CategoryManagement = () => {
     const selectedPage = data.selected;
     const offset = selectedPage * categoriesPerPage;
     setCurrentPage(selectedPage);
-    setCurrentCategories(categories.slice(offset, offset + categoriesPerPage));
+    setCurrentCategories(filteredCategories.slice(offset, offset + categoriesPerPage));
   };
 
   useEffect(() => {
@@ -170,87 +174,111 @@ const CategoryManagement = () => {
       });
   }, []);
 
+  useEffect(() => {
+    const filtered = categories.filter(category =>
+      category.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredCategories(filtered);
+    setCurrentCategories(filtered.slice(0, categoriesPerPage));
+    setCurrentPage(0);
+  }, [searchTerm, categories]);
+
   return (
     <Container fluid style={{ direction }}>
       <Row className="justify-content-center">
-        <Col xs={12} md={4}>
-          <div className="text-center mb-3">
+        <Col xs={12} md={4} className="mb-3">
+          <div className="text-center">
             <Button variant="primary" onClick={() => setShowForm(true)}>
               <FaPlus className="mr-2" /> {t('buttons.add_category')}
             </Button>
           </div>
         </Col>
-        <div className="table-container">
-          <div className="table-wrapper">
-            <Table striped bordered hover responsive>
-              <thead className="admin-products__table-header">
-                <tr>
-                  <th>{t('labels.id')}</th>
-                  <th>{t('labels.name')}</th>
-                  <th>{t('labels.actions')}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentCategories.map((category) => (
-                  <tr key={category.id} className="admin-products__table-row">
-                    <td>{category.id}</td>
-                    <td>{category.name}</td>
-                    <td>
-                      <Button
-                        variant="warning"
-                        className="mr-2"
-                        onClick={() => {
-                          setCurrentCategory(category);
-                          setNewCategory({ name: category.name, description: category.description, parentCategoryId: category.parentCategoryId });
-                          setShowUpdateForm(true);
-                        }}
-                      >
-                        <FaEdit />
-                      </Button>
-                      <Button
-                        variant="info"
-                        className="mr-2"
-                        onClick={() => {
-                          setCurrentCategory(category);
-                          handleTranslate();
-                        }}
-                      >
-                        <FaLanguage />
-                      </Button>
-                      <Button
-                        variant="danger"
-                        onClick={() => {
-                          setCurrentCategory(category);
-                          setShowDeleteForm(true);
-                        }}
-                      >
-                        <FaTrash />
-                      </Button>
-                    </td>
+        <Col xs={12} md={8} className="mb-3">
+          <Form.Group>
+            <Form.Control
+              type="text"
+              placeholder={t('products.recherche')}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </Form.Group>
+        </Col>
+      </Row>
+      <Row>
+        <Col xs={12}>
+          <div className="table-container">
+            <div className="table-wrapper">
+              <Table striped bordered hover responsive>
+                <thead className="admin-products__table-header">
+                  <tr>
+                    <th>{t('labels.id')}</th>
+                    <th>{t('labels.name')}</th>
+                    <th>{t('labels.actions')}</th>
                   </tr>
-                ))}
-              </tbody>
-            </Table>
-            <div className="d-flex justify-content-center">
-              <ReactPaginate
-                previousLabel={t('buttons.previous')}
-                nextLabel={t('buttons.next')}
-                breakLabel={'...'}
-                breakClassName={'break-me'}
-                pageCount={Math.ceil(categories.length / categoriesPerPage)}
-                marginPagesDisplayed={2}
-                pageRangeDisplayed={5}
-                onPageChange={handlePageClick}
-                containerClassName={'pagination'}
-                activeClassName={'active'}
-                pageLinkClassName={'page-link'}
-                previousLinkClassName={'page-link'}
-                nextLinkClassName={'page-link'}
-                disabledClassName={'disabled'}
-              />
+                </thead>
+                <tbody>
+                  {currentCategories.map((category) => (
+                    <tr key={category.id} className="admin-products__table-row">
+                      <td>{category.id}</td>
+                      <td>{category.name}</td>
+                      <td>
+                        <Button
+                          variant="warning"
+                          className="mr-2 mb-1"
+                          onClick={() => {
+                            setCurrentCategory(category);
+                            setNewCategory({ name: category.name, description: category.description, parentCategoryId: category.parentCategoryId });
+                            setShowUpdateForm(true);
+                          }}
+                        >
+                          <FaEdit />
+                        </Button>
+                        <Button
+                          variant="info"
+                          className="mr-2 mb-1"
+                          onClick={() => {
+                            setCurrentCategory(category);
+                            handleTranslate();
+                          }}
+                        >
+                          <FaLanguage />
+                        </Button>
+                        <Button
+                          variant="danger"
+                          className="mb-1"
+                          onClick={() => {
+                            setCurrentCategory(category);
+                            setShowDeleteForm(true);
+                          }}
+                        >
+                          <FaTrash />
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+              <div className="d-flex justify-content-center">
+                <ReactPaginate
+                  previousLabel={t('buttons.previous')}
+                  nextLabel={t('buttons.next')}
+                  breakLabel={'...'}
+                  breakClassName={'break-me'}
+                  pageCount={Math.ceil(filteredCategories.length / categoriesPerPage)}
+                  marginPagesDisplayed={2}
+                  pageRangeDisplayed={5}
+                  onPageChange={handlePageClick}
+                  containerClassName={'pagination'}
+                  activeClassName={'active'}
+                  pageLinkClassName={'page-link'}
+                  previousLinkClassName={'page-link'}
+                  nextLinkClassName={'page-link'}
+                  disabledClassName={'disabled'}
+                />
+              </div>
             </div>
           </div>
-        </div>
+        </Col>
       </Row>
       <Modal show={showForm} onHide={() => setShowForm(false)} centered>
         <Modal.Header closeButton>
@@ -269,7 +297,6 @@ const CategoryManagement = () => {
                 required
               />
             </Form.Group>
-          
             <Form.Group className="mb-3" controlId="formParentCategory">
               <Form.Label>{t('labels.parent_category')}</Form.Label>
               <Form.Control
@@ -307,7 +334,6 @@ const CategoryManagement = () => {
                 required
               />
             </Form.Group>
-            
             <Form.Group className="mb-3" controlId="formUpdateParentCategory">
               <Form.Label>{t('labels.parent_category')}</Form.Label>
               <Form.Control

@@ -1,47 +1,27 @@
+/* Custom styles for responsive table */
 .table-container {
-  margin-top: 20px; /* Pour espacement au-dessus du tableau */
+  overflow-x: auto;
 }
 
-.table-wrapper {
-  overflow-x: auto; /* Pour activer le défilement horizontal si nécessaire */
-}
+@media (max-width: 768px) {
+  .table-container {
+    -webkit-overflow-scrolling: touch;
+    overflow-x: scroll;
+  }
 
-/* Pagination styles */
-.pagination {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-}
+  .table-wrapper {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+  }
 
-.pagination .page-link {
-  color: #000000;
-  background-color: #fff;
-  border: 1px solid #dee2e6;
-}
+  .table-wrapper table {
+    width: 100%;
+    max-width: none;
+  }
 
-.pagination .page-link:hover {
-  z-index: 2;
-  color: #000000;
-  text-decoration: none;
-  background-color: #e9ecef;
-  border-color: #dee2e6;
-}
-
-.pagination .page-item.active .page-link {
-  z-index: 3;
-  color: #fff;
-  background-color: #0b0b0c;
-  border-color: #010102;
-}
-
-.pagination .page-item.disabled .page-link {
-  color: #6c757d;
-  pointer-events: none;
-  background-color: #fff;
-  border-color: #dee2e6;
-}
-
-
-.admin-products__table-header th {
-  text-align: center; /* Centrer le texte dans les cellules de l'en-tête */
+  .admin-products__table-header th,
+  .admin-products__table-row td {
+    white-space: nowrap;
+  }
 }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Button, Table, Modal, Form, Container, Alert } from 'react-bootstrap';
+import { Button, Table, Modal, Form, Container, Alert, FormControl } from 'react-bootstrap';
 import { FaPlus, FaEye, FaEdit, FaTrash, FaLanguage, FaArrowCircleUp, FaExchangeAlt, FaFileImport } from 'react-icons/fa';
 import ReactPaginate from 'react-paginate';
 import { useTranslation } from 'react-i18next';
@@ -25,6 +25,7 @@ const AdminProducts = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [importFile, setImportFile] = useState(null); // State for file input
   const [alertMessage, setAlertMessage] = useState(''); // State for alert message
+  const [searchTerm, setSearchTerm] = useState(''); // State for search term
   const productsPerPage = 5;
   const { t, i18n } = useTranslation();
   const direction = i18n.language === 'ar' ? 'rtl' : 'ltr';
@@ -48,6 +49,15 @@ const AdminProducts = () => {
   useEffect(() => {
     fetchProducts();
   }, [i18n.language]); // Refetch products when language changes
+
+  useEffect(() => {
+    const offset = currentPage * productsPerPage;
+    const filteredProducts = products.filter(product =>
+      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.description.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setCurrentProducts(filteredProducts.slice(offset, offset + productsPerPage));
+  }, [products, currentPage, searchTerm]);
 
   const handleDeleteProduct = async (productId) => {
     try {
@@ -124,10 +134,7 @@ const AdminProducts = () => {
 
   const handlePageClick = (data) => {
     const selectedPage = data.selected;
-    const offset = selectedPage * productsPerPage;
-
     setCurrentPage(selectedPage);
-    setCurrentProducts(products.slice(offset, offset + productsPerPage));
   };
 
   const handleInputChange = (e) => {
@@ -137,6 +144,7 @@ const AdminProducts = () => {
       [name]: value
     }));
   };
+
   const handleInputChangeS = (e) => {
     const { name, value } = e.target;
     
@@ -187,8 +195,8 @@ const AdminProducts = () => {
     }
   };
 
-  const handleTransactionClick = (productId,productnom) => {
-    navigate(`/admin/products/${productId}/${productnom}/transactions`);
+  const handleTransactionClick = (productId, productName) => {
+    navigate(`/admin/products/${productId}/${productName}/transactions`);
   };
 
   const handleImportFileChange = (e) => {
@@ -221,27 +229,37 @@ const AdminProducts = () => {
     }
   };
 
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+    setCurrentPage(0); // Reset to the first page whenever search term changes
+  };
+
   return (
     <Container fluid>
       {alertMessage && <Alert variant="success">{alertMessage}</Alert>}
       <div className="d-flex justify-content-between align-items-center mb-4" dir={direction}>
         <h1>{t('products.title')}</h1>
         <h5 dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}>
-        <div>
-          
-          <Link to="/admin/products/new" className="mr-2">
-            <Button variant="success">
-              <FaPlus className="mr-2" /> {t('products.add')}
+          <div>
+            <Link to="/admin/products/new" className="mr-2">
+              <Button variant="success">
+                <FaPlus className="mr-2" /> {t('products.add')}
+              </Button>
+            </Link>
+            <Button variant="primary" onClick={() => setShowImportModal(true)}>
+              <FaFileImport className="mr-2" /> {t('products.import')}
             </Button>
-          </Link>
-          <Button variant="primary" onClick={() => setShowImportModal(true)}>
-            <FaFileImport className="mr-2" /> {t('products.import')}
-          </Button>
-        
-        </div>
+          </div>
         </h5>
       </div>
-
+      <FormControl
+        type="text"
+        placeholder={t('products.recherche')}
+        className="mb-3"
+        value={searchTerm}
+        onChange={handleSearchChange}
+        dir={direction}
+      />
       <Table striped bordered hover className="table-wrapper" dir={direction}>
         <thead>
           <tr>
@@ -279,7 +297,7 @@ const AdminProducts = () => {
                 <Button variant="info" onClick={() => handleAddMovement(product.id)} className="ml-1">
                   <FaArrowCircleUp />
                 </Button>
-                <Button variant="info" onClick={() => handleTransactionClick(product.id,product.name)} className="ml-1">
+                <Button variant="info" onClick={() => handleTransactionClick(product.id, product.name)} className="ml-1">
                   <FaExchangeAlt />
                 </Button>
               </td>
@@ -446,7 +464,10 @@ const AdminProducts = () => {
       <ReactPaginate
         previousLabel={t('pagination.previous')}
         nextLabel={t('pagination.next')}
-        pageCount={Math.ceil(products.length / productsPerPage)}
+        pageCount={Math.ceil(products.filter(product =>
+          product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          product.description.toLowerCase().includes(searchTerm.toLowerCase())
+        ).length / productsPerPage)}
         marginPagesDisplayed={2}
         pageRangeDisplayed={5}
         onPageChange={handlePageClick}

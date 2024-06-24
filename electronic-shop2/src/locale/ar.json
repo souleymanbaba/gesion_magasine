@@ -12,6 +12,14 @@
   "filters": "مرشحات",
   "admin": "إدارة",
   "category": "الفئة",
+  "PStatusPending":"فى الانتظار",
+  "PStatusOther":"تم الشحن",
+  "Numero": "الرقم",
+  "Date": "التاريخ",
+  "Status": "الحالة",
+  "Amount": "المبلغ",
+
+
 "categories": "الفئات",
  "ord": "الطلبات",
 "logout": "تسجيل الخروج",
@@ -102,6 +110,9 @@
   "copyRight": "© {{year}} شركتي. كل الحقوق محفوظة."
 },
 "en": {
+  "Numero": "رقم",
+  "Enter Numero": "أدخل الرقم",
+  "Select on Map": "اختر على الخريطة",
   "Cart": "سلة التسوق",
   "Product Name": "اسم المنتج",
   "Quantity": "الكمية",
@@ -139,7 +150,9 @@
   "name": "الاسم",
   "description": "الوصف",
   "actions": "إجراء",
-  "arabic_name": "الاسم بالعربية"
+  "arabic_name": "الاسم بالعربية",
+  "parent_category": "الفئة الرئيسية",
+  "no_parent_category": "لا توجد فئة رئيسية"
 },
 "messages": {
   "new_category_created": "تم إنشاء فئة جديدة :",
@@ -174,7 +187,9 @@
   "enter_translation": "أدخل الترجمة هنا",
   "product_image": "صورة المنتج",
   "stock_quantity": "الكمية في المخزون",
-  "import": "استيراد المنتجات"
+  "import": "استيراد المنتجات",
+   "cancel": "إلغاء",
+   "select_file":" اختر الملف"
 },
 "pagination": {
   "previous": "السابق",
@@ -208,7 +223,8 @@
   "quantity": "الكمية",
   "price": "السعر",
   "size": "الحجم",
-    "marque": "العلامة التجارية"
+    "marque": "العلامة التجارية",
+    "viewLocation": "عرض الموقع"
 },
 "common": {
   "close": "إغلاق"
@@ -221,6 +237,12 @@
   "actions": "الإجراءات",
   "edit": "تعديل العلامة التجارية",
   "submit": "إرسال"
+},
+"orderStatus": {
+  "pending": "قيد الانتظار",
+  "shipped": "تم الشحن",
+  "delivered": "تم التوصيل",
+  "cancelled": "ألغيت"
 }
 
 

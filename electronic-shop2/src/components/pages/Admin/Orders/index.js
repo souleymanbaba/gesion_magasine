@@ -359,7 +359,7 @@ const Orders = () => {
                 <tr>
                   <th>{t('orders.userId')}</th>
                   <th>{t('orders.date')}</th>
-                  <th>{t('orders.status')}</th>
+                
                   <th>{t('orders.totalAmount')}</th>
                   <th>{t('orders.address')}</th>
                   <th>{t('orders.actions')}</th>
@@ -370,7 +370,7 @@ const Orders = () => {
                   <tr key={order.id}>
                     <td>{order.userName}</td>
                     <td>{order.date}</td>
-                    <td>{order.orderStatus}</td>
+                    {/* <td>{order.orderStatus}</td> */}
                     <td>{order.totalAmount}</td>
                     <td>{order.address}</td>
                     <td>
@@ -490,10 +490,11 @@ const Orders = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+      <div dir={direction}>
 
-      <ReactPaginate
-        previousLabel={t('orders.previous')}
-        nextLabel={t('orders.next')}
+      <ReactPaginate 
+    previousLabel={t('pagination.previous')}
+    nextLabel={t('pagination.next')}
         breakLabel="..."
         breakClassName="break-me"
         pageCount={Math.ceil(orders.length / ordersPerPage)}
@@ -503,6 +504,7 @@ const Orders = () => {
         containerClassName="pagination"
         activeClassName="active"
       />
+      </div>
     </Container>
   );
 };

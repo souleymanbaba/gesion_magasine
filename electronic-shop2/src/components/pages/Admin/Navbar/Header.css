@@ -1,189 +1,77 @@
-/* Dans votre fichier Header.css */
-
-/* Réinitialisation et variables */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-:root {
-  --blue: #2a2185;
-  --white: #fff;
-  --gray: #f5f5f5;
-  --black1: #222;
-  --black2: #999;
-}
-
-body {
-  min-height: 100vh;
-  overflow-x: hidden;
-  width: 100%;
-  font-family: "Ubuntu", sans-serif; /* Assurez-vous que la police est définie ici */
-}
-
-.container {
-  position: relative;
-  width: 100%;
-}
-
-/* Styles communs de navigation */
-.navbar {
-  background-color: #5b049a;
-  height: 80px;
-  display: flex;
-  justify-content: start;
-  align-items: center;
-  position: fixed;
-}
-
-.menu-bars {
-  margin-left: 2rem;
-  font-size: 2rem;
-  background: none;
-  color: #fff;
-}
-
-.nav-menu {
-  background-color: #5b049a;
-  width: 250px;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  position: fixed;
-  top: 0;
- 
-  right:0; /* Réinitialiser la position initiale du menu à gauche */
-  transition: 850ms;
-}
-
-.nav-menu.active {
-  right:0;
-  left: 0; 
-  transition: 350ms;
-  position: fixed;
-}
-
-/* .menu-ar .nav-menu {
-  left: auto; 
-  right: -100%; 
-} */
-
-.menu-ar .nav-menu.active {
- 
-  right: 1; /* Afficher le menu en position droite quand il est activé */
-  transition: 350ms;
-}
-
-.nav-text {
-  display: flex;
-  justify-content: start;
-  align-items: center;
-  padding: 8px 0px 8px 16px;
-  list-style: none;
-  height: 60px;
-}
-
-.nav-text a {
-  text-decoration: none;
-  color: #f5f5f5;
-  font-size: 18px;
-  width: 95%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  padding: 0 16px;
-  border-radius: 4px;
-}
-
-.nav-text a:hover {
-  background-color: #1a83ff;
-}
-
-.nav-menu-items {
-  width: 100%;
-}
-
-.navbar-toggle {
-  background-color: #5b049a;
-  width: 100%;
-  height: 80px;
-  display: flex;
-  justify-content: start;
-  align-items: center;
-}
-
-.language-button {
-  background-color: transparent;
-  border: none;
-  color: #fff;
-  cursor: pointer;
-  font-size: 16px;
-  display: flex;
-  align-items: center;
-  padding: 8px 12px;
-  transition: background-color 0.3s ease;
-}
-
-.language-button:hover {
-  background-color: rgba(223, 214, 214, 0.986);
-}
-
-.language-button.active {
-  background-color: rgba(255, 255, 255, 0.2);
-  font-weight: bold;
-}
-
-.language-icon {
-  margin-right: 5px;
-  font-size: 20px;
-}
-
-/* Styles pour la direction RTL */
-.rtl {
+/* Header.css */
+.navbar-rtl {
   direction: rtl;
 }
 
-/* Styles pour la direction LTR */
-.ltr {
+.navbar-ltr {
   direction: ltr;
 }
 
-
-.nav-menu {
-  position: absolute;
-  left: -100%; /* Valeur par défaut pour LTR */
-  transition: left 350ms, right 350ms;
-}
-
-.nav-menu.active {
-  left: 0; /* Valeur par défaut pour LTR */
-}
-
-.nav-menu.menu-ar {
-  left: auto;
-  right: -100%; /* Cache le menu hors de l'écran à droite pour RTL */
-}
-
-.nav-menu.menu-ar.active {
-  right: 0; /* Déplace le menu dans le champ de vision pour RTL */
-}
-
-.language-buttons {
+.navbar-nav .nav-link {
   display: flex;
-  justify-content: center;
-  margin-top: 20px;
+  align-items: center;
 }
 
-.language-button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 20px;
-  margin: 0 10px;
+.navbar-nav .nav-link svg {
+  margin-right: 5px;
 }
 
-.language-button.active {
+.navbar-nav .nav-link.active {
   font-weight: bold;
 }
 
+.navbar-nav .nav-link {
+  margin-left: 10px;
+}
+
+.navbar-nav .nav-link.active {
+  font-weight: bold;
+}
+
+.navbar-toggler {
+  border: none;
+}
+
+.navbar-toggler-icon {
+  color: #fff;
+}
+
+/* Custom primary background color */
+.bg-primary {
+  background-color: #007bff !important;
+}
+
+.navbar-dark .navbar-brand {
+  color: #fff !important;
+}
+
+.navbar-dark .navbar-nav .nav-link {
+  color: #fff !important;
+}
+
+.navbar-dark .navbar-nav .nav-link:hover {
+  color: #ccc !important;
+}
+
+.navbar-dark .navbar-toggler-icon {
+  background-image: none;
+}
+
+.navbar-dark .navbar-toggler {
+  color: #fff !important;
+  border-color: transparent;
+}
+
+/* Responsive styles */
+@media (max-width: 767px) {
+  .navbar-nav .nav-link {
+    margin-left: 0;
+    margin-right: 0;
+    text-align: center;
+  }
+
+  .navbar-nav .nav-link svg {
+    margin-right: 0;
+    margin-bottom: 5px;
+  }
+}

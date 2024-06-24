@@ -1,0 +1,6 @@
+.modal-header-rtl .close {
+    position: absolute;
+    right: auto;
+    left: 1rem;
+  }
+  

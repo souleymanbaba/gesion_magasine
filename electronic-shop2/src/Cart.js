@@ -18,6 +18,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { getUserId, getlang } from './components/pages/Account/userStorageService';
 import MapModal from './MapModal';
+import './C.css';
 
 const Cart = ({ updateCartCount }) => {
   const { t, i18n } = useTranslation();
@@ -100,7 +101,7 @@ const Cart = ({ updateCartCount }) => {
   };
 
   const handlePlaceOrder = async () => {
-    if (!orderData.address || !orderData.orderDescription) {
+    if (!orderData.address ) {
       setErrorMessage(t('en.Please fill in all fields.'));
       return;
     }
@@ -189,7 +190,7 @@ const Cart = ({ updateCartCount }) => {
                           <th>{t('en.Price')}</th>
                           <th>{t('products.marque')}</th>
                           <th>{t('products.taille')}</th>
-                          <th>{t('en.Action')}</th>
+                          <th>{t('en.Actions')}</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -262,46 +263,39 @@ const Cart = ({ updateCartCount }) => {
         </Col>
       </Row>
 
-      <Modal show={showModal} onHide={() => setShowModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>{t('en.Place Order')}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            <Form.Group controlId="formAddress">
-              <Form.Label>{t('en.Numero')}</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder={t('en.Enter Address')}
-                name="address"
-                value={orderData.address}
-                onChange={handleInputChange}
-              />
-            </Form.Group>
-            <Form.Group controlId="formOrderDescription">
-              <Form.Label>{t('en.Order Description')}</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder={t('en.Enter Order Description')}
-                name="orderDescription"
-                value={orderData.orderDescription}
-                onChange={handleInputChange}
-              />
-            </Form.Group>
-            <Button variant="secondary" onClick={handleOpenMapModal}>
-              {t('en.Select on Map')}
-            </Button>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowModal(false)}>
-            {t('en.Close')}
+      <Modal show={showModal} onHide={() => setShowModal(false)} dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}>
+      <Modal.Header closeButton className={i18n.language === 'ar' ? 'modal-header-rtl' : ''}>
+        <Modal.Title>{t('en.Place Order')}</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <Form>
+          <Form.Group controlId="formAddress">
+            <Form.Label>{t('en.Numero')}</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder={t('en.Enter Numero')}
+              name="address"
+              value={orderData.address}
+              onChange={handleInputChange}
+            />
+           
+          </Form.Group>
+          
+          <br />
+          <Button variant="secondary" onClick={handleOpenMapModal}>
+            {t('en.Select on Map')}
           </Button>
-          <Button variant="primary" onClick={handlePlaceOrder} disabled={placingOrder}>
-            {placingOrder ? <Spinner animation="border" size="sm" /> : t('en.Place Order')}
-          </Button>
-        </Modal.Footer>
-      </Modal>
+        </Form>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={() => setShowModal(false)}>
+          {t('en.Close')}
+        </Button>
+        <Button variant="primary" onClick={handlePlaceOrder} disabled={placingOrder}>
+          {placingOrder ? <Spinner animation="border" size="sm" /> : t('en.Place Order')}
+        </Button>
+      </Modal.Footer>
+    </Modal>
 
       <MapModal show={showMapModal} handleClose={() => setShowMapModal(false)} setCoordinates={setCoordinates} />
     </Container>
