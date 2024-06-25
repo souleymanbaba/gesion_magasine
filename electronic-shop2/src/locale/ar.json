@@ -189,7 +189,8 @@
   "stock_quantity": "الكمية في المخزون",
   "import": "استيراد المنتجات",
    "cancel": "إلغاء",
-   "select_file":" اختر الملف"
+   "select_file":" اختر الملف",
+   "download_template": "تحميل النموذج"
 },
 "pagination": {
   "previous": "السابق",

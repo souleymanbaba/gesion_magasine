@@ -130,15 +130,30 @@ public class ProductServiceImpl implements ProductService {
                 Product product = new Product();
                 product.setName(row.getCell(0).getStringCellValue());
                 product.setPrice((long) row.getCell(1).getNumericCellValue());
-                String marque=row.getCell(2).getStringCellValue();
-                product.setTaille( row.getCell(3).getStringCellValue());
+                String marque = row.getCell(2).getStringCellValue();
+                product.setTaille(row.getCell(3).getStringCellValue());
                 product.setDescription(row.getCell(4).getStringCellValue());
                 product.setQuantiteStock((int) row.getCell(5).getNumericCellValue());
 
-                // Assuming category is given by name and exists in the database
+                Marque marque1 = marqueRepository.findByNom(marque);
+                if (marque1 == null) {
+                    marque1 = marqueRepository.findByNom("autre");
+                    if (marque1 == null) {
+
+
+                    throw new RuntimeException("Erreur : la marque " + marque + " n'a pas été trouvée.");
+                    }
+                }
+
                 String categoryName = row.getCell(6).getStringCellValue();
-                Marque marque1=marqueRepository.findByNom(marque);
                 Category category = categoryRepository.findByName(categoryName);
+                if (category == null) {
+                    category = categoryRepository.findByName("autre");
+                    if (category == null) {
+                        throw new RuntimeException("Erreur : la catégorie " + categoryName + " et la catégorie 'autre' n'ont pas été trouvées.");
+                    }
+                }
+
                 product.setCategory(category);
                 product.setMarque(marque1);
 
@@ -148,6 +163,7 @@ public class ProductServiceImpl implements ProductService {
             throw new RuntimeException("Failed to parse Excel file", e);
         }
     }
+
 
     public boolean deleteProduct(Long id) {
         Optional<Product> optionalProduct = productRepository.findById(id);

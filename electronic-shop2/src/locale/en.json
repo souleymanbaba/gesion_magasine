@@ -188,7 +188,8 @@
     "import": "Importer des produits",
      "cancel": "Annuler",
       "select_file":" sélectionner le fichier",
-      "recherche":"Recherche"
+      "recherche":"Recherche",
+      "download_template": "Télécharger le modèle"
      
   
   },

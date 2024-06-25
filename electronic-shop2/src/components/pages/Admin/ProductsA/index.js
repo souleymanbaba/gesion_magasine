@@ -234,6 +234,16 @@ const AdminProducts = () => {
     setCurrentPage(0); // Reset to the first page whenever search term changes
   };
 
+  const handleDownloadTemplate = () => {
+    // Télécharger le fichier example.xlsx
+    const link = document.createElement('a');
+    link.href = `${process.env.PUBLIC_URL}/example.xlsx`;
+    link.download = 'example.xlsx';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <Container fluid>
       {alertMessage && <Alert variant="success">{alertMessage}</Alert>}
@@ -341,25 +351,8 @@ const AdminProducts = () => {
                 onChange={(e) => handleTranslationChange('name', e.target.value)}
               />
             </Form.Group>
-            <Form.Group controlId="formProductDescription" className="mt-3">
-              <Form.Label>{t('products.description')}</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={3}
-                placeholder={t('products.enter_translation')}
-                value={translations.description || ''}
-                onChange={(e) => handleTranslationChange('description', e.target.value)}
-              />
-            </Form.Group>
-            <Form.Group controlId="formProductMarque" className="mt-3">
-              <Form.Label>{t('products.marque')}</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder={t('products.enter_translation')}
-                value={translations.marque || ''}
-                onChange={(e) => handleTranslationChange('marque', e.target.value)}
-              />
-            </Form.Group>
+            
+        
             <Form.Group controlId="formProductTaille" className="mt-3">
               <Form.Label>{t('products.taille')}</Form.Label>
               <Form.Control
@@ -457,6 +450,9 @@ const AdminProducts = () => {
           </Button>
           <Button variant="primary" onClick={handleImportSubmit}>
             {t('products.import')}
+          </Button>
+          <Button variant="info" onClick={handleDownloadTemplate}>
+            {t('products.download_template')}
           </Button>
         </Modal.Footer>
       </Modal>
