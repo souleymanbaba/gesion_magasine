@@ -21,6 +21,7 @@ import { faPlus, faMinus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { getUserId, getlang } from './components/pages/Account/userStorageService';
 import MapModal from './MapModal';
 import './C.css';
+import { removeCartItem, getCartItemCount } from './cartService'; // Import des services nécessaires
 
 const Cart = ({ updateCartCount }) => {
   const { t, i18n } = useTranslation();
@@ -97,9 +98,9 @@ const Cart = ({ updateCartCount }) => {
 
   const handleRemoveItem = async (cartItemId) => {
     try {
-      await axios.delete(`http://localhost:8080/api/customer/items/${cartItemId}`);
+      await removeCartItem(cartItemId);
       const lang = getlang();
-      fetchCartData(lang);
+      fetchCartData(lang);  // Mettre à jour les données du panier après la suppression
     } catch (error) {
       console.error('Error removing item:', error);
     }

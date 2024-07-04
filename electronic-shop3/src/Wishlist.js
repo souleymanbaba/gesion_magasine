@@ -1,14 +1,13 @@
-import { getUserId } from './components/pages/Account/userStorageService';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useTranslation } from 'react-i18next';
-import { Container, Row, Col, Card, Image, Button, Pagination } from 'react-bootstrap';
+import { Container, Row, Col, Card, Button, Pagination, Spinner, Alert } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import './C.css';
-import { Link } from 'react-router-dom';
+import { getUserId } from './components/pages/Account/userStorageService';
 
 const Wishlist = ({ updateWishlistCount }) => {
   const { t, i18n } = useTranslation();
@@ -17,21 +16,21 @@ const Wishlist = ({ updateWishlistCount }) => {
   const [wishlist, setWishlist] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
   const itemsPerPage = 3;
   const userId = getUserId();
 
   useEffect(() => {
-    if (i18n.language === 'ar') {
-      setDirection('rtl');
-    } else {
-      setDirection('ltr');
-    }
+    setDirection(i18n.language === 'ar' ? 'rtl' : 'ltr');
   }, [i18n.language]);
 
   useEffect(() => {
-    const fetchWishlistData = async (lang) => {
+    const fetchWishlistData = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/api/customer/wishlist/${userId}`, { params: { lang } });
+        const response = await axios.get(`http://localhost:8080/api/customer/wishlist/${userId}`, {
+          params: { lang: i18n.language }
+        });
         setWishlist(response.data);
         updateWishlistCount(response.data.length);
       } catch (error) {
@@ -41,58 +40,62 @@ const Wishlist = ({ updateWishlistCount }) => {
       }
     };
 
-    fetchWishlistData(i18n.language);
+    fetchWishlistData();
   }, [userId, updateWishlistCount, i18n.language]);
 
   const handleRemoveFromWishlist = async (itemId) => {
     try {
-      await axios.delete(`http://localhost:8080/api/customer/wishlist/${itemId}`, { params: { lang: i18n.language } });
-      const response = await axios.get(`http://localhost:8080/api/customer/wishlist/${userId}`, { params: { lang: i18n.language } });
-      setWishlist(response.data);
-      updateWishlistCount(response.data.length);
+      await axios.delete(`http://localhost:8080/api/customer/wishlist/${itemId}`, {
+        params: { lang: i18n.language }
+      });
+      const updatedWishlist = wishlist.filter(item => item.id !== itemId);
+      setWishlist(updatedWishlist);
+      updateWishlistCount(updatedWishlist.length);
+      setSuccessMessage(t('Item removed from wishlist.'));
+      setErrorMessage(''); // Clear any previous error messages
+
+      // Déclencher l'événement personnalisé "budgetUpdated"
+      const budgetUpdatedEvent = new CustomEvent('budgetUpdated', { detail: { budget: 'new budget value' } });
+      window.dispatchEvent(budgetUpdatedEvent);
     } catch (error) {
       console.error('Error removing item from wishlist:', error);
+      setErrorMessage(t('Error removing item from wishlist.'));
     }
   };
 
-  const handleAddToWishlist = async (productId) => {
-    if (wishlist.some(item => item.productId === productId)) {
-      alert(t('en.Product already in wishlist.'));
-      return;
-    }
-    
+  const handleTransferAllToCart = async () => {
     try {
-      const response = await axios.post(`http://localhost:8080/api/customer/wishlist`, {
-        userId,
-        productId
-      });
-      if (response.status === 200) {
-        const updatedWishlist = await axios.get(`http://localhost:8080/api/customer/wishlist/${userId}`, { params: { lang: i18n.language } });
-        setWishlist(updatedWishlist.data);
-        updateWishlistCount(updatedWishlist.data.length);
-      }
+      await Promise.all(wishlist.map(item =>
+        axios.post(`http://localhost:8080/api/customer/cart`, {
+          userId,
+          productId: item.productId,
+          quantity: 1
+        })
+      ));
+      setSuccessMessage(t('All items transferred to cart successfully.'));
+      setErrorMessage(''); // Clear any previous error messages
+
+      // Déclencher l'événement personnalisé "budgetUpdated"
+      const budgetUpdatedEvent = new CustomEvent('budgetUpdated', { detail: { budget: 'new budget value' } });
+      window.dispatchEvent(budgetUpdatedEvent);
+
+      // Afficher le message de succès pendant 2 secondes avant de recharger la page
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
     } catch (error) {
-      console.error('Error adding item to wishlist:', error);
+      console.error('Error transferring items to cart:', error);
+      setErrorMessage(t('Error transferring items to cart. Please try again later.'));
     }
   };
 
   if (!userId) {
-    navigate('/SigIn', { state: { message: t('login_redirect_message') } });
+    navigate('/SignIn', { state: { message: t('login_redirect_message') } });
     return null;
   }
 
   if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (wishlist.length === 0) {
-    return (
-      <div className="text-center" dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}>
-        {t('en.Your wishlist is empty.')}
-        <br />
-        <Button as={Link} to="/products" variant="primary">{t('sho_now')}</Button>
-      </div>
-    );
+    return <div className="text-center"><Spinner animation="border" role="status"><span className="sr-only">Loading...</span></Spinner></div>;
   }
 
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -105,7 +108,16 @@ const Wishlist = ({ updateWishlistCount }) => {
     <Container style={{ direction: direction }}>
       <Row>
         <Col>
-          <h2 className="text-center">{t('en.Wishlist')}</h2>
+          <h2 className="text-center">{t('Wishlist')}</h2>
+          {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
+          {successMessage && <Alert variant="success">{successMessage}</Alert>}
+          {wishlist.length === 0 && !loading && !successMessage && !errorMessage && (
+            <div className="text-center" dir={direction}>
+              {t('Your wishlist is empty.')}
+              <br />
+              <Button as={Link} to="/products" variant="primary">{t('Shop Now')}</Button>
+            </div>
+          )}
           <Row className="justify-content-center">
             {currentItems.map((item) => (
               <Col md={4} key={item.productId} className="mb-4">
@@ -118,7 +130,7 @@ const Wishlist = ({ updateWishlistCount }) => {
                   <Card.Body className="d-flex flex-column">
                     <Card.Title>{item.productName}</Card.Title>
                     <Card.Text>
-                      <strong>{t('en.Price')}:</strong> {item.price}
+                      <strong>{t('Price')}:</strong> {item.price}
                     </Card.Text>
                     <Button
                       variant="outline-danger"
@@ -126,24 +138,33 @@ const Wishlist = ({ updateWishlistCount }) => {
                       className="mt-auto"
                       onClick={() => handleRemoveFromWishlist(item.id)}
                     >
-                      <FontAwesomeIcon icon={faTrash} /> {t('en.Remove')}
+                      <FontAwesomeIcon icon={faTrash} /> {t('Remove')}
                     </Button>
                   </Card.Body>
                 </Card>
               </Col>
             ))}
           </Row>
-          <Pagination className="justify-content-center mt-4">
-            {Array.from({ length: Math.ceil(wishlist.length / itemsPerPage) }, (_, index) => (
-              <Pagination.Item
-                key={index + 1}
-                active={index + 1 === currentPage}
-                onClick={() => paginate(index + 1)}
-              >
-                {index + 1}
-              </Pagination.Item>
-            ))}
-          </Pagination>
+          {wishlist.length > 0 && (
+            <>
+              <div className="text-center mt-4">
+                <Button variant="primary" onClick={handleTransferAllToCart}>
+                  {t('Transfer All to Cart')}
+                </Button>
+              </div>
+              <Pagination className="justify-content-center mt-4">
+                {Array.from({ length: Math.ceil(wishlist.length / itemsPerPage) }, (_, index) => (
+                  <Pagination.Item
+                    key={index + 1}
+                    active={index + 1 === currentPage}
+                    onClick={() => paginate(index + 1)}
+                  >
+                    {index + 1}
+                  </Pagination.Item>
+                ))}
+              </Pagination>
+            </>
+          )}
         </Col>
       </Row>
     </Container>

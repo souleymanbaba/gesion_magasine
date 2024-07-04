@@ -1,4 +1,3 @@
-// cartService.js
 import axios from 'axios';
 import { getUserId } from './components/pages/Account/userStorageService';
 const BASIC_URL = 'http://localhost:8080/';
@@ -22,20 +21,54 @@ export const addToCart = async (productId) => {
     });
 
     if (!response.ok) {
-      // Si la réponse n'est pas "ok", on jette une erreur avec le statut de la réponse
       const error = new Error(`HTTP error! Status: ${response.status}`);
       error.status = response.status;
       throw error;
     }
 
-    // Déclencher l'événement personnalisé "cartUpdated"
     const cartUpdatedEvent = new CustomEvent('cartUpdated', { detail: { cartCount: await getCartItemCount() } });
     window.dispatchEvent(cartUpdatedEvent);
+
+    // Déclencher l'événement personnalisé "budgetUpdated"
+    const budgetUpdatedEvent = new CustomEvent('budgetUpdated', { detail: { budget: await getUpdatedBudget() } });
+    window.dispatchEvent(budgetUpdatedEvent);
 
     return response;
   } catch (error) {
     console.error('There was an error adding the item to the cart:', error);
-    return { ok: false, status: error.status, error: error.message }; // On retourne un objet avec l'erreur pour la gestion ultérieure
+    return { ok: false, status: error.status, error: error.message };
+  }
+};
+
+export const increaseCartItemQuantity = async (productId) => {
+  const userId = getUserId();
+
+  try {
+    const response = await fetch(`${BASIC_URL}api/customer/addition`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ productId, userId }),
+    });
+
+    if (!response.ok) {
+      const error = new Error(`HTTP error! Status: ${response.status}`);
+      error.status = response.status;
+      throw error;
+    }
+
+    const cartUpdatedEvent = new CustomEvent('cartUpdated', { detail: { cartCount: await getCartItemCount() } });
+    window.dispatchEvent(cartUpdatedEvent);
+
+    // Déclencher l'événement personnalisé "budgetUpdated"
+    const budgetUpdatedEvent = new CustomEvent('budgetUpdated', { detail: { budget: await getUpdatedBudget() } });
+    window.dispatchEvent(budgetUpdatedEvent);
+
+    return response;
+  } catch (error) {
+    console.error('There was an error updating the item quantity:', error);
+    return { ok: false, status: error.status, error: error.message };
   }
 };
 
@@ -67,5 +100,40 @@ export const getCartItemCount = async () => {
   } catch (error) {
     console.error('Error fetching cart item count:', error);
     return 0;
+  }
+};
+
+export const getUpdatedBudget = async () => {
+  const userId = getUserId();
+  try {
+    // Logique pour obtenir la valeur mise à jour du budget
+    const response = await axios.get(`${BASIC_URL}api/customer/budget/${userId}`);
+    return response.data.budget;
+  } catch (error) {
+    console.error('Error fetching updated budget:', error);
+    return null;
+  }
+};
+
+export const removeCartItem = async (cartItemId) => {
+  try {
+    const response = await axios.delete(`${BASIC_URL}api/customer/items/${cartItemId}`);
+    
+    if (response.status === 200) {
+      const cartUpdatedEvent = new CustomEvent('cartUpdated', { detail: { cartCount: await getCartItemCount() } });
+      window.dispatchEvent(cartUpdatedEvent);
+
+      // Déclencher l'événement personnalisé "budgetUpdated"
+      const budgetUpdatedEvent = new CustomEvent('budgetUpdated', { detail: { budget: await getUpdatedBudget() } });
+      window.dispatchEvent(budgetUpdatedEvent);
+
+      return response;
+    } else {
+      console.error('Failed to remove cart item:', response.status);
+      return null;
+    }
+  } catch (error) {
+    console.error('Error removing cart item:', error);
+    return null;
   }
 };

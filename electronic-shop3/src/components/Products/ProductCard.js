@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './productStyle.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingCart, faCheckCircle, faHeart, faPlus } from '@fortawesome/free-solid-svg-icons';
-import { addToCart, getCartItems } from '../../cartService';
+import { addToCart, getCartItems, increaseCartItemQuantity } from '../../cartService';
 import { addToWishlist } from '../../wishlistService';
 import Swal from 'sweetalert2';
 import { useTranslation } from 'react-i18next';
@@ -77,6 +77,22 @@ const ProductCard = ({ deal, updateCart }) => {
     }
   };
 
+  const handleIncreaseQuantity = async () => {
+    if (user) {
+      const response = await increaseCartItemQuantity(deal.id);
+      if (response.ok) {
+        setCartQuantity(cartQuantity + 1);
+        updateCart();
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: t('error_title'),
+          text: response.error || t('error_message'),
+        });
+      }
+    }
+  };
+
   const handleAddToWishlist = async () => {
     if (user) {
       try {
@@ -118,8 +134,8 @@ const ProductCard = ({ deal, updateCart }) => {
             <FontAwesomeIcon icon={faCheckCircle} /> {t('product_already_in_cart_with_quantity', { quantity: cartQuantity })}
             <button
               className="button-custom btn ms-2"
-              style={{ fontFamily: "'Open Sans Condensed', sans-serif", fontSize: '1.2rem', height: '50px', "background-color": "rgb(67 0 86) "}}
-              onClick={handleAddToCart}
+              style={{ fontFamily: "'Open Sans Condensed', sans-serif", fontSize: '1.2rem', height: '50px', backgroundColor: "rgb(67 0 86)" }}
+              onClick={handleIncreaseQuantity}
             >
               <FontAwesomeIcon icon={faPlus} />
             </button>
@@ -127,7 +143,7 @@ const ProductCard = ({ deal, updateCart }) => {
         ) : (
           <button
             className="button-custom btn mt-3 me-3"
-            style={{ fontFamily: "'Open Sans Condensed', sans-serif", fontSize: '1.2rem', height: '50px', "background-color": "rgb(67 0 86) "}}
+            style={{ fontFamily: "'Open Sans Condensed', sans-serif", fontSize: '1.2rem', height: '50px', backgroundColor: "rgb(67 0 86)" }}
             onClick={handleAddToCart}
           >
             <FontAwesomeIcon icon={faShoppingCart} />

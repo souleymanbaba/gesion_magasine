@@ -11,6 +11,7 @@ function Navbar() {
   const { t, i18n } = useTranslation();
   const [cartCount, setCartCount] = useState(0);
   const [wishlistCount, setWishlistCount] = useState(0);
+  const [budget, setBudget] = useState(0); // Ajout d'un état pour le budget
   const [isLoggedInState, setIsLoggedInState] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState(false);
@@ -25,6 +26,7 @@ function Navbar() {
     setIsLoggedInState(isLoggedIn());
     fetchCartData();
     fetchWishlistData();
+    fetchBudgetData();
 
     const handleCartUpdated = (event) => {
       setCartCount(event.detail.cartCount);
@@ -34,12 +36,18 @@ function Navbar() {
       setWishlistCount(event.detail.wishlistCount);
     };
 
+    const handleBudgetUpdated = (event) => {
+      setBudget(event.detail.budget);
+    };
+
     window.addEventListener('cartUpdated', handleCartUpdated);
     window.addEventListener('wishlistUpdated', handleWishlistUpdated);
+    window.addEventListener('budgetUpdated', handleBudgetUpdated);
 
     return () => {
       window.removeEventListener('cartUpdated', handleCartUpdated);
       window.removeEventListener('wishlistUpdated', handleWishlistUpdated);
+      window.removeEventListener('budgetUpdated', handleBudgetUpdated);
     };
   }, []);
 
@@ -67,6 +75,19 @@ function Navbar() {
       }
     } catch (error) {
       console.error('Error fetching wishlist data:', error);
+    }
+  };
+
+  const fetchBudgetData = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/api/customer/budget/${userId}`
+      );
+      if (response.data) {
+        setBudget(response.data.budget);
+      }
+    } catch (error) {
+      console.error('Error fetching budget data:', error);
     }
   };
 
