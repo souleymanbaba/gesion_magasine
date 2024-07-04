@@ -4,16 +4,16 @@ import ProductCard from './ProductCard';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
-import { getlang } from '../pages/Account/userStorageService';
+import { getlang, getUser } from '../pages/Account/userStorageService';
 import Pagination from 'react-bootstrap/Pagination';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './productStyle.css'; // Assurez-vous que le chemin est correct
+import './productStyle.css';
 import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 
 function Products() {
   const { t, i18n } = useTranslation();
   const defaultOption = i18n.language === 'ar' ? 'الجميع' : 'Tous';
-  
+
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -27,6 +27,7 @@ function Products() {
   const [direction, setDirection] = useState('ltr');
   const [currentPage, setCurrentPage] = useState(1);
   const [productsPerPage] = useState(6);
+  const [cartItems, setCartItems] = useState([]);
 
   useEffect(() => {
     if (i18n.language === 'ar') {
@@ -36,6 +37,7 @@ function Products() {
     }
     fetchProducts();
     fetchCategories();
+    fetchCartItems(); // Récupérer les articles du panier
   }, [i18n.language]);
 
   useEffect(() => {
@@ -89,6 +91,21 @@ function Products() {
       });
   };
 
+  const fetchCartItems = () => {
+    const user = getUser();
+    if (user && user.userId  ) {
+      axios.get(`http://localhost:8080/api/customer/cart/${user.userId}?lang=${getlang()}`)
+        .then(response => {
+          setCartItems(response.data.cartItems);
+        })
+        .catch(error => {
+          console.error('There was an error fetching the cart items!', error);
+        });
+    } else {
+      console.warn('User is not logged in or userId is not available');
+    }
+  };
+
   const updateSizeAndBrandLists = (products) => {
     const uniqueSizes = [...new Set(products.map(product => product.taille))];
     const uniqueBrands = [...new Set(products.map(product => product.marque))];
@@ -98,6 +115,7 @@ function Products() {
 
   const updateCart = (product) => {
     console.log(`Adding product ${product.id} to cart`);
+    fetchCartItems();
   };
 
   const handleCategorySelect = (event) => {
@@ -164,8 +182,7 @@ function Products() {
                   <InputLabel>{t('sub_categories')}</InputLabel>
                   <Select value={selectedSubCategory} onChange={handleSubCategorySelect}>
                     <MenuItem value="">
-                    <em>{defaultOption}</em>
-                     
+                      <em>{defaultOption}</em>
                     </MenuItem>
                     {subCategories.map(subCategory => (
                       <MenuItem key={subCategory.id} value={subCategory.id}>{subCategory.name}</MenuItem>
@@ -179,7 +196,7 @@ function Products() {
                 <InputLabel>{t('select_brand')}</InputLabel>
                 <Select value={selectedBrand} onChange={handleBrandSelect}>
                   <MenuItem value="">
-                    
+                    <em>{defaultOption}</em>
                   </MenuItem>
                   {brands.map(brand => (
                     <MenuItem key={brand} value={brand}>{brand}</MenuItem>
@@ -192,7 +209,7 @@ function Products() {
                 <InputLabel>{t('select_size')}</InputLabel>
                 <Select value={selectedSize} onChange={handleSizeSelect}>
                   <MenuItem value="">
-                  
+                    <em>{defaultOption}</em>
                   </MenuItem>
                   {sizes.map(size => (
                     <MenuItem key={size} value={size}>{size}</MenuItem>
@@ -210,7 +227,7 @@ function Products() {
           <div className="row">
             {currentProducts.map(product => (
               <div className="col-md-4 col-sm-6 mb-4" key={product.id}>
-                <ProductCard deal={product} updateCart={() => updateCart(product)} />
+                <ProductCard deal={product} updateCart={() => updateCart(product)} cartItems={cartItems} />
               </div>
             ))}
           </div>

@@ -4,19 +4,19 @@ import { getUser } from '../pages/Account/userStorageService';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './productStyle.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faShoppingCart, faCheckCircle, faHeart, faPlus } from '@fortawesome/free-solid-svg-icons';
-import { addToCart, getCartItems, increaseCartItemQuantity } from '../../cartService';
+import { faShoppingCart, faCheckCircle, faHeart, faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
+import { addToCart, getCartItems } from '../../cartService';
 import { addToWishlist } from '../../wishlistService';
 import Swal from 'sweetalert2';
 import { useTranslation } from 'react-i18next';
+import axios from 'axios';
 import './style.css';
 
-const ProductCard = ({ deal, updateCart }) => {
+const ProductCard = ({ deal, updateCart, cartItems }) => {
   const { t, i18n } = useTranslation();
   const [direction, setDirection] = useState('ltr');
   const navigate = useNavigate();
   const user = getUser();
-  const [addedToCart, setAddedToCart] = useState(false);
   const [addedToWishlist, setAddedToWishlist] = useState(false);
   const [cartQuantity, setCartQuantity] = useState(0);
 
@@ -27,25 +27,11 @@ const ProductCard = ({ deal, updateCart }) => {
       setDirection('ltr');
     }
 
-    const checkProductInCart = async () => {
-      if (user) {
-        try {
-          const cartItems = await getCartItems(user.userId);
-          if (Array.isArray(cartItems)) {
-            const cartItem = cartItems.find(item => item.productId === deal.id);
-            if (cartItem) {
-              setAddedToCart(true);
-              setCartQuantity(cartItem.quantity);
-            }
-          }
-        } catch (error) {
-          console.error('Error checking cart items:', error);
-        }
-      }
-    };
-
-    checkProductInCart();
-  }, [i18n.language, deal.id, user]);
+    const cartItem = cartItems.find(item => item.productId === deal.id);
+    if (cartItem) {
+      setCartQuantity(cartItem.quantity);
+    }
+  }, [i18n.language, deal.id, cartItems]);
 
   const handleAddToCart = async () => {
     if (user) {
@@ -57,8 +43,6 @@ const ProductCard = ({ deal, updateCart }) => {
           text: t('added_successfully'),
         });
         updateCart();
-        setAddedToCart(true);
-        setCartQuantity(cartQuantity + 1);
       } else if (response.status === 409) {
         Swal.fire({
           icon: 'error',
@@ -73,21 +57,73 @@ const ProductCard = ({ deal, updateCart }) => {
         });
       }
     } else {
-      navigate('/SignIn', { state: { message: t('login_redirect_message') } });
+      navigate('/SigIn', { state: { message: t('login_redirect_message') } });
     }
   };
 
   const handleIncreaseQuantity = async () => {
     if (user) {
-      const response = await increaseCartItemQuantity(deal.id);
-      if (response.ok) {
-        setCartQuantity(cartQuantity + 1);
-        updateCart();
-      } else {
+      try {
+        const response = await axios.post('http://localhost:8080/api/customer/addition', {
+          productId: deal.id,
+          userId: user.userId
+        });
+        if (response.status === 200) {
+          Swal.fire({
+            icon: 'success',
+            title: t('added_to_cart'),
+          }).then(() => {
+            window.location.reload();
+          });
+          updateCart();
+        } else {
+          Swal.fire({
+            icon: 'success',
+            title: t('increase_quantity'),
+          }).then(() => {
+            window.location.reload();
+          });
+          updateCart();
+        }
+      } catch (error) {
         Swal.fire({
           icon: 'error',
           title: t('error_title'),
-          text: response.error || t('error_message'),
+          text: error.response ? error.response.data.message : t('error_message'),
+        });
+      }
+    }
+  };
+
+  const handleRemoveFromCart = async () => {
+    if (user) {
+      try {
+        const response = await axios.post('http://localhost:8080/api/customer/deduction', {
+          productId: deal.id,
+          userId: user.userId
+        });
+        if (response.status === 200) {
+          Swal.fire({
+            icon: 'success',
+            title: t('added_to_cart'),
+          }).then(() => {
+            window.location.reload();
+          });
+          updateCart();
+        } else {
+          Swal.fire({
+            icon: 'success',
+            title: t('decrease_quantity'),
+          }).then(() => {
+            window.location.reload();
+          });
+          updateCart();
+        }
+      } catch (error) {
+        Swal.fire({
+          icon: 'error',
+          title: t('error_title'),
+          text: error.response ? error.response.data.message : t('error_message'),
         });
       }
     }
@@ -105,12 +141,12 @@ const ProductCard = ({ deal, updateCart }) => {
       } catch (error) {
         Swal.fire({
           icon: 'error',
-          text: t('error_message'),
+          text: t('errorrr_message'),
         });
         console.error('Error adding to wishlist:', error);
       }
     } else {
-      navigate('/SignIn', { state: { message: t('login_redirect_message') } });
+      navigate('/SigIn', { state: { message: t('login_redirect_message') } });
     }
   };
 
@@ -129,21 +165,31 @@ const ProductCard = ({ deal, updateCart }) => {
         <h5 className="card-title mt-3">
           {deal.price.toFixed(2)} {currencySymbol} 
         </h5>
-        {addedToCart ? (
+        {cartQuantity > 0 ? (
           <div className="text-success mb-2">
-            <FontAwesomeIcon icon={faCheckCircle} /> {t('product_already_in_cart_with_quantity', { quantity: cartQuantity })}
-            <button
+                <button
               className="button-custom btn ms-2"
-              style={{ fontFamily: "'Open Sans Condensed', sans-serif", fontSize: '1.2rem', height: '50px', backgroundColor: "rgb(67 0 86)" }}
+              style={{ fontFamily: "'Open Sans Condensed', sans-serif", fontSize: '1.2rem', height: '50px', backgroundColor: 'rgb(67 0 86)' }}
               onClick={handleIncreaseQuantity}
             >
+          
+        
               <FontAwesomeIcon icon={faPlus} />
+            </button>
+            {cartQuantity}
+            <button
+              className="button-custom btn ms-2"
+              style={{ fontFamily: "'Open Sans Condensed', sans-serif", fontSize: '1.2rem', height: '50px', backgroundColor: 'rgb(67 0 86)' }}
+              onClick={handleRemoveFromCart}
+              disabled={cartQuantity === 1}
+            >
+              <FontAwesomeIcon icon={faMinus} />
             </button>
           </div>
         ) : (
           <button
             className="button-custom btn mt-3 me-3"
-            style={{ fontFamily: "'Open Sans Condensed', sans-serif", fontSize: '1.2rem', height: '50px', backgroundColor: "rgb(67 0 86)" }}
+            style={{ fontFamily: "'Open Sans Condensed', sans-serif", fontSize: '1.2rem', height: '50px', backgroundColor: 'rgb(67 0 86)' }}
             onClick={handleAddToCart}
           >
             <FontAwesomeIcon icon={faShoppingCart} />

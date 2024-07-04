@@ -41,14 +41,12 @@ const Orders = () => {
     }
   };
 
-  const fetchCartItems = async (userId, orderStatus) => {
+  const fetchCartItems = async (userId, orderId) => {
     try {
       const lang = i18n.language;
-      const url = orderStatus === 'Shipped'
-        ? `http://localhost:8080/api/customer/cartIi/${userId}`
-        : `http://localhost:8080/api/customer/cartI/${userId}`;
+      const url =  `http://localhost:8080/api/customer/cartI/${userId}`;
       const response = await axios.get(url, {
-        params: { lang }
+        params: { lang, orderId }
       });
       setCartItems(response.data.cartItems);
       setShowCartModal(true);
@@ -56,6 +54,8 @@ const Orders = () => {
       console.error('Error fetching cart items:', error.message);
     }
   };
+
+  
 
   const handleChangeStatus = async () => {
     try {
@@ -88,7 +88,7 @@ const Orders = () => {
   };
 
   const handleShowCartModal = (order) => {
-    fetchCartItems(order.user_id, order.orderStatus);
+    fetchCartItems(order.user_id, order.id);
   };
 
   const handleShowMapModal = (latitude, longitude) => {
