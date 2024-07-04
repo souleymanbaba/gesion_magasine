@@ -1,0 +1,31 @@
+/* S.css */
+.page-container {
+  padding: 20px;
+  background-color: #f9f9f9;
+}
+
+.content-wrap {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.table thead th {
+  background-color: #854294;
+  color: white;
+}
+
+.table tbody tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.table tbody tr:hover {
+  background-color: #ddd;
+}
+
+h2 {
+  font-family: 'Open Sans Condensed', sans-serif;
+  font-size: 2rem;
+  margin-bottom: 20px;
+}

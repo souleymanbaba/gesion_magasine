@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class WishlistServiceImpl implements WishlistService{
+    String l="ar";
     private final UserRepository userRepository;
 
     private final ProcuctRepository productRepository;
@@ -30,7 +31,7 @@ public class WishlistServiceImpl implements WishlistService{
             wishlist.setProduct(optionalProduct.get());
 
             wishlist.setUser(optionalUser.get());
-            return wishlistRepository.save(wishlist).getWishlistDto();
+            return wishlistRepository.save(wishlist).getWishlistDto(l);
         }
         return null;
     }
@@ -40,7 +41,9 @@ public class WishlistServiceImpl implements WishlistService{
         wishlistRepository.deleteById(wishListId);
     }
 
-    public List<WishlistDto> getWishlistByUserId(Long userId) {
-        return wishlistRepository.findAllByUserId(userId).stream().map(WishList::getWishlistDto).collect(Collectors.toList());
+    public List<WishlistDto> getWishlistByUserId(Long userId,String lang) {
+        return wishlistRepository.findAllByUserId(userId).stream()
+                .map(wishlist -> wishlist.getWishlistDto(lang))
+                .collect(Collectors.toList());
     }
 }

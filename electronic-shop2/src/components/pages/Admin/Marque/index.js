@@ -118,12 +118,18 @@ const AdminMarques = () => {
 
   return (
     <Container fluid>
+      <br></br>
+      <br></br>
+      
       <h1 className="mb-4" dir={direction}>{t('marques.title')}</h1>
       <h5 dir={direction}>
         <Link to="#" onClick={() => setShowModal(true)} className="mb-3">
-          <Button variant="success">
-            <FaPlus className="mr-2" /> {t('marques.add')}
-          </Button>
+        <Button
+      variant="variant"
+      style={{ backgroundColor: 'purple', color: 'white' }}
+    >
+      <FaPlus className="mr-2" /> {t('marques.add')}
+    </Button>
         </Link>
       </h5>
       <FormControl
@@ -161,8 +167,8 @@ const AdminMarques = () => {
         </tbody>
       </Table>
 
-      <Modal show={showModal} onHide={handleCloseModal}>
-        <Modal.Header closeButton>
+      <Modal show={showModal} onHide={handleCloseModal} >
+        <Modal.Header closeButton className="custom-modal-header">
           <Modal.Title>{selectedMarque ? t('marques.edit') : t('marques.add')}</Modal.Title>
         </Modal.Header>
         <Modal.Body>

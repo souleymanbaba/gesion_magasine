@@ -17,16 +17,20 @@ public class WishList {
     @ManyToOne (fetch= FetchType.LAZY, optional = false) @JoinColumn(name = "user_id", nullable = false) @OnDelete(action= OnDeleteAction.CASCADE)
     private User user;
 
-    public WishlistDto getWishlistDto(){
+    public WishlistDto getWishlistDto(String lang){
         WishlistDto wishlistDto=
         new WishlistDto();
         wishlistDto.setId(id);
         wishlistDto.setProductId(product.getId());
         wishlistDto.setReturnedImg (product.getImg());
-        wishlistDto.setProductName(product.getName());
+        if ("ar".equals(lang) && product.getName_ar() != null) {
+            wishlistDto.setProductName(product.getName_ar());
+        }
+        else wishlistDto.setProductName(product.getName());
         wishlistDto.setProductDescription(product.getDescription());
         wishlistDto.setPrice(product.getPrice());
         wishlistDto.setUserId(user.getId());
         return wishlistDto;
     }
+
 }

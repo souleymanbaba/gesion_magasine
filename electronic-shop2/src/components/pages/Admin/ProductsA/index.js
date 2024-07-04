@@ -6,6 +6,7 @@ import ReactPaginate from 'react-paginate';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { formatISO } from 'date-fns';
+import './style.css'; // Ensure the path is correct
 
 const AdminProducts = () => {
   const [products, setProducts] = useState([]);
@@ -246,13 +247,19 @@ const AdminProducts = () => {
 
   return (
     <Container fluid>
+      <br></br>
+      <br></br>
+      <br></br>
+      <br></br>
+      <br></br>
+      <br></br>
       {alertMessage && <Alert variant="success">{alertMessage}</Alert>}
       <div className="d-flex justify-content-between align-items-center mb-4" dir={direction}>
         <h1>{t('products.title')}</h1>
         <h5 dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}>
           <div>
             <Link to="/admin/products/new" className="mr-2">
-              <Button variant="success">
+              <Button variant="primary">
                 <FaPlus className="mr-2" /> {t('products.add')}
               </Button>
             </Link>
@@ -316,11 +323,11 @@ const AdminProducts = () => {
         </tbody>
       </Table>
 
-      <Modal show={showModal} onHide={handleCloseModal}>
-        <Modal.Header closeButton>
+      <Modal show={showModal} onHide={handleCloseModal} centered >
+        <Modal.Header closeButton className="custom-modal-header">
           <Modal.Title>{selectedProduct ? selectedProduct.name : t('products.product_image')}</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body >
           {selectedProduct && (
             <img 
               src={`data:image/png;base64,${selectedProduct.byteimg}`} 
@@ -329,18 +336,18 @@ const AdminProducts = () => {
             />
           )}
         </Modal.Body>
-        <Modal.Footer>
+        <Modal.Footer >
           <Button variant="secondary" onClick={handleCloseModal}>
             {t('pagination.previous')}
           </Button>
         </Modal.Footer>
       </Modal>
 
-      <Modal show={showTranslationForm} onHide={() => setShowTranslationForm(false)}>
-        <Modal.Header closeButton>
+      <Modal show={showTranslationForm} onHide={() => setShowTranslationForm(false)} centered >
+        <Modal.Header closeButton className="custom-modal-header">
           <Modal.Title>{t('products.translate')}</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body >
           <Form>
             <Form.Group controlId="formProductName">
               <Form.Label>{t('products.name')}</Form.Label>
@@ -351,8 +358,6 @@ const AdminProducts = () => {
                 onChange={(e) => handleTranslationChange('name', e.target.value)}
               />
             </Form.Group>
-            
-        
             <Form.Group controlId="formProductTaille" className="mt-3">
               <Form.Label>{t('products.taille')}</Form.Label>
               <Form.Control
@@ -369,11 +374,11 @@ const AdminProducts = () => {
         </Modal.Body>
       </Modal>
 
-      <Modal show={showMovementForm} onHide={() => setShowMovementForm(false)}>
-        <Modal.Header closeButton>
+      <Modal show={showMovementForm} onHide={() => setShowMovementForm(false)} centered >
+        <Modal.Header closeButton className="custom-modal-header">
           <Modal.Title>{t('products.add_movement')}</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body >
           <Form>
             <Form.Group controlId="formMovementType">
               <Form.Label>{t('products.type')}</Form.Label>
@@ -418,7 +423,7 @@ const AdminProducts = () => {
             </Form.Group>
           </Form>
         </Modal.Body>
-        <Modal.Footer>
+        <Modal.Footer >
           <Button variant="secondary" onClick={() => setShowMovementForm(false)}>
             {t('products.cancel')}
           </Button>
@@ -428,11 +433,11 @@ const AdminProducts = () => {
         </Modal.Footer>
       </Modal>
 
-      <Modal show={showImportModal} onHide={() => setShowImportModal(false)}>
-        <Modal.Header closeButton>
+      <Modal show={showImportModal} onHide={() => setShowImportModal(false)} centered>
+        <Modal.Header closeButton className="custom-modal-header">
           <Modal.Title>{t('products.import')}</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body >
           <Form>
             <Form.Group controlId="formFile">
               <Form.Label>{t('products.select_file')}</Form.Label>
@@ -444,7 +449,7 @@ const AdminProducts = () => {
             </Form.Group>
           </Form>
         </Modal.Body>
-        <Modal.Footer>
+        <Modal.Footer >
           <Button variant="secondary" onClick={() => setShowImportModal(false)}>
             {t('products.cancel')}
           </Button>
@@ -457,20 +462,27 @@ const AdminProducts = () => {
         </Modal.Footer>
       </Modal>
 
-      <ReactPaginate
-        previousLabel={t('pagination.previous')}
-        nextLabel={t('pagination.next')}
-        pageCount={Math.ceil(products.filter(product =>
-          product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          product.description.toLowerCase().includes(searchTerm.toLowerCase())
-        ).length / productsPerPage)}
-        marginPagesDisplayed={2}
-        pageRangeDisplayed={5}
-        onPageChange={handlePageClick}
-        containerClassName={'pagination'}
-        subContainerClassName={'pages pagination'}
-        activeClassName={'active'}
-      />
+      <div dir={direction}>
+        <ReactPaginate
+          previousLabel={t('pagination.previous')}
+          nextLabel={t('pagination.next')}
+          breakLabel="..."
+          breakClassName="break-me"
+          pageCount={Math.ceil(products.filter(product =>
+            product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            product.description.toLowerCase().includes(searchTerm.toLowerCase())
+          ).length / productsPerPage)}
+          marginPagesDisplayed={2}
+          pageRangeDisplayed={5}
+          onPageChange={handlePageClick}
+          containerClassName="pagination"
+          activeClassName="active"
+          pageLinkClassName="page-link"
+          previousLinkClassName="page-link"
+          nextLinkClassName="page-link"
+          disabledClassName="disabled"
+        />
+      </div>
     </Container>
   );
 };

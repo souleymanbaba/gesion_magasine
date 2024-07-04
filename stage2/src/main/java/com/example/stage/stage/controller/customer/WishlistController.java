@@ -28,8 +28,8 @@ public class WishlistController {
     }
 
     @GetMapping("/wishlist/{userId}")
-    public ResponseEntity<List<WishlistDto>> getWishlistByUserId(@PathVariable Long userId) {
-        return ResponseEntity.ok(wishlistService.getWishlistByUserId(userId));
+    public ResponseEntity<List<WishlistDto>> getWishlistByUserId(@PathVariable Long userId, @RequestParam(value = "lang", defaultValue = "fr") String lang) {
+        return ResponseEntity.ok(wishlistService.getWishlistByUserId(userId,lang));
     }
 
     @DeleteMapping("/wishlist/{id}")

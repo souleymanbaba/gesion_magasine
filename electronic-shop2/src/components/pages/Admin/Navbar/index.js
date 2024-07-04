@@ -6,7 +6,7 @@ import { FaBars, FaShoppingCart, FaTags } from 'react-icons/fa';
 import { IoMdApps, IoIosListBox } from 'react-icons/io';
 import { BiLogOut } from 'react-icons/bi';
 import './Header.css';
-import { savelang } from '../../Account/userStorageService';
+// import { savelang } from '../pages/Account/userStorageService';
 
 function NavigationBar() {
   const { t, i18n } = useTranslation();
@@ -30,7 +30,7 @@ function NavigationBar() {
   const directionClass = selectedLanguage === 'ar' ? 'rtl' : 'ltr';
 
   return (
-    <Navbar bg="primary" variant="dark" expand="lg" dir={directionClass} className={`navbar-${directionClass}`}>
+    <Navbar bg="purple" variant="dark" expand="lg" dir={directionClass} className={`navbar-${directionClass} fixed-top`}>
       <Container>
         <Navbar.Brand as={Link} to="#">{t('appName')}</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav">

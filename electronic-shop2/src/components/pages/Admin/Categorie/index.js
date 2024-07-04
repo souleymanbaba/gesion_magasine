@@ -185,6 +185,11 @@ const CategoryManagement = () => {
 
   return (
     <Container fluid style={{ direction }}>
+      <br></br>
+      <br></br>
+      <br></br>
+      <br></br>
+      <br></br>
       <Row className="justify-content-center">
         <Col xs={12} md={4} className="mb-3">
           <div className="text-center">
@@ -281,8 +286,8 @@ const CategoryManagement = () => {
         </Col>
       </Row>
       <Modal show={showForm} onHide={() => setShowForm(false)} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>{t('buttons.add_category')}</Modal.Title>
+        <Modal.Header closeButton className="custom-modal-header" >
+          <Modal.Title >{t('buttons.add_category')}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleSubmit}>

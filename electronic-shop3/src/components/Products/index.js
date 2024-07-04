@@ -1,0 +1,232 @@
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import ProductCard from './ProductCard';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFilter } from '@fortawesome/free-solid-svg-icons';
+import { useTranslation } from 'react-i18next';
+import { getlang } from '../pages/Account/userStorageService';
+import Pagination from 'react-bootstrap/Pagination';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './productStyle.css'; // Assurez-vous que le chemin est correct
+import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+
+function Products() {
+  const { t, i18n } = useTranslation();
+  const defaultOption = i18n.language === 'ar' ? 'الجميع' : 'Tous';
+  
+  const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [subCategories, setSubCategories] = useState([]);
+  const [sizes, setSizes] = useState([]);
+  const [brands, setBrands] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(defaultOption);
+  const [selectedSubCategory, setSelectedSubCategory] = useState(defaultOption);
+  const [selectedSize, setSelectedSize] = useState(defaultOption);
+  const [selectedBrand, setSelectedBrand] = useState(defaultOption);
+  const [direction, setDirection] = useState('ltr');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [productsPerPage] = useState(6);
+
+  useEffect(() => {
+    if (i18n.language === 'ar') {
+      setDirection('rtl');
+    } else {
+      setDirection('ltr');
+    }
+    fetchProducts();
+    fetchCategories();
+  }, [i18n.language]);
+
+  useEffect(() => {
+    updateSizeAndBrandLists(filteredProducts);
+  }, [filteredProducts]);
+
+  const fetchProducts = (categoryId = defaultOption, size = defaultOption, brand = defaultOption) => {
+    let url = 'http://localhost:8080/api/admin/products';
+    if (categoryId !== defaultOption) {
+      url = `http://localhost:8080/api/admin/category/${categoryId}`;
+    }
+    const lang = getlang();
+    axios.get(url, { params: { lang } })
+      .then(response => {
+        let filteredProducts = response.data;
+        if (size !== defaultOption) {
+          filteredProducts = filteredProducts.filter(product => product.taille === size);
+        }
+        if (brand !== defaultOption) {
+          filteredProducts = filteredProducts.filter(product => product.marque === brand);
+        }
+        setProducts(filteredProducts);
+        setFilteredProducts(filteredProducts);
+      })
+      .catch(error => {
+        console.error('There was an error fetching the products!', error);
+      });
+  };
+
+  const fetchCategories = () => {
+    const url = 'http://localhost:8080/api/admin/categories';
+    const lang = getlang();
+    axios.get(url, { params: { lang } })
+      .then(response => {
+        setCategories(response.data);
+      })
+      .catch(error => {
+        console.error('There was an error fetching the categories!', error);
+      });
+  };
+
+  const fetchSubCategories = (categoryId) => {
+    const url = `http://localhost:8080/api/admin/${categoryId}/subcategories`;
+    const lang = getlang();
+    axios.get(url, { params: { lang } })
+      .then(response => {
+        setSubCategories(response.data);
+      })
+      .catch(error => {
+        console.error('There was an error fetching the subcategories!', error);
+      });
+  };
+
+  const updateSizeAndBrandLists = (products) => {
+    const uniqueSizes = [...new Set(products.map(product => product.taille))];
+    const uniqueBrands = [...new Set(products.map(product => product.marque))];
+    setSizes([defaultOption, ...uniqueSizes]);
+    setBrands([defaultOption, ...uniqueBrands]);
+  };
+
+  const updateCart = (product) => {
+    console.log(`Adding product ${product.id} to cart`);
+  };
+
+  const handleCategorySelect = (event) => {
+    const categoryId = event.target.value;
+    setSelectedCategory(categoryId);
+    setSelectedSubCategory(defaultOption);
+    setSelectedSize(defaultOption);
+    setSelectedBrand(defaultOption);
+    if (categoryId === defaultOption) {
+      fetchProducts(defaultOption, defaultOption, defaultOption);
+      setSubCategories([]);
+    } else {
+      fetchSubCategories(categoryId);
+      fetchProducts(categoryId, defaultOption, defaultOption);
+    }
+  };
+
+  const handleSubCategorySelect = (event) => {
+    const subCategoryId = event.target.value;
+    setSelectedSubCategory(subCategoryId);
+    fetchProducts(subCategoryId, selectedSize, selectedBrand);
+  };
+
+  const handleSizeSelect = (event) => {
+    const size = event.target.value;
+    setSelectedSize(size);
+    fetchProducts(selectedCategory, size, selectedBrand);
+  };
+
+  const handleBrandSelect = (event) => {
+    const brand = event.target.value;
+    setSelectedBrand(brand);
+    fetchProducts(selectedCategory, selectedSize, brand);
+  };
+
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  return (
+    <div className="products-container container-fluid" style={{ direction: direction }}>
+      <div className="row">
+        <div className="col-md-3">
+          <div className="filters-section bg-light p-3 rounded shadow-sm mb-4">
+            <h4><FontAwesomeIcon icon={faFilter} /> {t('filters')}</h4>
+            <div className="mb-3">
+              <FormControl fullWidth>
+                <InputLabel>{t('categories')}</InputLabel>
+                <Select value={selectedCategory} onChange={handleCategorySelect}>
+                  <MenuItem value="">
+                    <em>{defaultOption}</em>
+                  </MenuItem>
+                  {categories.map(category => (
+                    <MenuItem key={category.id} value={category.id}>{category.name}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </div>
+            {selectedCategory !== defaultOption && (
+              <div className="mb-3">
+                <FormControl fullWidth>
+                  <InputLabel>{t('sub_categories')}</InputLabel>
+                  <Select value={selectedSubCategory} onChange={handleSubCategorySelect}>
+                    <MenuItem value="">
+                    <em>{defaultOption}</em>
+                     
+                    </MenuItem>
+                    {subCategories.map(subCategory => (
+                      <MenuItem key={subCategory.id} value={subCategory.id}>{subCategory.name}</MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </div>
+            )}
+            <div className="mb-3">
+              <FormControl fullWidth>
+                <InputLabel>{t('select_brand')}</InputLabel>
+                <Select value={selectedBrand} onChange={handleBrandSelect}>
+                  <MenuItem value="">
+                    
+                  </MenuItem>
+                  {brands.map(brand => (
+                    <MenuItem key={brand} value={brand}>{brand}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </div>
+            <div className="mb-3">
+              <FormControl fullWidth>
+                <InputLabel>{t('select_size')}</InputLabel>
+                <Select value={selectedSize} onChange={handleSizeSelect}>
+                  <MenuItem value="">
+                  
+                  </MenuItem>
+                  {sizes.map(size => (
+                    <MenuItem key={size} value={size}>{size}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </div>
+          </div>
+        </div>
+        <div className="col-md-9">
+          <div className="text-center mb-4">
+            <h1 className="products-title">{t('produ')}</h1>
+            <div className="underline"></div>
+          </div>
+          <div className="row">
+            {currentProducts.map(product => (
+              <div className="col-md-4 col-sm-6 mb-4" key={product.id}>
+                <ProductCard deal={product} updateCart={() => updateCart(product)} />
+              </div>
+            ))}
+          </div>
+          <Pagination>
+            <Pagination.Prev onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1} />
+            {Array.from({ length: Math.ceil(filteredProducts.length / productsPerPage) }, (_, i) => (
+              <Pagination.Item key={i} active={i + 1 === currentPage} onClick={() => paginate(i + 1)}>
+                {i + 1}
+              </Pagination.Item>
+            ))}
+            <Pagination.Next onClick={() => paginate(currentPage + 1)} disabled={currentPage === Math.ceil(filteredProducts.length / productsPerPage)} />
+          </Pagination>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default Products;
