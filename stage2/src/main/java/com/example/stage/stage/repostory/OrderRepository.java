@@ -19,4 +19,5 @@ List<Order> findByUserIdAndOrderStatusIn(Long Id, List<OrderStatus> orderStatus)
     List<Order> findByDateBetweenAndOrderStatus(Date startDate, Date endDate, OrderStatus orderStatus);
     Long countByOrderStatus(OrderStatus orderStatus);
     List<Order> findByUserId(Long userId);
+    Optional<Order> findByIdAndUserId(Long orderId, Long userId);
 }

@@ -1,7 +1,9 @@
 package com.example.stage.stage.services.admin.adminProduct;
 
+import com.example.stage.stage.dto.MonthlySortiesData;
 import com.example.stage.stage.dto.MouvementStockDto;
 import com.example.stage.stage.dto.ProductDto;
+import com.example.stage.stage.dto.ProductMouvementCountDto;
 import com.example.stage.stage.entity.MouvementStock;
 import com.example.stage.stage.entity.Product;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,4 +26,9 @@ public interface ProductService {
     void addMouvementStock(MouvementStockDto mouvementStockDto);
     List<MouvementStock> getMouvementsByProductId(Long productId);
     void saveProductsFromExcel(MultipartFile file);
+    ProductMouvementCountDto getProductWithMaxSorties();
+    ProductMouvementCountDto getProductWithMinSorties();
+    double getTotalSorties();
+    Double getTotalSortiesCurrentMonth();
+    List<MonthlySortiesData> getTotalSortiesForLastThreeMonths();
 }

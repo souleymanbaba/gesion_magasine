@@ -20,17 +20,21 @@ public class CartController {
     private final CartService cartService;
     private final CartItemsService cartItemsService;
 
+
+    @GetMapping("/cartI/{userId}")
+    public ResponseEntity<?> getCartByUserIdAndOrderId(@PathVariable Long userId, @RequestParam Long orderId, @RequestParam(defaultValue = "fr") String lang) {
+        OrderDto orderDto = cartService.getCartByUserIdAndOrderId(userId, orderId, lang);
+        return ResponseEntity.status(HttpStatus.OK).body(orderDto);
+    }
+
+
     @GetMapping("/cart/{userId}")
-    public ResponseEntity<?> getCartByUserId(@PathVariable Long userId,@RequestParam(defaultValue = "fr") String lang) {
+    public ResponseEntity<?> getCartByUserIdI(@PathVariable Long userId,@RequestParam(defaultValue = "fr") String lang) {
         OrderDto orderDto= cartService.getCartByUserId(userId,lang);
         return ResponseEntity.status(HttpStatus.OK).body (orderDto);
     }
 
-    @GetMapping("/cartI/{userId}")
-    public ResponseEntity<?> getCartByUserIdI(@PathVariable Long userId,@RequestParam(defaultValue = "fr") String lang) {
-        OrderDto orderDto= cartService.getCartByUserIdI(userId,lang);
-        return ResponseEntity.status(HttpStatus.OK).body (orderDto);
-    }
+
 
     @GetMapping("/cartIi/{userId}")
     public ResponseEntity<?> getCartByUserIdIi(@PathVariable Long userId,@RequestParam(defaultValue = "fr") String lang) {

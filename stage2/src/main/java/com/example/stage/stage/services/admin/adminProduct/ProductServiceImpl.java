@@ -1,7 +1,9 @@
 package com.example.stage.stage.services.admin.adminProduct;
 
+import com.example.stage.stage.dto.MonthlySortiesData;
 import com.example.stage.stage.dto.MouvementStockDto;
 import com.example.stage.stage.dto.ProductDto;
+import com.example.stage.stage.dto.ProductMouvementCountDto;
 import com.example.stage.stage.entity.Category;
 import com.example.stage.stage.entity.Marque;
 import com.example.stage.stage.entity.MouvementStock;
@@ -17,17 +19,20 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
+import java.util.logging.Logger;
 @RequiredArgsConstructor
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -199,6 +204,35 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
+    public double getTotalSorties() {
+        return mouvementStockRepository.sumTotalPriceByType(MouvementStock.TypeMouvement.SORTIE);
+    }
+    private static final Logger logger = Logger.getLogger(ProductService.class.getName());
+
+    public ProductMouvementCountDto getProductWithMinSorties() {
+        logger.info("Fetching product with minimum sorties...");
+        List<Object[]> results = mouvementStockRepository.findProductWithMinSorties(MouvementStock.TypeMouvement.SORTIE);
+        if (!results.isEmpty()) {
+            Object[] result = results.get(0);
+            return new ProductMouvementCountDto((Product) result[0], ((Number) result[1]).intValue());
+        } else {
+            logger.warning("No results found for minimum sorties");
+        }
+        return null;
+    }
+
+    public ProductMouvementCountDto getProductWithMaxSorties() {
+        logger.info("Fetching product with maximum sorties...");
+        List<Object[]> results = mouvementStockRepository.findProductWithMaxSorties(MouvementStock.TypeMouvement.SORTIE);
+        if (!results.isEmpty()) {
+            Object[] result = results.get(0);
+            return new ProductMouvementCountDto((Product) result[0], ((Number) result[1]).intValue());
+        } else {
+            logger.warning("No results found for maximum sorties");
+        }
+        return null;
+    }
+
     public ProductDto updateProductTranslation(Long productId, ProductDto productDto) {
         Optional<Product> optionalProduct = productRepository.findById(productId);
         if (optionalProduct.isPresent()) {
@@ -219,8 +253,21 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
+    public List<MonthlySortiesData> getTotalSortiesForLastThreeMonths() {
+        LocalDateTime endDate = LocalDateTime.now();
+        LocalDateTime startDate = endDate.minusMonths(3).withDayOfMonth(1).toLocalDate().atStartOfDay();
+
+        return mouvementStockRepository.findTotalSortiesForLastThreeMonths(startDate, endDate);
+    }
     public List<MouvementStock> getMouvementsByProductId(Long productId) {
         return mouvementStockRepository.findByProductId(productId);
+    }
+    public Double getTotalSortiesCurrentMonth() {
+        YearMonth currentMonth = YearMonth.now(ZoneId.systemDefault());
+        LocalDateTime startOfMonth = currentMonth.atDay(1).atStartOfDay();
+        LocalDateTime endOfMonth = currentMonth.atEndOfMonth().atTime(23, 59, 59);
+
+        return mouvementStockRepository.sumTotalPriceByTypeAndDate(startOfMonth, endOfMonth);
     }
 
 

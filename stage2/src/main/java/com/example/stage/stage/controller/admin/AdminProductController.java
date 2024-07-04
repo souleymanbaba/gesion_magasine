@@ -1,8 +1,11 @@
 package com.example.stage.stage.controller.admin;
 
+import com.example.stage.stage.dto.MonthlySortiesData;
 import com.example.stage.stage.dto.MouvementStockDto;
 import com.example.stage.stage.dto.ProductDto;
+import com.example.stage.stage.dto.ProductMouvementCountDto;
 import com.example.stage.stage.entity.MouvementStock;
+import com.example.stage.stage.entity.Product;
 import com.example.stage.stage.services.admin.adminProduct.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,6 +29,21 @@ public class AdminProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(productDto1);
     }
 
+    @GetMapping("/total-sorties")
+    public double getTotalSorties() {
+        return adminProductService.getTotalSorties();
+    }
+
+    @GetMapping("/min-sorties")
+    public ProductMouvementCountDto getProductWithMinSorties() {
+        return adminProductService.getProductWithMinSorties();
+    }
+
+    @GetMapping("/max-sorties")
+    public ProductMouvementCountDto getProductWithMaxSorties() {
+        return adminProductService.getProductWithMaxSorties();
+    }
+
     @GetMapping( "/products")
     public ResponseEntity<List<ProductDto>> getAllProducts(@RequestParam(defaultValue = "fr") String lang) {
         List<ProductDto> productDto = adminProductService.getAllProducts(lang);
@@ -36,6 +54,17 @@ public class AdminProductController {
     public void addMouvementStock(@RequestBody MouvementStockDto mouvementStockDto) {
         adminProductService.addMouvementStock(mouvementStockDto);
     }
+
+    @GetMapping("/total-sorties-current-month")
+    public Double getTotalSortiesCurrentMonth() {
+        return adminProductService.getTotalSortiesCurrentMonth();
+    }
+
+    @GetMapping("/three-months-sorties")
+    public List<MonthlySortiesData> getTotalSortiesForLastThreeMonths() {
+        return adminProductService.getTotalSortiesForLastThreeMonths();
+    }
+
 
     @PutMapping("/product/{productId}/translation")
     public ResponseEntity<ProductDto> updateProductTranslation(@PathVariable Long productId,

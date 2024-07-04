@@ -143,25 +143,8 @@ return null;
             mouvementStockRepository.save(mouvementStock);
         }
 
-        // Supprimer les articles du panier de l'utilisateur
-        cartItemsRepository.deleteByUserId(userId);
 
-        // Récupérer les commandes de l'utilisateur
-        List<Order> orders = orderRepository.findByUserId(userId);
 
-        // Mettre à jour les commandes de l'utilisateur
-        for (Order order : orders) {
-            order.setOrderDescription(null);
-            order.setDate(null);
-            order.setAmount(0L);
-            order.setAddress(null);
-            order.setPayment(null);
-            order.setOrderStatus(OrderStatus.Pending);
-            order.setTotalAmount(0L);
-            order.setDiscount(0L);
-            order.setTrackingId(null);
-            orderRepository.save(order);
-        }
     }
 
 

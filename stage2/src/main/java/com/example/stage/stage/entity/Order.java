@@ -23,15 +23,15 @@ public class Order {
     private Long amount;
     private String address;
     private String payment;
-    private OrderStatus orderStatus; // Remove if unused
+    private OrderStatus orderStatus;
     private Long totalAmount;
-    private Long discount; // Remove if unused
+    private Long discount;
     private UUID trackingId;
 
     private Double latitude;
     private Double longitude;
 
-    @OneToOne(cascade = CascadeType.MERGE)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId", referencedColumnName = "id")
     private User user;
 

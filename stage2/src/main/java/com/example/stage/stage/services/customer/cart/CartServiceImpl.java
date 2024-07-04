@@ -98,6 +98,26 @@ public class CartServiceImpl implements CartService {
         return orderDto;
     }
 
+    public OrderDto getCartByUserIdAndOrderId(Long userId, Long orderId, String lang) {
+        Optional<Order> optionalOrder = orderRepository.findByIdAndUserId(orderId, userId);
+        if (optionalOrder.isPresent()) {
+            Order order = optionalOrder.get();
+            List<CartItemsDto> cartItemsDtoList = order.getCartItems().stream()
+                    .map(cartItem -> cartItem.getCartto(lang))
+                    .collect(Collectors.toList());
+            OrderDto orderDto = new OrderDto();
+            orderDto.setAmount(order.getAmount());
+            orderDto.setId(order.getId());
+            orderDto.setOrderStatus(order.getOrderStatus());
+            orderDto.setDiscount(order.getDiscount());
+            orderDto.setTotalAmount(order.getTotalAmount());
+            orderDto.setCartItems(cartItemsDtoList);
+            return orderDto;
+        }
+        return null; // Or throw an exception if order is not found
+    }
+
+
 
 
     public OrderDto getCartByUserIdI(Long userId,String lang) {
@@ -176,29 +196,43 @@ public class CartServiceImpl implements CartService {
     }
 
     public OrderDto placeOrder(PlaceOrderDto placeOrderDto) {
-        Order activeOrder = orderRepository.findByUserIdAndOrderStatus(placeOrderDto.getUserId(), OrderStatus.Pending);
         Optional<User> optionalUser = userRepository.findById(placeOrderDto.getUserId());
         if (optionalUser.isPresent()) {
-            activeOrder.setOrderDescription(placeOrderDto.getOrderDescription());
-            activeOrder.setAddress(placeOrderDto.getAddress());
-            activeOrder.setLatitude(placeOrderDto.getLatitude());
-            activeOrder.setLongitude(placeOrderDto.getLongitude());
-            activeOrder.setDate(new Date());
-            activeOrder.setOrderStatus(OrderStatus.Placed);
-            activeOrder.setTrackingId(UUID.randomUUID());
-            orderRepository.save(activeOrder);
+            User user = optionalUser.get();
 
-            Order order = new Order();
-            order.setAmount(0L);
-            order.setTotalAmount(0L);
-            order.setDiscount(0L);
-            order.setUser(optionalUser.get());
-            order.setOrderStatus(OrderStatus.Pending);
-            orderRepository.save(order);
-            return activeOrder.getOrderDto();
+            Order activeOrder = orderRepository.findByUserIdAndOrderStatus(user.getId(), OrderStatus.Pending);
+
+            if (activeOrder != null) {
+                activeOrder.setOrderDescription(placeOrderDto.getOrderDescription());
+                activeOrder.setAddress(placeOrderDto.getAddress());
+                activeOrder.setLatitude(placeOrderDto.getLatitude());
+                activeOrder.setLongitude(placeOrderDto.getLongitude());
+                activeOrder.setDate(new Date());
+                activeOrder.setOrderStatus(OrderStatus.Placed);
+                activeOrder.setTrackingId(UUID.randomUUID());
+                orderRepository.save(activeOrder);
+            }
+
+
+            Order newOrder = new Order();
+            newOrder.setOrderDescription(null);
+            newOrder.setDate(null);
+            newOrder.setAmount(0L);
+            newOrder.setAddress(null);
+            newOrder.setPayment(null);
+            newOrder.setTotalAmount(0L);
+            newOrder.setDiscount(0L);
+            newOrder.setTrackingId(null);
+            newOrder.setUser(user);
+            newOrder.setOrderStatus(OrderStatus.Pending);
+            orderRepository.save(newOrder);
+
+            // Retourner les détails de la commande placée
+            return activeOrder != null ? activeOrder.getOrderDto() : null;
         }
         return null;
     }
+
 
     public List<OrderDto> getMyPlacedOrders(Long userId) {
         return orderRepository.findByUserIdAndOrderStatusIn(userId, List.of(OrderStatus.Placed, OrderStatus.Shipped,
