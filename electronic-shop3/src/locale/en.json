@@ -1,4 +1,6 @@
 {
+  "increase_quantity":"La quantité est bien incrémentée",
+  "decrease_quantity":"La quantité est bien décrémentée",
   "marques.updated":" Marque mise à jour",
 "marques.updatedMessage": "La marque a été mise à jour avec succès.",
 "marques.confirmDelete": "Confirmer la suppression",
@@ -110,6 +112,7 @@
   "added_successfully": "Produit ajouté à votre panier avec succès !",
   "error_title": "Erreur",
   "error_message": "Il y a eu un problème lors de l'ajout du produit à votre panier.",
+  "errorrr_message": "Le produit est déjà dans la liste des favoris.",
   "already_in_cart": "Il est déjà dans votre panier",
   "success_title": "Succès",
   "login_redirect_message": "Veuillez vous connecter pour ajouter des articles à votre panier",

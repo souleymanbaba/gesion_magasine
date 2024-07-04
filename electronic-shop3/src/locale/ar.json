@@ -1,4 +1,7 @@
 {
+  "errorrr_message": "المنتج موجود بالفعل في قائمة المفضلات",
+  "increase_quantity":"الكمية قد زادت بشكل صحيح",
+  "decrease_quantity":"الكمية قد نقصت بشكل صحيح",
   "type":"نوع",
   "marques.confirmDelete":" تأكيد الحذف",
 "marques.confirmDeleteMessage":" هل أنت متأكد من أنك تريد حذف هذه العلامة التجارية؟",
