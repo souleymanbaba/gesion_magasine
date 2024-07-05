@@ -40,6 +40,7 @@ public class ProductServiceImpl implements ProductService {
     private final CategoryRepository categoryRepository;
 
     private final MouvementStockRepository mouvementStockRepository;
+
     private final MarqueRepository marqueRepository;
 
 
