@@ -142,7 +142,7 @@ function Navbar() {
       <nav className="navbar navbar-expand-lg" id="navbar" dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}>
         <div className="container-fluid">
           <Link className="navbar-brand" to="/" id="logo">
-            <span id="span1">{t('title')}</span>{t('subtitle')} <span>{t('suubtitle')}</span>
+            <span id="span1">{t('title')}</span>{t('subtitle')} <span></span>
           </Link>
           <button
             className="navbar-toggler"

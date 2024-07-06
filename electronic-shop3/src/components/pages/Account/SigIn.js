@@ -67,12 +67,12 @@ const Login = () => {
       <form onSubmit={handleLogin} className="login-form">
         <h2>{t('login.title')}</h2>
         <div className="form-group">
-          <label>{t('login.email')}</label>
+          <label>{t('login.number')}</label>
           <input
-            type="email"
+            type="tel"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            placeholder={t('login.enter_email')}
+            placeholder={t('login.phonenumber')}
             className="form-control"
           />
         </div>

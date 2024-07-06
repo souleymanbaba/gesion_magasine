@@ -43,9 +43,7 @@ const SignUp = () => {
   };
 
   const emailValidation = (email) => {
-    return String(email)
-      .toLowerCase()
-      .match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i);
+    return String(email).match(/^\d{8,}$/);
   };
 
   const handleSubmit = async (e) => {
@@ -87,10 +85,12 @@ const SignUp = () => {
       isValid = false;
     }
     if (!email) {
-      setErrEmail(t('errors.enterEmail'));
+      setErrEmail(t('errors.enterPhoneNumber'));
       isValid = false;
+
+      
     } else if (!emailValidation(email)) {
-      setErrEmail(t('errors.invalidEmail'));
+      setErrEmail(t('errors.invalidPhoneNumber'));
       isValid = false;
     }
     if (!password) {
@@ -138,14 +138,15 @@ const SignUp = () => {
               )}
             </div>
             <div className="mb-4">
-              <label htmlFor="email" className="block text-gray-700 font-bold mb-2">{t('signup.email')}</label>
+            <label htmlFor="phoneNumber" className="block text-gray-700 font-bold mb-2">{t('signup.phoneNumber')}</label>
+
               <input
                 id="email"
                 onChange={handleEmail}
                 value={email}
                 className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errEmail && "border-red-500"}`}
-                type="email"
-                placeholder={t('signup.placeholderEmail')}
+                type="tel"
+                placeholder={t('signup.placeholderPhoneNumber')}
               />
               {errEmail && (
                 <p className="text-red-500 text-xs italic">{errEmail}</p>
