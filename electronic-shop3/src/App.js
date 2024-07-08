@@ -19,6 +19,7 @@ import Wishlist from './Wishlist';
 import Orderss from "./test";
 import Logout from './components/pages/Account/logOut';
 import HomePage from './components/HomePage';
+import ReviewsList from './components/pages/Admin/ReviewList';
 import ProductTransactions from './components/pages/Admin/ProductsA/ProductTransactions';
 import AboutUs from './components/pages/AboutUs';
 import ContactUs from './components/pages/ContactUs';
@@ -53,6 +54,7 @@ function App() {
           <Route path="/admin/Marque" element={<AdminMarques />} />
           <Route path="/admin/Categorie" element={<Categorie />} />
           <Route path="/admin/DashboardCards" element={<DashboardCards />} />
+          <Route path="/admin/ReviewsList" element={<ReviewsList />} />
         </Route>
       </Routes>
     </Router>

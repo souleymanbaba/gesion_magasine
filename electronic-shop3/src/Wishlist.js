@@ -53,10 +53,12 @@ const Wishlist = ({ updateWishlistCount }) => {
       updateWishlistCount(updatedWishlist.length);
       setSuccessMessage(t('Item removed from wishlist.'));
       setErrorMessage(''); // Clear any previous error messages
+   
 
       // Déclencher l'événement personnalisé "budgetUpdated"
       const budgetUpdatedEvent = new CustomEvent('budgetUpdated', { detail: { budget: 'new budget value' } });
       window.dispatchEvent(budgetUpdatedEvent);
+      
     } catch (error) {
       console.error('Error removing item from wishlist:', error);
       setErrorMessage(t('Error removing item from wishlist.'));
@@ -90,7 +92,7 @@ const Wishlist = ({ updateWishlistCount }) => {
   };
 
   if (!userId) {
-    navigate('/SignIn', { state: { message: t('login_redirect_message') } });
+    navigate('/SigIn', { state: { message: t('login_redirect_message') } });
     return null;
   }
 
@@ -139,6 +141,7 @@ const Wishlist = ({ updateWishlistCount }) => {
                       onClick={() => handleRemoveFromWishlist(item.id)}
                     >
                       <FontAwesomeIcon icon={faTrash} /> {t('Remove')}
+                       
                     </Button>
                   </Card.Body>
                 </Card>

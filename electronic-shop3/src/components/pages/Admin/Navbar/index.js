@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Navbar, Nav, Container } from 'react-bootstrap';
 import { FaBars, FaShoppingCart, FaTags, FaTachometerAlt } from 'react-icons/fa';
 import { IoMdApps, IoIosListBox } from 'react-icons/io';
-import { BiLogOut } from 'react-icons/bi';
+import { BiLogOut, BiCommentDetail } from 'react-icons/bi'; // Import BiCommentDetail for reviews icon
 import './Header.css';
 
 function NavigationBar() {
@@ -37,7 +37,7 @@ function NavigationBar() {
         </Navbar.Toggle>
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-          <Nav.Link as={Link} to="/admin/DashboardCards">
+            <Nav.Link as={Link} to="/admin/DashboardCards">
               <FaTachometerAlt /> {t('dashboard')}
             </Nav.Link>
             <Nav.Link as={Link} to="/admin/Categorie">
@@ -52,7 +52,9 @@ function NavigationBar() {
             <Nav.Link as={Link} to="/admin/Marque">
               <FaTags /> {t('orders.marque')}
             </Nav.Link>
-           
+            <Nav.Link as={Link} to="/admin/ReviewsList">
+              <BiCommentDetail /> {t('reviews')} {/* Utilize the translation for reviews */}
+            </Nav.Link>
           </Nav>
           <Nav>
             <Nav.Link onClick={() => changeLanguage('fr')} active={selectedLanguage === 'fr'}>

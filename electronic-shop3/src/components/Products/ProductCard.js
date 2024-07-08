@@ -69,28 +69,15 @@ const ProductCard = ({ deal, updateCart, cartItems }) => {
           userId: user.userId
         });
         if (response.status === 200) {
-          Swal.fire({
-            icon: 'success',
-            title: t('added_to_cart'),
-          }).then(() => {
-            window.location.reload();
-          });
+          
+        
           updateCart();
         } else {
-          Swal.fire({
-            icon: 'success',
-            title: t('increase_quantity'),
-          }).then(() => {
-            window.location.reload();
-          });
+        
           updateCart();
         }
       } catch (error) {
-        Swal.fire({
-          icon: 'error',
-          title: t('error_title'),
-          text: error.response ? error.response.data.message : t('error_message'),
-        });
+      
       }
     }
   };
@@ -103,28 +90,14 @@ const ProductCard = ({ deal, updateCart, cartItems }) => {
           userId: user.userId
         });
         if (response.status === 200) {
-          Swal.fire({
-            icon: 'success',
-            title: t('added_to_cart'),
-          }).then(() => {
-            window.location.reload();
-          });
+         
           updateCart();
         } else {
-          Swal.fire({
-            icon: 'success',
-            title: t('decrease_quantity'),
-          }).then(() => {
-            window.location.reload();
-          });
+         
           updateCart();
         }
       } catch (error) {
-        Swal.fire({
-          icon: 'error',
-          title: t('error_title'),
-          text: error.response ? error.response.data.message : t('error_message'),
-        });
+       
       }
     }
   };
