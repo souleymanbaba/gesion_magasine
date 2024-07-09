@@ -30,6 +30,7 @@ public class Order {
 
     private Double latitude;
     private Double longitude;
+    private String wilaya;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId", referencedColumnName = "id")
@@ -52,6 +53,7 @@ public class Order {
         orderDto.setUser_id(user.getId());
         orderDto.setLatitude(latitude);
         orderDto.setLongitude(longitude);
+        orderDto.setWilaya(wilaya);
         return orderDto;
     }
 }

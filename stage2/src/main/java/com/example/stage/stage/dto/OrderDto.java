@@ -28,4 +28,5 @@ public class OrderDto {
     private String couponName;
     private Double latitude;
     private Double longitude;
+    private  String wilaya;
 }

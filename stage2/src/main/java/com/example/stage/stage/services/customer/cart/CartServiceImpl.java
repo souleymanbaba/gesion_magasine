@@ -204,6 +204,7 @@ public class CartServiceImpl implements CartService {
                 activeOrder.setAddress(placeOrderDto.getAddress());
                 activeOrder.setLatitude(placeOrderDto.getLatitude());
                 activeOrder.setLongitude(placeOrderDto.getLongitude());
+                activeOrder.setWilaya(placeOrderDto.getWilaya());
                 activeOrder.setDate(new Date());
                 activeOrder.setOrderStatus(OrderStatus.Placed);
                 activeOrder.setTrackingId(UUID.randomUUID());
@@ -223,8 +224,6 @@ public class CartServiceImpl implements CartService {
             newOrder.setUser(user);
             newOrder.setOrderStatus(OrderStatus.Pending);
             orderRepository.save(newOrder);
-
-            // Retourner les détails de la commande placée
             return activeOrder != null ? activeOrder.getOrderDto() : null;
         }
         return null;
