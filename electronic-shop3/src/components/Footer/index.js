@@ -21,16 +21,16 @@ const Footer = () => {
           <Col md={4}>
             <h5>{t('footer.aboutUs')}</h5>
             <p>
-              {t('footer.aboutUsText')}
+              {t('mission_text')}
             </p>
           </Col>
           <Col md={4}>
             <h5>{t('footer.quickLinks')}</h5>
             <ul className="list-unstyled">
               <li><a href="/" className="footer-link">{t('footer.home')}</a></li>
-              <li><a href="/about" className="footer-link">{t('footer.about')}</a></li>
-              <li><a href="/services" className="footer-link">{t('footer.services')}</a></li>
-              <li><a href="/contact" className="footer-link">{t('footer.contact')}</a></li>
+              <li><a href="/AboutUs" className="footer-link">{t('footer.about')}</a></li>
+            
+              <li><a href="/ContactUs" className="footer-link">{t('footer.contact')}</a></li>
             </ul>
           </Col>
           <Col md={4}>

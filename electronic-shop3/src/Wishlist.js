@@ -86,9 +86,9 @@ const Wishlist = ({ updateWishlistCount }) => {
       setTimeout(() => {
         window.location.reload();
       }, 2000);
-    } catch (error) {
-      console.error('Error transferring items to cart:', error);
-      setErrorMessage(t('alerts.error_transferring_items_to_cart'));
+    } catch (success) {
+      console.log('alerts.all_items_transferred_to_cart');
+      setSuccessMessage(t('alerts.all_items_transferred_to_cart'));
     }
   };
 

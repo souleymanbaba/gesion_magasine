@@ -29,3 +29,15 @@ h2 {
   font-size: 2rem;
   margin-bottom: 20px;
 }
+
+.badge-warning {
+  background-color: #FFC107; /* Custom color for warning */
+}
+
+.badge-success {
+  background-color: #28A745; /* Custom color for success */
+}
+
+.badge-secondary {
+  background-color: #6C757D; /* Custom color for secondary */
+}

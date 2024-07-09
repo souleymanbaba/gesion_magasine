@@ -168,7 +168,7 @@ function Products() {
                 <InputLabel>{t('categories')}</InputLabel>
                 <Select value={selectedCategory} onChange={handleCategorySelect}>
                   <MenuItem value="">
-                    <em>{defaultOption}</em>
+                    
                   </MenuItem>
                   {categories.map(category => (
                     <MenuItem key={category.id} value={category.id}>{category.name}</MenuItem>
@@ -182,7 +182,7 @@ function Products() {
                   <InputLabel>{t('sub_categories')}</InputLabel>
                   <Select value={selectedSubCategory} onChange={handleSubCategorySelect}>
                     <MenuItem value="">
-                      <em>{defaultOption}</em>
+                     
                     </MenuItem>
                     {subCategories.map(subCategory => (
                       <MenuItem key={subCategory.id} value={subCategory.id}>{subCategory.name}</MenuItem>
@@ -196,7 +196,7 @@ function Products() {
                 <InputLabel>{t('select_brand')}</InputLabel>
                 <Select value={selectedBrand} onChange={handleBrandSelect}>
                   <MenuItem value="">
-                    <em>{defaultOption}</em>
+                  
                   </MenuItem>
                   {brands.map(brand => (
                     <MenuItem key={brand} value={brand}>{brand}</MenuItem>
@@ -209,7 +209,7 @@ function Products() {
                 <InputLabel>{t('select_size')}</InputLabel>
                 <Select value={selectedSize} onChange={handleSizeSelect}>
                   <MenuItem value="">
-                    <em>{defaultOption}</em>
+                    
                   </MenuItem>
                   {sizes.map(size => (
                     <MenuItem key={size} value={size}>{size}</MenuItem>

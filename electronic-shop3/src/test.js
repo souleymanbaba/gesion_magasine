@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 const Orderss = () => {
   const [orders, setOrders] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [ordersPerPage] = useState(5); // Nombre d'éléments par page
+  const [ordersPerPage] = useState(5);
   const userId = getUserId();
   const { t, i18n } = useTranslation();
   const [direction, setDirection] = useState('ltr');
@@ -64,7 +64,7 @@ const Orderss = () => {
                     <td>{new Date(order.date).toLocaleString()}</td>
                     <td>
                       {order.orderStatus === "Shipped" ? (
-                        <Badge variant="warning">{t('PStatusShipped')}</Badge>
+                        <Badge variant="warning" >{t('PStatusShipped')}</Badge>
                       ) : order.orderStatus === "Delivered" ? (
                         <Badge variant="success">{t('PStatusDelivered')}</Badge>
                       ) : (

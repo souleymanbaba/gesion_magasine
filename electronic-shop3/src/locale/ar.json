@@ -402,7 +402,7 @@
   },
   "alerts": {
     "item_removed_from_wishlist": "تمت إزالة العنصر من قائمة الرغبات.",
-    "all_items_transferred_to_cart": "تم نقل جميع العناصر إلى السلة بنجاح.",
+    "all_items_transferred_to_cart": "تم نقل  العناصر إلى السلة بنجاح.",
     "error_fetching_wishlist": "خطأ في جلب بيانات قائمة الرغبات.",
     "error_removing_item_from_wishlist": "خطأ في إزالة العنصر من قائمة الرغبات.",
     "error_transferring_items_to_cart": "خطأ في نقل العناصر إلى السلة. يرجى المحاولة مرة أخرى لاحقًا.",

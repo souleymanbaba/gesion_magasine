@@ -30,7 +30,7 @@ function CreateReview() {
         setAlertType('danger');
       }
     } else {
-      navigate('/SigIn', { state: { message: t('login_redirect_message') } });
+      navigate('/SigIn', { state: { message: t('login_required') } });
     }
   }, [i18n.language, navigate, t]);
 

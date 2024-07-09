@@ -124,7 +124,7 @@
   "errorrr_message": "Le produit est déjà dans la liste des favoris.",
   "already_in_cart": "Il est déjà dans votre panier",
   "success_title": "Succès",
-  "login_redirect_message": "Veuillez vous connecter pour ajouter des articles à votre panier",
+  "login_redirect_message": "Veuillez vous connecter ",
   "add_to_cart": "Ajouter au panier",
   "added_to_wishlist_message": "Ajouté à la liste de souhaits",
   "product_added_successfully": "Produit ajouté avec succès !",
@@ -179,6 +179,8 @@
     "createAccount": "Créer un compte",
     "signInLink": "Se connecter",
     "successMessage": "Inscription réussie !",
+    "phoneNumber":"Numéro de téléphone",
+    "placeholderPhoneNumber":"Numéro de téléphone",
    
     "alreadyHaveAccount": "Vous avez déjà un compte ?",
     "loginHere": "Connectez-vous ici",
