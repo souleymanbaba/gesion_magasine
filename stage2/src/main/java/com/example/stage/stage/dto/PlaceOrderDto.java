@@ -9,5 +9,6 @@ public class PlaceOrderDto {
     private  String orderDescription;
     private Double latitude;
     private Double longitude;
+    private  String wilaya;
 
 }
