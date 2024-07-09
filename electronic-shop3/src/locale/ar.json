@@ -7,6 +7,11 @@
 "marques.confirmDeleteMessage":" هل أنت متأكد من أنك تريد حذف هذه العلامة التجارية؟",
 "marques.deleted":" تم حذف العلامة التجارية",
 "marques.deletedMessage":" تم حذف العلامة التجارية بنجاح.",
+"orders.mapLocation": "موقع الطلبيات",
+"avis":"التقييمات",
+"reviews.title": "التقييمات",
+"reviews.phone_number": "رقم الهاتف",
+"reviews.message": "الرسالة",
 
 "marques.created":" تم إنشاء العلامة التجارية",
 "marques.createdMessage":" تم إنشاء العلامة التجارية بنجاح.",
@@ -145,23 +150,26 @@
   "loading": "جار التحميل...",
   "products.movements":"حركة المنتجات",
 "login": {
+  "alert_warning": "تحذير",
+  "login_redirect_message": "يجب أن تكون مسجلاً الدخول للوصول إلى هذه الصفحة.",
   "title": "تسجيل الدخول",
-  "email": "البريد الإلكتروني",
-  "enter_email": "أدخل بريدك الإلكتروني",
+  "number": "رقم الهاتف",
+  "phonenumber": "أدخل رقم هاتفك",
   "password": "كلمة المرور",
   "enter_password": "أدخل كلمة المرور الخاصة بك",
   "login_button": "تسجيل الدخول",
-  "no_account": "ليس لديك حساب؟",
-  "register_here": "سجل هنا",
-  "alert_warning": "تحذير"
+  "no_account": "لا تمتلك حساب؟",
+  "register_here": "سجل هنا"
+
 },
 "signup": {
   "title": "إنشاء حسابك",
   "fullName": "الاسم الكامل",
   "email": "البريد الإلكتروني",
+  "phoneNumber": "رقم الهاتف",
   "password": "إنشاء كلمة مرور",
   "placeholderName": "مثال: جون دو",
-  "placeholderEmail": "john@workemail.com",
+  "placeholderPhoneNumber": "",
   "placeholderPassword": "مثال: JohnDoe@123",
   "termsAndConditions": "موافق على شروطنا وأحكامنا",
   "createAccount": "إنشاء حساب",
@@ -367,7 +375,45 @@
   "shipped": "تم الشحن",
   "delivered": "تم التوصيل",
   "cancelled": "ألغيت"
-}
+},
+
+"form": {
+    "title": "إرسال مراجعة",
+    "content": "المحتوى:",
+    "submit_button": "إرسال المراجعة"
+  },
+  "alerts": {
+    "user_id_not_available": "معرّف المستخدم غير متوفر. يرجى تسجيل الدخول.",
+    "login_required": "يجب أن تكون مسجلاً للدخول لإرسال مراجعة.",
+    "review_created": "تم إنشاء المراجعة:",
+    "review_submitted_success": "تم إرسال المراجعة بنجاح!",
+    "error_creating_review": "خطأ في إنشاء المراجعة:",
+    "review_submit_failed": "فشل في إرسال المراجعة. يرجى المحاولة مرة أخرى.",
+    "invalid_user_data": "بيانات المستخدم غير صالحة. يرجى تسجيل الدخول مرة أخرى."
+  },
+
+  "wishlist": {
+    "title": "قائمة الرغبات",
+    "price": "السعر",
+    "remove": "إزالة",
+    "transfer_all_to_cart": "نقل الكل إلى السلة",
+    "empty_message": "قائمة الرغبات الخاصة بك فارغة.",
+    "shop_now": "تسوق الآن"
+  },
+  "alerts": {
+    "item_removed_from_wishlist": "تمت إزالة العنصر من قائمة الرغبات.",
+    "all_items_transferred_to_cart": "تم نقل جميع العناصر إلى السلة بنجاح.",
+    "error_fetching_wishlist": "خطأ في جلب بيانات قائمة الرغبات.",
+    "error_removing_item_from_wishlist": "خطأ في إزالة العنصر من قائمة الرغبات.",
+    "error_transferring_items_to_cart": "خطأ في نقل العناصر إلى السلة. يرجى المحاولة مرة أخرى لاحقًا.",
+    "login_redirect_message": "يرجى تسجيل الدخول لعرض قائمة الرغبات الخاصة بك."
+  },
+  "loading": "جار التحميل...",
+  "PStatusPending": "قيد الانتظار",
+  "PStatusDelivered": "تم التوصيل",
+  "PStatusOther": "آخر",
+  "PStatusShipped": "تم الشحن",
+  "Statut":"حالة الطلب "
 
 
 

@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { ListGroup, Container, Row, Col, Pagination } from 'react-bootstrap';
 import './ReviewsList.css';
+import { useTranslation } from 'react-i18next';
 
 function ReviewsList() {
+  const { t, i18n } = useTranslation();
   const [reviews, setReviews] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [reviewsPerPage] = useState(5); // Nombre d'avis par page
@@ -29,23 +31,25 @@ function ReviewsList() {
   // Changer de page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+  // Déterminer la direction en fonction de la langue
+  const direction = i18n.language === 'ar' ? 'rtl' : 'ltr';
+
   return (
-    <Container>
+    <Container dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}>
       <Row>
         <Col>
           <br />
           <br />
-          <h2 className="my-4">Reviews</h2>
+          <h2 className="my-4">{t('reviews.title')}</h2>
           <ListGroup>
             {currentReviews.map(review => (
               <ListGroup.Item key={review.id}>
-                <strong></strong>
-                <div><strong>Phone Number:</strong> {review.userName}</div>
-                <div><strong>Message:</strong> {review.content}</div>
+                <div><strong>{t('reviews.phone_number')}:</strong> {review.userName}</div>
+                <div><strong>{t('reviews.message')}:</strong> {review.content}</div>
               </ListGroup.Item>
             ))}
           </ListGroup>
-          <br></br>
+          <br />
           <Pagination>
             {Array.from({ length: Math.ceil(reviews.length / reviewsPerPage) }, (_, index) => (
               <Pagination.Item

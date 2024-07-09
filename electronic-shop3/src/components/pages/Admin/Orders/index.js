@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Button, Form, Table, Container, Spinner } from 'react-bootstrap';
+import { Modal, Button, Form, Table, Container, Spinner, Badge } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import ReactPaginate from 'react-paginate';
 import { MapContainer, TileLayer, Marker } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
+import Swal from 'sweetalert2';
 import './Style.css'; // Ensure the path is correct
 import { getlang } from '../../Account/userStorageService';
 
@@ -33,7 +34,8 @@ const Orders = () => {
       const response = await axios.get('http://localhost:8080/api/admin/placedOrders', {
         params: { lang }
       });
-      setOrders(response.data);
+      const filteredOrders = response.data.filter(order => order.orderStatus !== 'Delivered');
+      setOrders(filteredOrders);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching orders:', error.message);
@@ -41,21 +43,22 @@ const Orders = () => {
     }
   };
 
-  const fetchCartItems = async (userId, orderId) => {
+  const fetchCartItems = async (userId, orderStatus) => {
     try {
       const lang = i18n.language;
-      const url =  `http://localhost:8080/api/customer/cartI/${userId}`;
+      const url = orderStatus === 'Shipped' 
+        ? `http://localhost:8080/api/customer/cartIi/${userId}`
+        : `http://localhost:8080/api/customer/cartI/${userId}`;
       const response = await axios.get(url, {
-        params: { lang, orderId }
+        params: { lang }
       });
+      
       setCartItems(response.data.cartItems);
       setShowCartModal(true);
     } catch (error) {
       console.error('Error fetching cart items:', error.message);
     }
   };
-
-  
 
   const handleChangeStatus = async () => {
     try {
@@ -71,8 +74,14 @@ const Orders = () => {
           }
           return order;
         });
-        setOrders(updatedOrders);
+        setOrders(updatedOrders.filter(order => order.orderStatus !== 'Delivered'));
         setShowStatusModal(false);
+        Swal.fire({
+          title: t('orders.statusUpdated'),
+          text: t('orders.statusUpdatedMessage'),
+          icon: 'success',
+          confirmButtonText: 'OK'
+        });
       } else {
         console.error('Failed to update order status');
       }
@@ -88,7 +97,7 @@ const Orders = () => {
   };
 
   const handleShowCartModal = (order) => {
-    fetchCartItems(order.user_id, order.id);
+    fetchCartItems(order.user_id, order.orderStatus);
   };
 
   const handleShowMapModal = (latitude, longitude) => {
@@ -130,6 +139,7 @@ const Orders = () => {
                     <th>{t('orders.date')}</th>
                     <th>{t('orders.totalAmount')}</th>
                     <th>{t('orders.address')}</th>
+                    <th>{t('orders.status')}</th>
                     <th>{t('orders.actions')}</th>
                   </tr>
                 </thead>
@@ -140,6 +150,13 @@ const Orders = () => {
                       <td>{order.date}</td>
                       <td>{order.totalAmount}</td>
                       <td>{order.address}</td>
+                      <td>
+                        {order.orderStatus === "Shipped" ? (
+                          <Badge variant="warning">{t('PStatusShipped')}</Badge>
+                        ) : (
+                          <Badge variant="secondary">{t('PStatusPending')}</Badge>
+                        )}
+                      </td>
                       <td>
                         <div className="d-flex">
                           <Button variant="info" size="sm" className="mr-2 mb-1" onClick={() => handleShowCartModal(order)}>

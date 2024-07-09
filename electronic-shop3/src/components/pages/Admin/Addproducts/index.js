@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Container, Row, Col, Form, Button, Toast } from 'react-bootstrap';
-import './style.css';
+import './style.css'; // Assurez-vous que style.css contient la classe .required-field
 import { useTranslation } from 'react-i18next';
 
 const AddProduct = () => {
@@ -113,20 +113,23 @@ const AddProduct = () => {
             <h2 className="text-center mb-4">{t('add_product')}</h2>
             <Form onSubmit={handleSubmit}>
               <Form.Group className="mb-3">
-                <Form.Label>{t('product_name')}</Form.Label>
-                <Form.Control type="text" value={productName} onChange={handleProductNameChange} required />
+                <Form.Label>
+                  {t('product_name')}
+                  <span className="required-field">*</span>
+                </Form.Label>
+                <Form.Control type="text" value={productName} onChange={handleProductNameChange} />
               </Form.Group>
               <Form.Group className="mb-3">
-                <Form.Label>{t('product_price')}</Form.Label>
-                <Form.Control type="number" value={productPrice} onChange={handleProductPriceChange} required />
+                <Form.Label>
+                  {t('product_price')}
+                  <span className="required-field">*</span>
+                </Form.Label>
+                <Form.Control type="number" value={productPrice} onChange={handleProductPriceChange} />
               </Form.Group>
-              {/* <Form.Group className="mb-3">
-                <Form.Label>{t('product_description')}</Form.Label>
-                <Form.Control as="textarea" rows={3} value={productDescription} onChange={handleProductDescriptionChange} required />
-              </Form.Group> */}
               <Form.Group className="mb-3">
                 <Form.Label>{t('category')}</Form.Label>
-                <Form.Select value={selectedCategory} onChange={handleCategoryChange} required>
+                <span className="required-field">*</span>
+                <Form.Select value={selectedCategory} onChange={handleCategoryChange}>
                   <option value="">{t('select_category')}</option>
                   {categories.map((category) => (
                     <option key={category.id} value={category.id}>{category.name}</option>
@@ -135,15 +138,18 @@ const AddProduct = () => {
               </Form.Group>
               <Form.Group className="mb-3">
                 <Form.Label>{t('size')}</Form.Label>
-                <Form.Control type="text" value={productSize} onChange={handleProductSizeChange} required />
+                <Form.Control type="text" value={productSize} onChange={handleProductSizeChange} />
               </Form.Group>
               <Form.Group className="mb-3">
+                
                 <Form.Label>{t('en.Quantity')}</Form.Label>
-                <Form.Control type="number" value={productQuantite} onChange={handleProductQuantiteChange} required />
+                <span className="required-field">*</span>
+                <Form.Control type="number" value={productQuantite} onChange={handleProductQuantiteChange} />
               </Form.Group>
               <Form.Group className="mb-3">
                 <Form.Label>{t('brand')}</Form.Label>
-                <Form.Select value={selectedBrand} onChange={handleBrandChange} required>
+                <span className="required-field">*</span>
+                <Form.Select value={selectedBrand} onChange={handleBrandChange}>
                   <option value="">{t('select_brand')}</option>
                   {brands.map((brand) => (
                     <option key={brand.id} value={brand.id}>{brand.nom}</option>
@@ -152,7 +158,8 @@ const AddProduct = () => {
               </Form.Group>
               <Form.Group className="mb-3">
                 <Form.Label>{t('product_image')}</Form.Label>
-                <Form.Control type="file" accept="image/*" onChange={handleProductImageChange} required />
+                <span className="required-field">*</span>
+                <Form.Control type="file" accept="image/*" onChange={handleProductImageChange} />
               </Form.Group>
               {previewImage && (
                 <div className="mb-3 text-center">

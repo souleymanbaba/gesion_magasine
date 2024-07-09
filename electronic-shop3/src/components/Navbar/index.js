@@ -174,6 +174,11 @@ function Navbar() {
                   {t('contact')}
                 </Link>
               </li>
+              <li className="nav-item">
+                <Link className="nav-link" to="/test" onClick={closeMenu}>
+                  {t('Statut')}
+                </Link>
+              </li>
             </ul>
 
             <div className="container-fluid p-2">

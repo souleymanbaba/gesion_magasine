@@ -53,7 +53,7 @@ function NavigationBar() {
               <FaTags /> {t('orders.marque')}
             </Nav.Link>
             <Nav.Link as={Link} to="/admin/ReviewsList">
-              <BiCommentDetail /> {t('reviews')} {/* Utilize the translation for reviews */}
+              <BiCommentDetail /> {t('avis')} {/* Utilize the translation for reviews */}
             </Nav.Link>
           </Nav>
           <Nav>

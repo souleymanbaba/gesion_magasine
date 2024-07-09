@@ -141,8 +141,8 @@ const ProductCard = ({ deal, updateCart, cartItems }) => {
         {cartQuantity > 0 ? (
           <div className="text-success mb-2">
                 <button
-              className="button-custom btn ms-2"
-              style={{ fontFamily: "'Open Sans Condensed', sans-serif", fontSize: '1.2rem', height: '50px', backgroundColor: 'rgb(67 0 86)' }}
+              className=""
+            
               onClick={handleIncreaseQuantity}
             >
           
@@ -151,8 +151,8 @@ const ProductCard = ({ deal, updateCart, cartItems }) => {
             </button>
             {cartQuantity}
             <button
-              className="button-custom btn ms-2"
-              style={{ fontFamily: "'Open Sans Condensed', sans-serif", fontSize: '1.2rem', height: '50px', backgroundColor: 'rgb(67 0 86)' }}
+              className="  "
+             
               onClick={handleRemoveFromCart}
               disabled={cartQuantity === 1}
             >

@@ -21,7 +21,7 @@ import { faPlus, faMinus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { getUserId, getlang } from './components/pages/Account/userStorageService';
 import MapModal from './MapModal';
 import './C.css';
-import { removeCartItem, getCartItemCount } from './cartService'; // Import des services nécessaires
+import { removeCartItem, getCartItemCount } from './cartService';
 
 const Cart = ({ updateCartCount }) => {
   const { t, i18n } = useTranslation();
@@ -100,7 +100,7 @@ const Cart = ({ updateCartCount }) => {
     try {
       await removeCartItem(cartItemId);
       const lang = getlang();
-      fetchCartData(lang);  // Mettre à jour les données du panier après la suppression
+      fetchCartData(lang);
     } catch (error) {
       console.error('Error removing item:', error);
     }
@@ -141,14 +141,16 @@ const Cart = ({ updateCartCount }) => {
         setOrderPlaced(true);
         setCart(null);
         updateCartCount(0);
-        setErrorMessage(t('en.Failed to place order. Please try again.'));
-        setShowModal(false);
+
+        // Reload the page after placing the order successfully
+        window.location.reload();
       } else {
         setSuccessMessage(t('en.Order placed successfully.'));
+        window.location.reload();
       }
-    } catch (success) {
-      console.log("Votre commande a été passée avec succès!");
-      setSuccessMessage(t('en.Order placed successfully.'));
+    } catch (error) {
+      console.error('Error placing order:', error);
+      setErrorMessage(t('en.Failed to place order. Please try again.'));
     } finally {
       setPlacingOrder(false);
     }
@@ -266,7 +268,7 @@ const Cart = ({ updateCartCount }) => {
                   </Pagination>
                 </div>
               ) : (
-                <Button variant="link" href={`/test`}
+                <Button variant="link" href={`/orders`}
                   style={{ 
                     fontFamily: "'Open Sans Condensed', sans-serif", 
                     fontSize: '1.2rem', 

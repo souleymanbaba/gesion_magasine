@@ -1,19 +1,28 @@
 {
-  "increase_quantity":"La quantité est bien incrémentée",
-  "decrease_quantity":"La quantité est bien décrémentée",
+
+  "reviews.title": "Avis",
+  "reviews.phone_number": "Numéro de téléphone",
+  "reviews.message": "Message",
+
+ 
+ 
   "marques.updated":" Marque mise à jour",
 "marques.updatedMessage": "La marque a été mise à jour avec succès.",
 "marques.confirmDelete": "Confirmer la suppression",
 "marques.confirmDeleteMessage": "Êtes-vous sûr de vouloir supprimer cette marque ?",
 "marques.created": "Marque créée",
 "marques.createdMessage": "La marque a été créée avec succès.",
+"orders.mapLocation":"Localisation des commandes",
+"avis":"avis",
+
 
 "marques.deleted":" Marque supprimée",
 "marques.deletedMessage": "La marque a été supprimée avec succès.",
   "type":"type",
   "title": "Sa",
   "subtitle":"ïrti",
-  "suubtitle":"يرتى",
+
+ 
 
 "orders.statusUpdated": "Statut mis à jour",
 "orders.statusUpdatedMessage": "Le statut de votre commande a été mis à jour.",
@@ -146,16 +155,18 @@
   "loading": "Chargement...",
   "products.movements":"Mouvements des produits",
   "login": {
+    "alert_warning": "Attention",
+    "login_redirect_message": "Vous devez être connecté pour accéder à cette page.",
     "title": "Connexion",
-    "email": "Email",
-    "enter_email": "Entrez votre email",
+    "number": "Numéro de téléphone",
+    "phonenumber": "Entrez votre numéro de téléphone",
     "password": "Mot de passe",
     "enter_password": "Entrez votre mot de passe",
-    "login_button": "Connexion",
+    "login_button": "Se connecter",
     "no_account": "Vous n'avez pas de compte ?",
-    "register_here": "Inscrivez-vous ici",
-    "alert_warning": "Avertissement"
+    "register_here": "Inscrivez-vous ici"
   },
+  "login.number":"Numéro de téléphone",
   "signup": {
     "title": "Créez votre compte",
     "fullName": "Nom complet",
@@ -210,10 +221,11 @@
     "Select on Map": "Sélectionnez sur la carte",
     "Cart": "Panier",
     "Product Name": "Nom du produit",
-    "Quantity": "Quantité",
+    "Quantity": "Stock",
     "Price": "Prix",
     "Image": "Image",
     "Remove": "Retirer",
+ 
     "Total Amount": "Montant total",
     "Order Status": "Statut de la commande",
     "Place Order": "Passer la commande",
@@ -362,7 +374,44 @@
     "actions": "Actions",
     "edit": "Modifier la Marque",
     "submit": "Soumettre"
-  }
+  },
+  "form": {
+    "title": "Soumettre un avis",
+    "content": "Contenu:",
+    "submit_button": "Soumettre l'avis"
+  },
+  "alerts": {
+    "user_id_not_available": "L'ID utilisateur n'est pas disponible. Veuillez vous connecter.",
+    "login_required": "Vous devez être connecté pour soumettre un avis.",
+    "review_created": "Avis créé:",
+    "review_submitted_success": "Avis soumis avec succès!",
+    "error_creating_review": "Erreur lors de la création de l'avis:",
+    "review_submit_failed": "Échec de la soumission de l'avis. Veuillez réessayer.",
+    "invalid_user_data": "Données utilisateur invalides. Veuillez vous reconnecter."
+  },
+
+  "wishlist": {
+    "title": "Liste de souhaits",
+    "price": "Prix",
+    "remove": "Retirer",
+    "transfer_all_to_cart": "Tout transférer au panier",
+    "empty_message": "Votre liste de souhaits est vide.",
+    "shop_now": "Acheter maintenant"
+  },
+  "alerts": {
+    "item_removed_from_wishlist": "Article retiré de la liste de souhaits.",
+    "all_items_transferred_to_cart": "Tous les articles ont été transférés au panier avec succès.",
+    "error_fetching_wishlist": "Erreur lors de la récupération des données de la liste de souhaits.",
+    "error_removing_item_from_wishlist": "Erreur lors de la suppression de l'article de la liste de souhaits.",
+    "error_transferring_items_to_cart": "Erreur lors du transfert des articles au panier. Veuillez réessayer plus tard.",
+    "login_redirect_message": "Veuillez vous connecter pour voir votre liste de souhaits."
+  },
+  "loading": "Chargement...",
+  "PStatusPending": "En attente",
+    "PStatusDelivered": "Livré",
+    "PStatusOther": "Autre",
+     "PStatusShipped": "Expédié", 
+     "Statut":"Statut de la Commande"
  
 
 }

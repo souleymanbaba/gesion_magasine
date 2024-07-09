@@ -34,7 +34,8 @@ const Wishlist = ({ updateWishlistCount }) => {
         setWishlist(response.data);
         updateWishlistCount(response.data.length);
       } catch (error) {
-        console.error('Error fetching wishlist data:', error);
+        
+        setErrorMessage(t(''));
       } finally {
         setLoading(false);
       }
@@ -43,27 +44,27 @@ const Wishlist = ({ updateWishlistCount }) => {
     fetchWishlistData();
   }, [userId, updateWishlistCount, i18n.language]);
 
-  const handleRemoveFromWishlist = async (itemId) => {
-    try {
-      await axios.delete(`http://localhost:8080/api/customer/wishlist/${itemId}`, {
-        params: { lang: i18n.language }
-      });
-      const updatedWishlist = wishlist.filter(item => item.id !== itemId);
-      setWishlist(updatedWishlist);
-      updateWishlistCount(updatedWishlist.length);
-      setSuccessMessage(t('Item removed from wishlist.'));
-      setErrorMessage(''); // Clear any previous error messages
-   
+ const handleRemoveFromWishlist = async (itemId) => {
+  try {
+    await axios.delete(`http://localhost:8080/api/customer/wishlist/${itemId}`, {
+      params: { lang: i18n.language }
+    });
+    const updatedWishlist = wishlist.filter(item => item.id !== itemId);
+    setWishlist(updatedWishlist);
+    updateWishlistCount(updatedWishlist.length);
+    setSuccessMessage(t('alerts.item_removed_from_wishlist'));
+    setErrorMessage(''); // Clear any previous error messages
 
-      // Déclencher l'événement personnalisé "budgetUpdated"
-      const budgetUpdatedEvent = new CustomEvent('budgetUpdated', { detail: { budget: 'new budget value' } });
-      window.dispatchEvent(budgetUpdatedEvent);
-      
-    } catch (error) {
-      console.error('Error removing item from wishlist:', error);
-      setErrorMessage(t('Error removing item from wishlist.'));
-    }
-  };
+    // Trigger custom event "budgetUpdated"
+    const budgetUpdatedEvent = new CustomEvent('budgetUpdated', { detail: { budget: 'new budget value' } });
+    window.dispatchEvent(budgetUpdatedEvent);
+
+  } catch (error) {
+    console.error();
+    setErrorMessage(t(''));
+    setSuccessMessage(''); // Clear any previous success messages
+  }
+};
 
   const handleTransferAllToCart = async () => {
     try {
@@ -74,30 +75,30 @@ const Wishlist = ({ updateWishlistCount }) => {
           quantity: 1
         })
       ));
-      setSuccessMessage(t('All items transferred to cart successfully.'));
+      setSuccessMessage(t('alerts.all_items_transferred_to_cart'));
       setErrorMessage(''); // Clear any previous error messages
 
-      // Déclencher l'événement personnalisé "budgetUpdated"
+      // Trigger custom event "budgetUpdated"
       const budgetUpdatedEvent = new CustomEvent('budgetUpdated', { detail: { budget: 'new budget value' } });
       window.dispatchEvent(budgetUpdatedEvent);
 
-      // Afficher le message de succès pendant 2 secondes avant de recharger la page
+      // Show success message for 2 seconds before reloading the page
       setTimeout(() => {
         window.location.reload();
       }, 2000);
     } catch (error) {
       console.error('Error transferring items to cart:', error);
-      setErrorMessage(t('Error transferring items to cart. Please try again later.'));
+      setErrorMessage(t('alerts.error_transferring_items_to_cart'));
     }
   };
 
   if (!userId) {
-    navigate('/SigIn', { state: { message: t('login_redirect_message') } });
+    navigate('/SigIn', { state: { message: t('alerts.login_redirect_message') } });
     return null;
   }
 
   if (loading) {
-    return <div className="text-center"><Spinner animation="border" role="status"><span className="sr-only">Loading...</span></Spinner></div>;
+    return <div className="text-center"><Spinner animation="border" role="status"><span className="sr-only">{t('loading')}</span></Spinner></div>;
   }
 
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -110,14 +111,14 @@ const Wishlist = ({ updateWishlistCount }) => {
     <Container style={{ direction: direction }}>
       <Row>
         <Col>
-          <h2 className="text-center">{t('Wishlist')}</h2>
+          <h2 className="text-center">{t('wishlist.title')}</h2>
           {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
           {successMessage && <Alert variant="success">{successMessage}</Alert>}
           {wishlist.length === 0 && !loading && !successMessage && !errorMessage && (
             <div className="text-center" dir={direction}>
-              {t('Your wishlist is empty.')}
+              {t('wishlist.empty_message')}
               <br />
-              <Button as={Link} to="/products" variant="primary">{t('Shop Now')}</Button>
+              <Button as={Link} to="/products" variant="primary">{t('wishlist.shop_now')}</Button>
             </div>
           )}
           <Row className="justify-content-center">
@@ -132,7 +133,7 @@ const Wishlist = ({ updateWishlistCount }) => {
                   <Card.Body className="d-flex flex-column">
                     <Card.Title>{item.productName}</Card.Title>
                     <Card.Text>
-                      <strong>{t('Price')}:</strong> {item.price}
+                      <strong>{t('wishlist.price')}:</strong> {item.price}
                     </Card.Text>
                     <Button
                       variant="outline-danger"
@@ -140,8 +141,7 @@ const Wishlist = ({ updateWishlistCount }) => {
                       className="mt-auto"
                       onClick={() => handleRemoveFromWishlist(item.id)}
                     >
-                      <FontAwesomeIcon icon={faTrash} /> {t('Remove')}
-                       
+                      <FontAwesomeIcon icon={faTrash} /> {t('wishlist.remove')}
                     </Button>
                   </Card.Body>
                 </Card>
@@ -152,7 +152,7 @@ const Wishlist = ({ updateWishlistCount }) => {
             <>
               <div className="text-center mt-4">
                 <Button variant="primary" onClick={handleTransferAllToCart}>
-                  {t('Transfer All to Cart')}
+                  {t('wishlist.transfer_all_to_cart')}
                 </Button>
               </div>
               <Pagination className="justify-content-center mt-4">
