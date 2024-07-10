@@ -22,7 +22,7 @@ const Orders = () => {
   const [cartItems, setCartItems] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [mapCoordinates, setMapCoordinates] = useState({ latitude: null, longitude: null });
-  const ordersPerPage = 5; // Number of orders per page
+  const ordersPerPage = 5;
 
   useEffect(() => {
     fetchOrders();
@@ -138,6 +138,7 @@ const Orders = () => {
                     <th>{t('orders.totalAmount')}</th>
                     <th>{t('orders.address')}</th>
                     <th>{t('orders.status')}</th>
+                    <th>{t('en.Moughataa')}</th>
                     <th>{t('orders.actions')}</th>
                   </tr>
                 </thead>
@@ -150,12 +151,14 @@ const Orders = () => {
                       <td>{order.address}</td>
                       <td>
                         {order.orderStatus === "Shipped" ? (
-                          <Badge variant="warning">{t('PStatusShipped')}</Badge>
+                          <Badge className="badge-shipped">{t('PStatusShipped')}</Badge>
                         ) : (
-                          <Badge variant="secondary">{t('PStatusPending')}</Badge>
+                          <Badge  className="badge-pending">{t('PStatusPending')}</Badge>
                         )}
                       </td>
+                      <td>{order.wilaya}</td>
                       <td>
+
                         <div className="d-flex">
                           <Button variant="info" size="sm" className="mr-2 mb-1" onClick={() => handleShowCartModal(order)}>
                             {t('orders.viewCart')}
@@ -217,6 +220,7 @@ const Orders = () => {
             </Form.Group>
           </Form>
         </Modal.Body>
+        
         <Modal.Footer >
           <Button variant="secondary" onClick={() => setShowStatusModal(false)}>
             {t('common.close')}

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom'; // Import useLocation
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignInAlt, faSignOutAlt, faShoppingCart, faUser, faHeart, faGlobe, faUserLock } from '@fortawesome/free-solid-svg-icons';
-import '../../style.css'; // Assurez-vous que votre fichier de style est correctement importé
+import '../../style.css'; // Ensure your CSS file is correctly imported
 import { isLoggedIn, savelang, getlang, getUserId } from '../pages/Account/userStorageService';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
@@ -11,12 +11,13 @@ function Navbar() {
   const { t, i18n } = useTranslation();
   const [cartCount, setCartCount] = useState(0);
   const [wishlistCount, setWishlistCount] = useState(0);
-  const [budget, setBudget] = useState(0); // Ajout d'un état pour le budget
+  const [budget, setBudget] = useState(0); // Adding a state for the budget
   const [isLoggedInState, setIsLoggedInState] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState(false);
   const userId = getUserId();
   const navigate = useNavigate();
+  const location = useLocation(); // Use useLocation hook
 
   useEffect(() => {
     const lang = getlang();
@@ -155,27 +156,27 @@ function Navbar() {
           <div className={`collapse navbar-collapse ${isMenuOpen ? 'show' : ''}`} id="navbarSupportedContent">
             <ul className="navbar-nav mb-2 mb-lg-0">
               <li className="nav-item">
-                <Link className="nav-link active" aria-current="page" to="/" onClick={closeMenu}>
+                <Link className={`nav-link ${location.pathname === '/' ? 'active' : ''}`} aria-current="page" to="/" onClick={closeMenu}>
                   {t('home')}
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/products" onClick={closeMenu}>
+                <Link className={`nav-link ${location.pathname === '/products' ? 'active' : ''}`} to="/products" onClick={closeMenu}>
                   {t('produ')}
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/AboutUs" onClick={closeMenu}>
+                <Link className={`nav-link ${location.pathname === '/AboutUs' ? 'active' : ''}`} to="/AboutUs" onClick={closeMenu}>
                   {t('about')}
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/ContactUs" onClick={closeMenu}>
+                <Link className={`nav-link ${location.pathname === '/ContactUs' ? 'active' : ''}`} to="/ContactUs" onClick={closeMenu}>
                   {t('contact')}
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/test" onClick={closeMenu}>
+                <Link className={`nav-link ${location.pathname === '/test' ? 'active' : ''}`} to="/test" onClick={closeMenu}>
                   {t('Statut')}
                 </Link>
               </li>

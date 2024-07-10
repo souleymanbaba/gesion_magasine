@@ -6,6 +6,10 @@
     font-family: 'Merriweather', serif;
     
 }
+.nav-link.active {
+    color: #ffc800 !important;
+  }
+  
 
 /* Assurez-vous que ce fichier est importé correctement dans votre composant */
 .navbar .language-icon {
@@ -817,6 +821,13 @@ html{
 .input2 input ::placeholder{
     font-weight: bold;
 }
+
+/* Add this to your style.css file */
+.navbar .nav-link.active {
+    color: #FFD700; /* Use the color you want for the active page */
+  }
+  
+  
 #btnlogin{
     padding-top: 10px;
 }

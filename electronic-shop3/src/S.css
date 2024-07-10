@@ -1,4 +1,21 @@
 /* S.css */
+
+.badge-shipped {
+  background-color: #6f42c1 !important; /* Couleur violette pour le statut "Expédié" */
+  color: white;
+}
+
+.badge-delivered {
+  background-color: #6610f2 !important; /* Couleur violette pour le statut "Livré" */
+  color: white;
+}
+
+.badge-pending {
+  background-color: #8a2be2 !important; /* Couleur violette pour le statut "En attente" */
+  color: white;
+}
+
+
 .page-container {
   padding: 20px;
   background-color: #f9f9f9;

@@ -3,6 +3,21 @@
   "reviews.title": "Avis",
   "reviews.phone_number": "Numéro de téléphone",
   "reviews.message": "Message",
+"alerts.review_submitted_success" : " Avis soumis avec succès",
+"search_by_name": "Rechercher par nom",
+
+  "wilaya1": "Nouakchott-Nord",
+  "wilaya1mougha1": "Teyarett",
+  "wilaya1mougha2": "Dar Naim",
+  "wilaya1mougha3": "Toujounine",
+  "wilaya2": "Nouakchott-Ouest",
+  "wilaya2mougha1": "Tevragh-Zeina",
+  "wilaya2mougha2": "Ksar",
+  "wilaya2mougha3": "Sébkha",
+  "wilaya3": "Nouakchott-Sud",
+  "wilaya3mougha1": "Arafat",
+  "wilaya3mougha2": "El Mina",
+  "wilaya3mougha3": "Riyad",
 
  
  
@@ -212,6 +227,10 @@
     "copyRight": "© {{year}} Mon entreprise. Tous droits réservés."
   },
   "en": {
+    "Wilaya": "Wilaya",
+    "Select Wilaya": "Choisir une Wilaya",
+    "Moughataa": "Moughataa",
+    "Select Moughataa": "Choisir un Moughataa",
     "Your wishlist is empty.":"Votre liste de souhaits est vide",
     "Total Items": "Articles Totals",
     "Please fill in all fields": "Veuillez remplir tous les champs.",

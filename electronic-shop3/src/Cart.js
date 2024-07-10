@@ -339,9 +339,6 @@
 // export default Cart;
 
 
-
-
-
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -367,12 +364,6 @@ import MapModal from './MapModal';
 import './C.css';
 import { removeCartItem, getCartItemCount } from './cartService';
 
-const wilayas = [
-  { name: "Wilaya de Nouakchott Nord", moughataas: ["Moughataa de Dar-Naim", "Moughataa de toujounine","Moughataa de d"] },
-  { name: "", moughataas: ["Moughataa 2-1", "Moughataa 2-2"] },
-  // Ajoutez toutes les Wilayas et leurs Moughataas ici
-];
-
 const Cart = ({ updateCartCount }) => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
@@ -383,10 +374,9 @@ const Cart = ({ updateCartCount }) => {
   const [orderData, setOrderData] = useState({
     address: '',
     orderDescription: '',
-    wilaya: '',
-    moughataa: ''
+    wilayaa: '',
+    wilaya: ''
   });
-  
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
   const [orderPlaced, setOrderPlaced] = useState(false);
@@ -397,6 +387,33 @@ const Cart = ({ updateCartCount }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(2);
   const userId = getUserId();
+
+  const wilayas = [
+    {
+      name: t('wilaya1'),
+      moughataas: [
+        t('wilaya1mougha1'),
+        t('wilaya1mougha2'),
+        t('wilaya1mougha3')
+      ]
+    },
+    {
+      name: t('wilaya2'),
+      moughataas: [
+        t('wilaya2mougha1'),
+        t('wilaya2mougha2'),
+        t('wilaya2mougha3')
+      ]
+    },
+    {
+      name: t('wilaya3'),
+      moughataas: [
+        t('wilaya3mougha1'),
+        t('wilaya3mougha2'),
+        t('wilaya3mougha3')
+      ]
+    }
+  ];
 
   useEffect(() => {
     if (i18n.language === 'ar') {
@@ -480,7 +497,7 @@ const Cart = ({ updateCartCount }) => {
         address: orderData.address,
         orderDescription: orderData.orderDescription,
         wilaya: orderData.wilaya,
-        moughataa: orderData.moughataa,
+        wilayaa: orderData.wilayaa,
         latitude: latitude || null,
         longitude: longitude || null
       };
@@ -521,19 +538,19 @@ const Cart = ({ updateCartCount }) => {
 
   const handleWilayaChange = (e) => {
     const selectedWilayaName = e.target.value;
-    const selectedWilaya = wilayas.find(wilaya => wilaya.name === selectedWilayaName);
+    const selectedWilayaa = wilayas.find(wilaya => wilaya.name === selectedWilayaName);
 
     setOrderData({
       ...orderData,
-      wilaya: selectedWilayaName,
-      moughataa: '', // Réinitialiser moughataa lorsque la wilaya change
+      wilayaa: selectedWilayaName,
+      wilaya: '', // Reset moughataa when wilaya changes
     });
   };
 
   const handleMoughataaChange = (e) => {
     setOrderData({
       ...orderData,
-      moughataa: e.target.value
+      wilaya: e.target.value
     });
   };
 
@@ -553,16 +570,21 @@ const Cart = ({ updateCartCount }) => {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+  const calculateTotalAmount = () => {
+    return cart ? cart.cartItems.reduce((total, item) => total + item.price * item.quantity, 0) : 0;
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
+  
 
   if (!userId) {
-    navigate('/SignIn', { state: { message: t('login_redirect_message') } });
+    navigate('/SigIn', { state: { message: t('login_redirect_message') } });
     return null;
   }
 
-  const selectedWilaya = wilayas.find(w => w.name === orderData.wilaya);
+  const selectedWilaya = wilayas.find(w => w.name === orderData.wilayaa);
 
   return (
     <Container style={{ direction: direction }}>
@@ -635,13 +657,20 @@ const Cart = ({ updateCartCount }) => {
                       <Pagination.Item key={i + 1} onClick={() => paginate(i + 1)}>{i + 1}</Pagination.Item>
                     ))}
                   </Pagination>
-                  <br></br>
-                  <Button
-                    variant="outline-secondary"
-                    onClick={() => setShowModal(true)}
-                  >
-                    {t('en.Place Order')}
-                  </Button>
+                  <br />
+                  <div className="d-flex justify-content-between">
+                    <Button
+                      variant="outline-secondary"
+                      onClick={() => setShowModal(true)}
+                      disabled={!cart.cartItems.length} // Disable if cart is empty
+                    >
+                      {t('en.Place Order')}
+                    </Button>
+                    <div>
+                      <strong>{t('en.Total Amount')}: </strong>
+                      {calculateTotalAmount()} 
+                    </div>
+                  </div>
                 </div>
               ) : (
                 <p>{t('en.Your cart is empty.')}</p>
@@ -650,7 +679,7 @@ const Cart = ({ updateCartCount }) => {
           )}
         </Col>
         <Col md={4}>
-          {/* ... Votre code existant ... */}
+          {/* ... Your existing code ... */}
         </Col>
       </Row>
 
@@ -672,28 +701,17 @@ const Cart = ({ updateCartCount }) => {
               />
             </Form.Group>
 
-            {/* <Form.Group controlId="formOrderDescription">
-              <Form.Label>{t('en.Order Description')}</Form.Label>
-              <Form.Control
-                as="textarea"
-                placeholder={t('en.Enter order description')}
-                name="orderDescription"
-                value={orderData.orderDescription}
-                onChange={handleInputChange}
-              />
-            </Form.Group> */}
-
             <Form.Group controlId="formWilaya">
               <Form.Label>{t('en.Wilaya')}</Form.Label>
               <Form.Control
                 as="select"
-                name="wilaya"
-                value={orderData.wilaya}
+                name="wilayaa"
+                value={orderData.wilayaa}
                 onChange={handleWilayaChange}
               >
                 <option value="">{t('en.Select Wilaya')}</option>
-                {wilayas.map((wilaya) => (
-                  <option key={wilaya.name} value={wilaya.name}>{wilaya.name}</option>
+                {wilayas.map((wilayaa) => (
+                  <option key={wilayaa.name} value={wilayaa.name}>{wilayaa.name}</option>
                 ))}
               </Form.Control>
             </Form.Group>
@@ -702,24 +720,17 @@ const Cart = ({ updateCartCount }) => {
               <Form.Label>{t('en.Moughataa')}</Form.Label>
               <Form.Control
                 as="select"
-                name="moughataa"
-                value={orderData.moughataa}
+                name="wilaya"
+                value={orderData.wilaya}
                 onChange={handleMoughataaChange}
-                disabled={!orderData.wilaya}
+                disabled={!orderData.wilayaa}
               >
                 <option value="">{t('en.Select Moughataa')}</option>
-                {selectedWilaya && selectedWilaya.moughataas.map((moughataa) => (
-                  <option key={moughataa} value={moughataa}>{moughataa}</option>
+                {selectedWilaya && selectedWilaya.moughataas.map((wilaya) => (
+                  <option key={wilaya} value={wilaya}>{wilaya}</option>
                 ))}
               </Form.Control>
             </Form.Group>
-
-            {/* <Button
-              variant="primary"
-              onClick={handleOpenMapModal}
-            >
-              {t('en.Choose Location on Map')}
-            </Button> */}
 
             <MapModal show={showMapModal} handleClose={() => setShowMapModal(false)} setCoordinates={setCoordinates} />
           </Form>
@@ -738,20 +749,3 @@ const Cart = ({ updateCartCount }) => {
 };
 
 export default Cart;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

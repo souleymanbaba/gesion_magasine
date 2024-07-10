@@ -2,18 +2,18 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import ProductCard from './ProductCard';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFilter } from '@fortawesome/free-solid-svg-icons';
+import { faFilter,faSearch } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import { getlang, getUser } from '../pages/Account/userStorageService';
 import Pagination from 'react-bootstrap/Pagination';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './productStyle.css';
-import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { FormControl, InputLabel, Select, MenuItem, InputAdornment, TextField } from '@mui/material';
 
 function Products() {
   const { t, i18n } = useTranslation();
   const defaultOption = i18n.language === 'ar' ? 'الجميع' : 'Tous';
-
+  const [searchQuery, setSearchQuery] = useState('');
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -49,6 +49,8 @@ function Products() {
     if (categoryId !== defaultOption) {
       url = `http://localhost:8080/api/admin/category/${categoryId}`;
     }
+
+  
     const lang = getlang();
     axios.get(url, { params: { lang } })
       .then(response => {
@@ -156,9 +158,21 @@ function Products() {
   const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+    const handleSearchInputChange = (event) => {
+      const { value } = event.target;
+      setSearchQuery(value);
+      if (value.trim() === '') {
+        setFilteredProducts(products);
+      } else {
+        const filtered = products.filter(product =>
+          product.name.toLowerCase().includes(value.toLowerCase())
+        );
+        setFilteredProducts(filtered);
+      }
+    };
 
   return (
-    <div className="products-container container-fluid" style={{ direction: direction }}>
+    <div className="products-container container-fluid" style={{ direction: direction }} >
       <div className="row">
         <div className="col-md-3">
           <div className="filters-section bg-light p-3 rounded shadow-sm mb-4">
@@ -219,7 +233,26 @@ function Products() {
             </div>
           </div>
         </div>
-        <div className="col-md-9">
+        <div className="col-md-9" >
+        <TextField
+      dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}
+      className="mb-4"
+      fullWidth
+      variant="outlined"
+      label={t('search_by_name')}
+      value={searchQuery}
+      onChange={handleSearchInputChange}
+      InputProps={{
+        endAdornment: (
+          <InputAdornment position="end">
+            <FontAwesomeIcon icon={faSearch} />
+          </InputAdornment>
+        ),
+        inputProps: {
+          dir: i18n.language === 'ar' ? 'rtl' : 'ltr',
+        },
+      }}
+    />
           <div className="text-center mb-4">
             <h1 className="products-title">{t('produ')}</h1>
             <div className="underline"></div>

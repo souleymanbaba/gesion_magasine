@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Container, Row, Col, Table, Badge, Pagination } from 'react-bootstrap';
+import { Modal, Container, Button, Row, Col, Table, Badge, Pagination } from 'react-bootstrap';
 import { getUserId } from './components/pages/Account/userStorageService';
 import './S.css';
 import { useTranslation } from 'react-i18next';
@@ -9,9 +9,11 @@ const Orderss = () => {
   const [orders, setOrders] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [ordersPerPage] = useState(5);
-  const userId = getUserId();
+  const [cartItems, setCartItems] = useState([]);
+  const [showCartModal, setShowCartModal] = useState(false);
   const { t, i18n } = useTranslation();
   const [direction, setDirection] = useState('ltr');
+  const userId = getUserId();
 
   useEffect(() => {
     if (i18n.language === 'ar') {
@@ -34,6 +36,24 @@ const Orderss = () => {
     fetchOrders();
   }, [userId]);
 
+  const fetchCartItems = async (userId, orderId) => {
+    try {
+      const lang = i18n.language;
+      const url = `http://localhost:8080/api/customer/cartI/${userId}`;
+      const response = await axios.get(url, {
+        params: { lang, orderId }
+      });
+      setCartItems(response.data.cartItems);
+      setShowCartModal(true);
+    } catch (error) {
+      console.error('Error fetching cart items:', error.message);
+    }
+  };
+
+  const handleShowCartModal = (order) => {
+    fetchCartItems(order.user_id, order.id);
+  };
+
   // Pagination
   const indexOfLastOrder = currentPage * ordersPerPage;
   const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
@@ -54,6 +74,7 @@ const Orderss = () => {
                   <th>{t('Numero')}</th>
                   <th>{t('Date')}</th>
                   <th>{t('Status')}</th>
+                  <th>{t('Actions')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -64,12 +85,17 @@ const Orderss = () => {
                     <td>{new Date(order.date).toLocaleString()}</td>
                     <td>
                       {order.orderStatus === "Shipped" ? (
-                        <Badge variant="warning" >{t('PStatusShipped')}</Badge>
+                        <Badge className="badge-shipped">{t('PStatusShipped')}</Badge>
                       ) : order.orderStatus === "Delivered" ? (
-                        <Badge variant="success">{t('PStatusDelivered')}</Badge>
+                        <Badge className="badge-delivered">{t('PStatusDelivered')}</Badge>
                       ) : (
-                        <Badge variant="secondary">{t('PStatusPending')}</Badge>
+                        <Badge className="badge-pending">{t('PStatusPending')}</Badge>
                       )}
+                    </td>
+                    <td>
+                      <Button variant="info" size="sm" className="mr-2 mb-1" onClick={() => handleShowCartModal(order)}>
+                        {t('orders.viewCart')}
+                      </Button>
                     </td>
                   </tr>
                 ))}
@@ -85,6 +111,44 @@ const Orderss = () => {
             </Pagination>
           </Col>
         </Row>
+        <Modal show={showCartModal} onHide={() => setShowCartModal(false)} centered>
+          <Modal.Header closeButton className="custom-modal-header">
+            <Modal.Title>{t('orders.cartItems')}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {cartItems.length > 0 ? (
+              <Table striped bordered hover responsive>
+                <thead className="admin-products__table-header">
+                  <tr>
+                    <th>{t('orders.image')}</th>
+                    <th>{t('orders.size')}</th>
+                    <th>{t('orders.marque')}</th>
+                    <th>{t('orders.quantity')}</th>
+                    <th>{t('orders.price')}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {cartItems.map(item => (
+                    <tr key={item.id} className="admin-products__table-row">
+                      <td><img src={`data:image/jpeg;base64,${item.returnedImg}`} alt={item.productName} style={{ width: '50px' }} /></td>
+                      <td>{item.taille}</td>
+                      <td>{item.marque}</td>
+                      <td>{item.quantity}</td>
+                      <td>{item.price}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            ) : (
+              <p>{t('orders.noItems')}</p>
+            )}
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setShowCartModal(false)}>
+              {t('common.close')}
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </Container>
     </div>
   );
