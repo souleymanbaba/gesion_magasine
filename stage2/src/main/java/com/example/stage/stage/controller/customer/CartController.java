@@ -49,6 +49,17 @@ public class CartController {
         return ResponseEntity.noContent().build();
     }
 
+    @DeleteMapping("/removee/{productId}/{userId}")
+    public ResponseEntity<?> removeProductFromcart(@PathVariable Long productId, @PathVariable Long userId) {
+        System.out.println(productId);
+        System.out.println("--------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+        System.out.println(userId);
+
+        System.out.println("--------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+        cartService.removeProductFromcart(productId, userId);
+        return ResponseEntity.ok("Produit supprimé de la cart avec succès");
+    }
+
     @DeleteMapping("/items/{cartItemId}")
     public ResponseEntity<?> removeProductFromCart(@PathVariable Long cartItemId) {
         return cartService.removeProductFromCart(cartItemId);

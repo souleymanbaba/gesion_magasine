@@ -32,6 +32,17 @@ public class WishlistController {
         return ResponseEntity.ok(wishlistService.getWishlistByUserId(userId,lang));
     }
 
+    @DeleteMapping("/removedd/{productId}/{userId}")
+    public ResponseEntity<?> removeProductFromWishlist(@PathVariable Long productId, @PathVariable Long userId) {
+        System.out.println(productId);
+        System.out.println("--------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+        System.out.println(userId);
+
+        System.out.println("--------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+        wishlistService.removeProductFromWishlist(productId, userId);
+        return ResponseEntity.ok("Produit supprimé de la wishlist avec succès");
+    }
+
     @DeleteMapping("/wishlist/{id}")
     public ResponseEntity<Void> deleteWishListItem(@PathVariable Long id) {
         wishlistService.deleteWishListItem(id);

@@ -9,6 +9,7 @@ import com.example.stage.stage.repostory.UserRepository;
 import com.example.stage.stage.repostory.WishListRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -34,6 +35,10 @@ public class WishlistServiceImpl implements WishlistService{
             return wishlistRepository.save(wishlist).getWishlistDto(l);
         }
         return null;
+    }
+    @Transactional
+    public void removeProductFromWishlist(Long productId, Long userId) {
+        wishlistRepository.deleteByProductIdAndUserId(productId, userId);
     }
 
 

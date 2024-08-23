@@ -21,4 +21,5 @@ public interface CartService  {
     ResponseEntity<?> removeProductFromCart(Long cartItemId);
     OrderDto getCartByUserIdIi(Long userId,String lang);
     OrderDto getCartByUserIdAndOrderId(Long userId, Long orderId, String lang);
+    ResponseEntity<?> removeProductFromcart(Long productId, Long userId);
 }

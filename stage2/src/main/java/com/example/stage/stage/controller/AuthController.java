@@ -52,12 +52,24 @@ public class AuthController {
         Optional<User> optionalUser = userRepository.findFirstByEmail(userDetails.getUsername());
         final String jwt = jwtUtil.generateToken(userDetails.getUsername());
         if (optionalUser.isPresent()) {
+
+            String numero;
+            try {
+                // Essayer de convertir l'email en entier
+                numero = String.valueOf(Integer.parseInt(optionalUser.get().getEmail()));
+            } catch (NumberFormatException e) {
+                // Si la conversion échoue, utiliser l'email comme chaîne de caractères
+                numero = optionalUser.get().getEmail();
+            }
+
             response.getWriter().write(new JSONObject()
                     .put("userId", optionalUser.get().getId())
                     .put("role", optionalUser.get().getRole())
-                        .put("token", jwt)
+                    .put("token", jwt)
+                    .put("numero", numero) // Utilisation du numéro ou de l'email en fonction de la conversion
                     .toString()
             );
+
             response.addHeader("Access-Control-Expose-Headers",  "Authorization");
             response.addHeader("Access-Control-Allow-Headers","Authorization, X-PINGOTHER, Origin,"+ "X-Requested-With, Content-Type, Accept, X-Custom-header");
 

@@ -35,14 +35,14 @@ public class AdminCategoryController {
         }
     }
 
-    @GetMapping("/{categoryId}/subcategories")
+    @GetMapping("/ouvert/{categoryId}/subcategories")
     public ResponseEntity<List<CategoryDto>> getCategoryAndSubcategories(@PathVariable Long categoryId,
                                                                          @RequestParam(value = "lang", defaultValue = "fr") String lang) {
         List<CategoryDto> categories = categoryService.getCategoryAndSubcategories(categoryId, lang);
         return ResponseEntity.ok(categories);
     }
 
-    @GetMapping("/categories")
+    @GetMapping("/ouvert/categories")
     public ResponseEntity<List<CategoryDto>> getAllCategories(@RequestParam(value = "lang", defaultValue = "fr") String lang) {
         List<CategoryDto> categories = categoryService.getAllCategories(lang);
         return ResponseEntity.ok(categories);

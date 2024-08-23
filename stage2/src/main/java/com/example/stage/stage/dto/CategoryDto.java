@@ -6,6 +6,6 @@ import lombok.Data;
 public class CategoryDto {
     private Long id;
     private String name;
-    private String nom_ar;  // Ajout du champ nom_ar
+    private String nom_ar;
     private Long parentCategoryId;
 }

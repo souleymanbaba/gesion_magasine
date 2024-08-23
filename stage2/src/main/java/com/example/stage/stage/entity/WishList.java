@@ -23,7 +23,6 @@ public class WishList {
     @JoinColumn(name = "user_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
-
     public WishlistDto getWishlistDto(String lang) {
         WishlistDto wishlistDto = new WishlistDto();
         wishlistDto.setId(id);

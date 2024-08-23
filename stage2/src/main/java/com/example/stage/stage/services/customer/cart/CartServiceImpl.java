@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -93,6 +94,25 @@ public class CartServiceImpl implements CartService {
         orderDto.setTotalAmount(activeOrder.getTotalAmount());
         orderDto.setCartItems(cartItemsDtoList);
         return orderDto;
+    }
+
+    @Transactional
+    public ResponseEntity<?> removeProductFromcart(Long productId, Long userId) {
+        CartItems optionalCartItem = cartItemsRepository.findByProductIdAndUserIdAndPendingOrderStatus(productId, userId);
+        Order activeOrder = optionalCartItem.getOrder();
+        if (activeOrder != null) {
+            activeOrder.setAmount(activeOrder.getAmount() - optionalCartItem.getPrice() * optionalCartItem.getQuantity());
+            activeOrder.setTotalAmount(activeOrder.getTotalAmount() - optionalCartItem.getPrice() * optionalCartItem.getQuantity());
+            activeOrder.getCartItems().remove(optionalCartItem);
+            cartItemsRepository.delete(optionalCartItem);
+            orderRepository.save(activeOrder);
+
+
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Cannot remove product from cart");
+        }
+
     }
 
     public OrderDto getCartByUserIdAndOrderId(Long userId, Long orderId, String lang) {
@@ -182,9 +202,11 @@ public class CartServiceImpl implements CartService {
         if (optionalProduct.isPresent() && optionalCartItem.isPresent()) {
             CartItems cartItem = optionalCartItem.get();
             Product product = optionalProduct.get();
-            activeOrder.setAmount(activeOrder.getAmount() - product.getPrice());
-            activeOrder.setTotalAmount(activeOrder.getTotalAmount() - product.getPrice());
-            cartItem.setQuantity(cartItem.getQuantity() - 1);
+            if(cartItem.getQuantity()>0){
+                activeOrder.setAmount(activeOrder.getAmount() - product.getPrice());
+                activeOrder.setTotalAmount(activeOrder.getTotalAmount() - product.getPrice());
+                cartItem.setQuantity(cartItem.getQuantity() - 1);
+            }
             cartItemsRepository.save(cartItem);
             orderRepository.save(activeOrder);
             return activeOrder.getOrderDto();

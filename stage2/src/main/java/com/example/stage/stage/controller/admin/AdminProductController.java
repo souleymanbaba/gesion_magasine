@@ -44,7 +44,7 @@ public class AdminProductController {
         return adminProductService.getProductWithMaxSorties();
     }
 
-    @GetMapping( "/products")
+    @GetMapping( "/ouvert/products")
     public ResponseEntity<List<ProductDto>> getAllProducts(@RequestParam(defaultValue = "fr") String lang) {
         List<ProductDto> productDto = adminProductService.getAllProducts(lang);
         return ResponseEntity.ok(productDto);
@@ -78,7 +78,7 @@ public class AdminProductController {
         }
     }
 
-    @GetMapping("/category/{categoryId}")
+    @GetMapping("/ouvert/category/{categoryId}")
     public ResponseEntity<List<ProductDto>> getProductsByCategoryAndSubcategories(@PathVariable Long categoryId,
                                                                                   @RequestParam(defaultValue = "fr") String lang) {
         List<ProductDto> products = adminProductService.getProductsByCategoryAndSubcategories(categoryId, lang);
