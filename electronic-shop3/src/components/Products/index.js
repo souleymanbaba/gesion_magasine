@@ -45,9 +45,9 @@ function Products() {
   }, [filteredProducts]);
 
   const fetchProducts = (categoryId = defaultOption, size = defaultOption, brand = defaultOption) => {
-    let url = 'http://localhost:8080/api/admin/products';
+    let url = 'http://localhost:8080/api/admin/ouvert/products';
     if (categoryId !== defaultOption) {
-      url = `http://localhost:8080/api/admin/category/${categoryId}`;
+      url = `http://localhost:8080/api/admin/ouvert/category/${categoryId}`;
     }
 
   
@@ -70,7 +70,7 @@ function Products() {
   };
 
   const fetchCategories = () => {
-    const url = 'http://localhost:8080/api/admin/categories';
+    const url = 'http://localhost:8080/api/admin/ouvert/categories';
     const lang = getlang();
     axios.get(url, { params: { lang } })
       .then(response => {
@@ -82,7 +82,7 @@ function Products() {
   };
 
   const fetchSubCategories = (categoryId) => {
-    const url = `http://localhost:8080/api/admin/${categoryId}/subcategories`;
+    const url = `http://localhost:8080/api/admin/ouvert/{{categoryId}}/subcategories`;
     const lang = getlang();
     axios.get(url, { params: { lang } })
       .then(response => {

@@ -15,7 +15,7 @@ const HomePage = () => {
   useEffect(() => {
     const fetchFeaturedProducts = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/api/admin/products');
+        const response = await axios.get('http://localhost:8080/api/admin/ouvert/products');
         setFeaturedProducts(response.data.slice(0, 6)); // Limiter à 6 produits
       } catch (error) {
         console.error('Erreur lors de la récupération des produits vedettes :', error);

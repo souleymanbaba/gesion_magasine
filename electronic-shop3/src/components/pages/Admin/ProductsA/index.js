@@ -37,7 +37,7 @@ const AdminProducts = () => {
   const fetchProducts = async () => {
     try {
       const lang = i18n.language;
-      const response = await fetch(`http://localhost:8080/api/admin/products?lang=${lang}`);
+      const response = await fetch(`http://localhost:8080/api/admin/ouvert/products?lang=${lang}`);
       if (!response.ok) {
         throw new Error('Failed to fetch products');
       }

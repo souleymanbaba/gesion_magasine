@@ -135,7 +135,7 @@ const CategoryManagement = () => {
   const fetchCategories = async () => {
     try {
       const lang = i18n.language;
-      const response = await axios.get('http://localhost:8080/api/admin/categories', { params: { lang } });
+      const response = await axios.get('http://localhost:8080/api/admin/ouvert/categories', { params: { lang } });
       setCategories(response.data);
       setFilteredCategories(response.data); // Ajoutez cette ligne
       setCurrentCategories(response.data.slice(0, categoriesPerPage));
@@ -161,7 +161,7 @@ const CategoryManagement = () => {
 
   useEffect(() => {
     const lang = i18n.language;
-    axios.get('http://localhost:8080/api/admin/categories', { params: { lang } })
+    axios.get('http://localhost:8080/api/admin/ouvert/categories', { params: { lang } })
       .then(response => {
         setParentCategories(response.data);
       })
