@@ -296,12 +296,12 @@ const Orders = () => {
 
       <Modal show={showMinOrderModal} onHide={() => setShowMinOrderModal(false)} centered>
         <Modal.Header closeButton className="custom-modal-header">
-          <Modal.Title>{t('orders.editMinOrderValue')}</Modal.Title>
+          <Modal.Title>{t('editMinOrderValue')}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
             <Form.Group>
-              <Form.Label>{t('orders.minOrderValue')}</Form.Label>
+              <Form.Label>{t('minOrderValue')}</Form.Label>
               <Form.Control
                 type="number"
                 value={newMinOrderValue}
@@ -315,7 +315,7 @@ const Orders = () => {
             {t('common.close')}
           </Button>
           <Button variant="primary" onClick={updateMinOrderValue}>
-            {t('orders.save')}
+            {t('save')}
           </Button>
         </Modal.Footer>
       </Modal>

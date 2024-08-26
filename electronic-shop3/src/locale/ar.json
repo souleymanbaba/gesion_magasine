@@ -1,4 +1,10 @@
 {
+  "Modifier la valeur minimum de commande": "تعديل قيمة الطلب الألي",
+  "Valeur minimum de commande" : "قيمة الحد الأدنى للطلب",
+  "save": "حفظ",
+  "minOrderValue": "قيمة الطلب الألي",
+  "editMinOrderValue": "تعديل قيمة الطلب الألي",
+  "Votre montant total est inférieur à la valeur minimale de commande. Veuillez ajouter plus d'articles à votre panier.": "يجب أن يكون المبلغ الكلى أقل من قيمة الطلب الألي. يرجى أضافة المنتجات إلى سلة التسوق.",
   "errorrr_message": "المنتج موجود بالفعل في قائمة المفضلات",
   "increase_quantity":"الكمية قد زادت بشكل صحيح",
   "decrease_quantity":"الكمية قد نقصت بشكل صحيح",

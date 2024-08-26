@@ -1,5 +1,7 @@
 {
-
+  "save": "Enregistrer",
+  "minOrderValue" : "Minimum order valeur",
+  "editMinOrderValue" : "Modifier la valeur minimum de commande",
   "reviews.title": "Avis",
   "reviews.phone_number": "Numéro de téléphone",
   "reviews.message": "Message",
