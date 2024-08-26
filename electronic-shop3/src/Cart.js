@@ -369,6 +369,7 @@ const Cart = ({ updateCartCount }) => {
   const navigate = useNavigate();
   const [direction, setDirection] = useState('ltr');
   const [cart, setCart] = useState(null);
+  const [showModal1, setShowModal1] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showMapModal, setShowMapModal] = useState(false);
   const [orderData, setOrderData] = useState({
@@ -387,6 +388,22 @@ const Cart = ({ updateCartCount }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(2);
   const userId = getUserId();
+
+  const [minOrderValue, setMinOrderValue] = useState(0);
+
+  useEffect(() => {
+    const fetchMinOrderValue = async () => {
+      try {
+        const response = await axios.get('http://localhost:8080/api/minOrderValue');
+        console.log('Response:', response.data);
+        setMinOrderValue(response.data); 
+      } catch (error) {
+        console.error('Error fetching minimum order value:', error);
+      }
+    };
+  
+    fetchMinOrderValue();
+  }, []);
 
   const wilayas = [
     {
@@ -476,6 +493,21 @@ const Cart = ({ updateCartCount }) => {
     }
   };
 
+  const handlePass = async () => { 
+
+    
+
+    if ( calculateTotalAmount() < minOrderValue) {
+      setShowModal1(true)
+      setErrorMessage(t('Votre montant total est inférieur à la valeur minimale de commande. Veuillez ajouter plus d\'articles à votre panier.'));
+      return;
+    }
+
+    setShowModal(true);
+
+  }
+
+
   const handlePlaceOrder = async () => {
     if (!orderData.address) {
       setErrorMessage(t('en.Please fill in all fields'));
@@ -486,6 +518,11 @@ const Cart = ({ updateCartCount }) => {
       setErrorMessage(t('en.Numero must be at least 8 characters.'));
       return;
     }
+
+    
+
+    
+    
 
     setPlacingOrder(true);
     setErrorMessage('');
@@ -661,7 +698,7 @@ const Cart = ({ updateCartCount }) => {
                   <div className="d-flex justify-content-between">
                     <Button
                       variant="outline-secondary"
-                      onClick={() => setShowModal(true)}
+                      onClick={handlePass}
                       disabled={!cart.cartItems.length} // Disable if cart is empty
                     >
                       {t('en.Place Order')}
@@ -682,6 +719,15 @@ const Cart = ({ updateCartCount }) => {
           {/* ... Your existing code ... */}
         </Col>
       </Row>
+
+      <Modal show={showModal1} onHide={() => { setShowModal1(false); setSuccessMessage(''); setErrorMessage(''); }}>
+      <Modal.Header closeButton className="custom-modal-header">
+          <Modal.Title>{t('en.Place Order')}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
+          </Modal.Body>
+      </Modal>
 
       <Modal show={showModal} onHide={() => { setShowModal(false); setSuccessMessage(''); setErrorMessage(''); }} >
         <Modal.Header closeButton className="custom-modal-header">

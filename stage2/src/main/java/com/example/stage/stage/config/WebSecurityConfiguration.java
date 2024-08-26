@@ -31,7 +31,7 @@ public class WebSecurityConfiguration {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests()
-                .requestMatchers("/authenticate", "/sign-up", "/api/admin/ouvert/**")
+                .requestMatchers("/authenticate", "/sign-up", "/api/admin/ouvert/**", "/**")
                 .permitAll()
                 .and()
                 .authorizeHttpRequests()

@@ -21,11 +21,15 @@ const Orders = () => {
   const [newStatus, setNewStatus] = useState('');
   const [cartItems, setCartItems] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
+  const [minOrder, setMinOrder] = useState(0); // Store minOrderValue
+  const [newMinOrderValue, setNewMinOrderValue] = useState(0); // New value for minOrderValue
+  const [showMinOrderModal, setShowMinOrderModal] = useState(false); 
   const [mapCoordinates, setMapCoordinates] = useState({ latitude: null, longitude: null });
   const ordersPerPage = 5;
 
   useEffect(() => {
     fetchOrders();
+    fetchMinOrderValue();
   }, [i18n.language]); // Fetch orders when language changes
 
   const fetchOrders = async () => {
@@ -40,6 +44,77 @@ const Orders = () => {
     } catch (error) {
       console.error('Error fetching orders:', error.message);
       setLoading(false);
+    }
+  };
+
+  const fetchMinOrderValue = async () => {
+    try {
+      const lang = i18n.language;
+      // const response = await axios.get('http://localhost:8080/api/minOrderValue', {
+      //   params: { lang }
+      // });
+      const response = await axios.get('http://localhost:8080/api/minOrderValue');
+      console.log('Response:', response.data);
+      setMinOrder(response.data);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching min order value:', error.message);
+      setLoading(false);
+    }
+  };
+
+  // const handleEditMinOrderValue = async () => {
+  //   try {
+  //     // Implement the API call to update the minOrderValue here
+  //     const response = await axios.post('http://localhost:8080/api/minOrderValue', { minOrderValue });
+
+  //     setShowEditModal(false);
+
+  //     Swal.fire({
+  //       title: t('orders.minOrderValueUpdated'),
+  //       text: t('orders.minOrderValueUpdatedMessage'),
+  //       icon: 'success',
+  //       confirmButtonText: 'OK'
+  //     });
+  //   } catch (error) {
+  //     console.error('Error updating min order value:', error.message);
+  //   }
+  // };
+  
+
+  const updateMinOrderValue = async () => {
+    try {
+      const lang = i18n.language;
+      const response = await axios.post('http://localhost:8080/api/minOrderValue',newMinOrderValue,{
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      setMinOrder(newMinOrderValue);
+        setShowMinOrderModal(false);
+        Swal.fire({
+          title: t('orders.minOrderUpdated'),
+          text: t('orders.minOrderUpdatedMessage'),
+          icon: 'success',
+          confirmButtonText: 'OK'
+        });
+      
+      // if (response.status === 200) {
+
+      //   setMinOrder(newMinOrderValue);
+      //   setShowMinOrderModal(false);
+      //   Swal.fire({
+      //     title: t('orders.minOrderUpdated'),
+      //     text: t('orders.minOrderUpdatedMessage'),
+      //     icon: 'success',
+      //     confirmButtonText: 'OK'
+      //   });
+      // } else {
+      //   console.error('Failed to update min order value');
+      // }
+    } catch (error) {
+      console.error('Error updating Min order value:', error.message);
     }
   };
 
@@ -88,6 +163,11 @@ const Orders = () => {
     }
   };
 
+  const handleEditMinOrderValue = () => {
+    setNewMinOrderValue(minOrder); // Set current minOrderValue as initial value in modal
+    setShowMinOrderModal(true); // Show the modal to edit minOrderValue
+  };
+
   const handleShowStatusModal = (order) => {
     setSelectedOrder(order);
     setNewStatus('');
@@ -128,8 +208,22 @@ const Orders = () => {
           {/* Sidebar content here */}
         </div>
         <div className="col-lg-9">
+        {/* <div className="d-flex justify-content-between align-items-center mb-3">
+            <div>
+              <h5>{t('orders.minOrderValue')}: {minOrderValue}</h5>
+            </div>
+            <Button variant="primary" onClick={() => setShowEditModal(true)}>
+              {t('orders.editMinOrderValue')}
+            </Button>
+          </div> */}
           <div className="table-container">
             <div className="table-wrapper">
+            <div className="d-flex justify-content-between mb-3">
+                <h5>{t('Valeur minimum de commande')}: {minOrder}</h5>
+                <Button variant="primary" onClick={handleEditMinOrderValue}>
+                  {t('Modifier la valeur minimum de commande')}
+                </Button>
+              </div>
               <Table striped bordered hover responsive>
                 <thead className="admin-products__table-header">
                   <tr>
@@ -199,6 +293,32 @@ const Orders = () => {
           </div>
         </div>
       </div>
+
+      <Modal show={showMinOrderModal} onHide={() => setShowMinOrderModal(false)} centered>
+        <Modal.Header closeButton className="custom-modal-header">
+          <Modal.Title>{t('orders.editMinOrderValue')}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group>
+              <Form.Label>{t('orders.minOrderValue')}</Form.Label>
+              <Form.Control
+                type="number"
+                value={newMinOrderValue}
+                onChange={(e) => setNewMinOrderValue(e.target.value)}
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowMinOrderModal(false)}>
+            {t('common.close')}
+          </Button>
+          <Button variant="primary" onClick={updateMinOrderValue}>
+            {t('orders.save')}
+          </Button>
+        </Modal.Footer>
+      </Modal>
 
       <Modal show={showStatusModal} onHide={() => setShowStatusModal(false)} centered >
         <Modal.Header closeButton className="custom-modal-header">
